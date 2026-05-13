@@ -1,0 +1,125 @@
+<p-toast></p-toast>
+<p-toolbar styleClass="mb-4 bg-toolbar">
+    <ng-template pTemplate="left">
+        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+            (click)="openNew()"></button>
+        <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+            (click)="deleteSelectedItems()"
+            [disabled]="!selectedItems || !selectedItems.length"></button>
+    </ng-template>
+
+    <!-- <ng-template pTemplate="right">
+        <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
+    </ng-template> -->
+</p-toolbar>
+
+
+<p-table #dt [value]="litems" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}"
+    [globalFilterFields]="['item.familia','item.nombre','item.ubicacion']"
+    [(selection)]="selectedItems" [rowHover]="true" styleClass="p-datatable-sm">
+    <ng-template pTemplate="header" class=".bg-productos-row">
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th pSortableColumn="familia" style="width:15%">Familia <p-sortIcon field="familia"></p-sortIcon></th>
+            <th pSortableColumn="ubicacion" style="width:15%">Ubicación <p-sortIcon field="ubicacion"></p-sortIcon></th>
+            <th pSortableColumn="nombre" style="width:30%">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
+            <th pSortableColumn="unidad" style="width:15%">Unidad<p-sortIcon field="unidad"></p-sortIcon></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item let-editing="editing" let-ri="rowIndex">
+        <tr [pEditableRow]="item">
+            <td>
+                <p-tableCheckbox [value]="item"></p-tableCheckbox>
+            </td>
+            <td>
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <p-dropdown [options]="lfamilia" appendTo="body" [(ngModel)]="item.familia" [style]="{'width':'100%'}"></p-dropdown>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{item.familia}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td>
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <p-dropdown [options]="lubicacion" appendTo="body" [(ngModel)]="item.ubicacion" [style]="{'width':'100%'}"></p-dropdown>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{item.ubicacion}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td>
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input pInputText type="text" [(ngModel)]="item.nombre">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{item.nombre}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td>
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <p-dropdown [options]="lunidad" appendTo="body" [(ngModel)]="item.unidad" [style]="{'width':'100%'}"></p-dropdown>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{item.unidad}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+
+            <td>
+                <div class="flex align-items-center justify-content-center gap-2">
+                    <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                        (click)="onRowEditInit(item)" class="p-button-rounded"></button>
+                    <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                        (click)="onRowEditSave(item)" class="p-button-rounded p-button-success mr-2"></button>
+                    <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                        (click)="onRowEditCancel(item, ri)" class="p-button-rounded p-button-danger"></button>
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+
+<p-dialog [(visible)]="itemDialogo" [style]="{width: '450px'}" header="Detalles del item" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="familia">Familia</label>
+            <p-dropdown [options]="lfamilia" [(ngModel)]="item.familia" appendTo="body"></p-dropdown>
+            <small class="p-error" *ngIf="submitted && !item.familia">Familia es requerido.</small>
+        </div>
+        <div class="p-field">
+            <label for="ubicacion">Ubicación</label>
+            <p-dropdown [options]="lubicacion" [(ngModel)]="item.ubicacion" appendTo="body"></p-dropdown>
+            <small class="p-error" *ngIf="submitted && !item.ubicacion">Ubicación es requerido.</small>
+        </div>
+        <div class="p-field">
+            <label for="nombre">Nombre</label>
+            <input type="text" pInputText id="nombre" [(ngModel)]="item.nombre" required autofocus />
+            <small class="p-error" *ngIf="submitted && !item.nombre">Nombre es requerido.</small>
+        </div>
+        <div class="p-field">
+            <label for="unidad">Unidad</label>
+            <p-dropdown [options]="lunidad" [(ngModel)]="item.unidad" appendTo="body"></p-dropdown>
+            <small class="p-error" *ngIf="submitted && !item.unidad">Unidad es requerido.</small>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+            (click)="hideDialog()"></button>
+        <button pButton pRipple label="Grabar" icon="pi pi-check" class="p-button-text"
+            (click)="saveItem()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

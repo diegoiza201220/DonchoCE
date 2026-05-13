@@ -1,0 +1,86 @@
+<div class card>
+    <label for="">Fecha inicio</label>
+    <p-calendar [(ngModel)]="d1" [showIcon]="true" [showButtonBar]="true"></p-calendar>
+    <label for="">Fecha fin</label>
+    <p-calendar [(ngModel)]="d2" [showIcon]="true" [showButtonBar]="true"></p-calendar>
+    <button (click)="Buscar()">Buscar</button>
+</div>
+
+<p-table #dt [value]="lregistros" [exportHeader]="'resumen de compras'" 
+    selectionMode="single" [(selection)]="selectedCompra" dataKey="id"
+    (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)"
+    [scrollable]="true" scrollHeight="400px" 
+    [tableStyle]="{'min-width': '60rem'}"
+    [globalFilterFields]="['proveedor', 'numerodocumento']"
+    >
+    <ng-template pTemplate="caption">
+        <div class="flex">
+            <span class="p-input-icon-left ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains', dt)" placeholder="Search keyword" />
+            </span>
+        </div>
+        <!-- <div class="flex">
+            <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+        </div> -->
+    </ng-template>
+    <ng-template pTemplate="header" let-registro>
+        <tr>
+            <th>Fecha Compra</th>
+            <th pSortableColumn="fechareal">Fecha Real<p-sortIcon field="fechareal"></p-sortIcon></th>
+            <th pSortableColumn="numerodocumento">No. Documento<p-sortIcon field="numerodocumento"></p-sortIcon></th>
+            <th pSortableColumn="proveedor">Proveedor<p-sortIcon field="proveedor"></p-sortIcon></th>
+            <th>Total</th>
+            <th>Usuario</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-registro>
+        <tr [pSelectableRow]="registro">
+            <td>{{ registro.fecha?.toDate() | date: 'medium'}}</td>
+            <td>{{ registro.fechareal?.toDate() | date: 'medium'}}</td>
+            <td>{{ registro.numerodocumento }}</td>
+            <td>{{ registro.proveedor }}</td>
+            <td>{{ registro.total | currency:'USD' }}</td>
+            <td>{{ registro.usuario }}</td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between">
+            <tr>
+                <td colspan="5" class="text-right font-bold pr-6">Total : {{total | currency:'USD'}}</td>
+            </tr>
+        </div>
+    </ng-template>
+</p-table>
+<p-dialog [(visible)]="compraDialogo" [style]="{ width: '600px' }" header="Detalle de compra" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="field">
+            <p-table #dt1 [value]="lregistroscompra" 
+            [scrollable]="true" scrollHeight="400px" 
+            >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 10%">Nombre</th>
+                    <th style="width: 60%">Unidad</th>
+                    <th style="width: 60%">Cantidad</th>
+                    <th style="width: 15%">P.Unitario</th>
+                    <th style="width: 15%">P.Total</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-producto>
+                <tr>
+                    <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.unidad }}</td>
+                    <td>{{ producto.cantidad }}</td>
+                    <td>{{ producto.preciounitario | currency:'USD' }}</td>
+                    <td>{{ producto.preciototal | currency:'USD' }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cerrar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    </ng-template>
+</p-dialog>

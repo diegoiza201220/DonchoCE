@@ -1,0 +1,157 @@
+<p-splitter [style]="{ height: '300px' }" styleClass="mb-5" layout="vertical">
+    <ng-template pTemplate>
+        <p-table #dt [value]="lordenescocina" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}"
+            [rowHover]="true" [scrollable]="true">
+            <ng-template pTemplate="header">
+                <th>Secuencial orden</th>
+                <th>Cantidad</th>
+                <th>Plato</th>
+                <th>Observación</th>
+                <th>Recibido</th>
+                <th>Procesado</th>
+                <th>Entregado</th>
+            </ng-template>
+            <ng-template pTemplate="body" let-ordencocina let-editing="editing" let-ri="rowIndex">
+                <tr [pEditableRow]="ordencocina">
+                    <td>{{ ordencocina.secuencialorden }}</td>
+                    <td>{{ ordencocina.cantidad }}</td>
+                    <td>{{ ordencocina.producto }}</td>
+                    <td>
+                        <p-cellEditor>
+                          <ng-template pTemplate="input">
+                            <input pInputText type="text" [(ngModel)]="ordencocina.observacion">
+                          </ng-template>
+                          <ng-template pTemplate="output">
+                            {{ordencocina.observacion}}
+                          </ng-template>
+                        </p-cellEditor>
+                      </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-checkbox [(ngModel)]="ordencocina.recibido" [binary]="true"
+                                    inputId="binary"></p-checkbox>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                <p-checkbox [(ngModel)]="ordencocina.recibido" [binary]="true" inputId="binary"
+                                    [disabled]="true"></p-checkbox>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-checkbox [(ngModel)]="ordencocina.procesado" [binary]="true"
+                                    inputId="binary"></p-checkbox>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                <p-checkbox [(ngModel)]="ordencocina.procesado" [binary]="true" inputId="binary"
+                                    [disabled]="true"></p-checkbox>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-checkbox [(ngModel)]="ordencocina.entregado" [binary]="true"
+                                    inputId="binary"></p-checkbox>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                <p-checkbox [(ngModel)]="ordencocina.entregado" [binary]="true" inputId="binary"
+                                    [disabled]="true"></p-checkbox>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <div class="flex align-items-center justify-content-center gap-2">
+                            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                                (click)="onRowEditInitOC(ordencocina)" class="p-button-rounded"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                                (click)="onRowEditSaveOC(ordencocina)"
+                                class="p-button-rounded p-button-success mr-2"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                                (click)="onRowEditCancelOC(ordencocina, ri)"
+                                class="p-button-rounded p-button-danger"></button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </ng-template>
+    <ng-template pTemplate>
+        <p-table #dt1 [value]="lproduccioncocina" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}"
+            [rowHover]="true" [scrollable]="true">
+            <ng-template pTemplate="header">
+                <th>Producto</th>
+                <th>Observación</th>
+                <th>Solicitado</th>
+                <th>Procesado</th>
+                <th>Entregado</th>
+            </ng-template>
+            <ng-template pTemplate="body" let-produccioncocina let-editing="editing" let-ri="rowIndex">
+                <tr [pEditableRow]="produccioncocina">
+                    <td>{{ produccioncocina.producto }}</td>
+                    <td>
+                        <p-cellEditor>
+                          <ng-template pTemplate="input">
+                            <input pInputText type="text" [(ngModel)]="produccioncocina.observacion">
+                          </ng-template>
+                          <ng-template pTemplate="output">
+                            {{produccioncocina.observacion}}
+                          </ng-template>
+                        </p-cellEditor>
+                      </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-checkbox [(ngModel)]="produccioncocina.solicitado" [binary]="true"
+                                    inputId="binary"></p-checkbox>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                <p-checkbox [(ngModel)]="produccioncocina.solicitado" [binary]="true" inputId="binary"
+                                    [disabled]="true"></p-checkbox>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-checkbox [(ngModel)]="produccioncocina.procesado" [binary]="true"
+                                    inputId="binary"></p-checkbox>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                <p-checkbox [(ngModel)]="produccioncocina.procesado" [binary]="true" inputId="binary"
+                                    [disabled]="true"></p-checkbox>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-checkbox [(ngModel)]="produccioncocina.entregado" [binary]="true"
+                                    inputId="binary"></p-checkbox>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                <p-checkbox [(ngModel)]="produccioncocina.entregado" [binary]="true" inputId="binary"
+                                    [disabled]="true"></p-checkbox>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <div class="flex align-items-center justify-content-center gap-2">
+                            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                                (click)="onRowEditInitPC(produccioncocina)" class="p-button-rounded"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                                (click)="onRowEditSavePC(produccioncocina)"
+                                class="p-button-rounded p-button-success mr-2"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                                (click)="onRowEditCancelPC(produccioncocina, ri)"
+                                class="p-button-rounded p-button-danger"></button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </ng-template>
+</p-splitter>

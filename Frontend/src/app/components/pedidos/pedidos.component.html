@@ -1,0 +1,225 @@
+<div class="card" style="background-color: white;">
+    <p-tabView (onChange)="onChangeTab($event)" [(activeIndex)]="activeIndex" styleClass="tabview-custom">
+        <p-tabPanel header="Selección de platos">
+            <div style="background-color: white;align-items: center;">
+                <span>
+                    <!-- <p-button (onClick)="fillGrupoProducto();" *ngIf="this.mostrarCargar">Cargar productos!
+                    </p-button> -->
+                    <H5>ORDEN NUMERO: {{ lsecuencia.secuencia }}</H5>
+                </span>
+            </div>
+            <div class="row" style="background-color: white;">
+                <H6>CHOCLO</H6>
+
+                <div class="col-sm d-grid" *ngFor="let producto of lproductoschoclo">
+                    <p-button styleClass="btn btn-sm btn-choclo" (onClick)="onClickProducto(producto, '+')">
+                        {{producto.nombre}} <br />
+                        ${{producto.valor}} <span
+                            [ngClass]="producto.badge == 0 ? 'badge text-bg-secondary' : 'badge rounded-pill text-bg-success'">{{producto.badge}}</span>
+
+                    </p-button>
+                    <p-button icon="pi pi-times" styleClass="p-button-danger"
+                        (onClick)="onClickProducto(producto,'-')">x</p-button>
+                </div>
+            </div>
+            <div class="row" style="background-color: white;">
+
+                <h6>CHOCHO</h6>
+                <div class="col-sm d-grid" *ngFor="let producto of lproductoschocho">
+                    <p-button styleClass="btn btn-sm btn-chocho" (onClick)="onClickProducto(producto,'+')">
+                        {{producto.nombre}} <br />
+                        ${{producto.valor}} <span
+                            [ngClass]="producto.badge == 0 ? 'badge text-bg-secondary' : 'badge rounded-pill text-bg-success'">{{producto.badge}}</span>
+                    </p-button>
+                    <p-button icon="pi pi-times" styleClass="p-button-danger"
+                        (onClick)="onClickProducto(producto,'-')">x</p-button>
+                </div>
+            </div>
+            <div class="divFlotanteGrabarContinuar" style="background-color: white;">
+                <div class="item">
+                    <p-button (onClick)="continueToResumen()">Click para continuar
+                    </p-button>
+                </div>
+            </div>
+            <div class="row" style="background-color: white;">
+
+                <h6>PORCIONES</h6>
+
+
+                <div class="col-sm d-grid" *ngFor="let producto of lproductosporciones">
+                    <p-button styleClass="btn btn-sm btn-porciones" (onClick)="onClickProducto(producto,'+')">
+                        {{producto.nombre}} <br />
+                        ${{producto.valor}} <span
+                            [ngClass]="producto.badge == 0 ? 'badge text-bg-secondary' : 'badge rounded-pill text-bg-success'">{{producto.badge}}</span>
+                    </p-button>
+                    <p-button icon="pi pi-times" styleClass="p-button-danger"
+                        (onClick)="onClickProducto(producto,'-')">x</p-button>
+
+                </div>
+            </div>
+            <div class="row" style="background-color: white;">
+
+                <h6>BEBIDAS</h6>
+                <div class="col-sm d-grid" *ngFor="let producto of lproductosbebidas">
+                    <p-button styleClass="btn btn-sm btn-bebidas" (onClick)="onClickProducto(producto,'+')">
+                        {{producto.nombre}} <br />
+                        ${{producto.valor}} <span
+                            [ngClass]="producto.badge == 0 ? 'badge text-bg-secondary' : 'badge rounded-pill text-bg-success'">{{producto.badge}}</span>
+                    </p-button>
+                    <p-button icon="pi pi-times" styleClass="p-button-danger"
+                        (onClick)="onClickProducto(producto,'-')">x</p-button>
+
+                </div>
+            </div>
+            <div class="row" style="background-color: white;">
+
+                <h6>OTROS</h6>
+                <div class="col-sm d-grid" *ngFor="let producto of lproductosotros">
+                    <p-button styleClass="btn btn-sm btn-otros" (onClick)="onClickProducto(producto,'+')">
+                        {{producto.nombre}} <br />
+                        ${{producto.valor}} <span
+                            [ngClass]="producto.badge == 0 ? 'badge text-bg-secondary' : 'badge rounded-pill text-bg-success'">{{producto.badge}}</span>
+                    </p-button>
+                    <p-button icon="pi pi-times" styleClass="p-button-danger"
+                        (onClick)="onClickProducto(producto,'-')">x</p-button>
+                </div>
+            </div>
+            <!-- <div class="row" style="background-color: white;">
+                <div class="item">
+                    <p-button (onClick)="activeIndex = 1">Click para continuar
+                    </p-button>
+                </div>
+            </div> -->
+
+        </p-tabPanel>
+        <p-tabPanel header="Resumen de orden">
+            <h1>ORDEN NUMERO: {{ lsecuencia.secuencia }}</h1>
+
+            <p-table #dt [value]="pedido.FacDetalleOrdens" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
+                [rowHover]="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Cantidad</th>
+                        <th>Detalle plato</th>
+                        <th>Precio Unitario</th>
+                        <th>Precio Total</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-producto>
+                    <tr>
+                        <td>{{ producto.Cantidad }}</td>
+                        <td>{{ producto.Plato }}</td>
+                        <td>{{ producto.PrecioUnitario | currency:'USD':'symbol'}}</td>
+                        <td>{{ producto.PrecioTotal | currency:'USD':'symbol'}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Total a cancelar : <span class="tab"></span></td>
+                        <td style="color: red; font-size: xx-large;">{{ pedido.TotalOrden | currency:'USD':'symbol' }}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <div class="form-group row">
+                <label for="formasdepago" class="col-sm-2 col-form-label">Forma de pago</label>
+                <div class="col-sm-1">
+
+                    <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" value="EF"
+                        autocomplete="off" [(ngModel)]="selectedFP" checked>
+                    <label class="btn btn-outline-success" for="success-outlined">Efectivo</label>
+
+                    <input type="radio" class="btn-check" name="options-outlined" id="success-outlined1" value="TR"
+                        autocomplete="off" [(ngModel)]="selectedFP">
+                    <label class="btn btn-outline-success" for="success-outlined1">Transferencia</label>
+                </div>
+            </div>
+
+            <div class="form-group row" style="font-size: medium; ">
+                <label for="pago" class="col-sm-2 col-form-label"
+                    style="font-size:larger; font-weight: bolder;">Efectivo recibido:</label>
+                <div class="col-sm-2">
+                    <input #efectivorecibido matInput onfocus="this.select()" type="text" id="pago" class="form-control"
+                        style="color: navy;font-size:larger; " placeholder="Pago" [(ngModel)]="pago"
+                        (ngModelChange)="calcularCambio($event)">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cambio" class="col-sm-2 col-form-label">Vuelto a entregar:</label>
+                <div class="col-sm-2 text-cambio blink_me">{{cambio | currency:'USD':'symbol'}}
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="voucher" class="col-sm-2 col-form-label">Número de voucher/transferencia:</label>
+                <div class="col-sm-2">
+                    <input type="text" id="voucher" class="form-control" [(ngModel)]="pedido.documentopago"
+                        aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <p>
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Datos Adicionales
+                </button>
+                
+            </p>
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                    <div class="form-group row">
+                        <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
+                        <div class="col-sm-6">
+                            <input type="text" id="nombre" class="form-control" [(ngModel)]="pedido.cliente"
+                                aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="ruc" class="col-sm-2 col-form-label">Ruc:</label>
+                        <div class="col-sm-6">
+                            <input type="text" id="nombre" class="form-control" [(ngModel)]="pedido.ruc"
+                                aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="telefono" class="col-sm-2 col-form-label">Teléfono:</label>
+                        <div class="col-sm-6">
+                            <input type="text" id="telefono" class="form-control" [(ngModel)]="pedido.telefono"
+                                aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="email" class="col-sm-2 col-form-label">Email:</label>
+                        <div class="col-sm-6">
+                            <input type="text" id="email" class="form-control" [(ngModel)]="pedido.email"
+                                aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="direccion" class="col-sm-2 col-form-label">Dirección:</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="direccion" class="form-control" [(ngModel)]="pedido.direccion"
+                                aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="divFlotanteRegresar">
+                <div class="">
+                <p-button label="Regresar" (onClick)="activeIndex = 0"></p-button>
+            </div>
+            </div>
+            <div class="divFlotanteGrabarContinuar">
+                <div class="">
+                    <p-button label="Grabar" [loading]="loading" (onClick)="grabarOrden()"></p-button>
+                </div>
+            </div>
+
+        </p-tabPanel>
+    </p-tabView>
+
+</div>

@@ -1,0 +1,49 @@
+<div class card>
+    <label for="">Fecha inicio</label>
+    <p-calendar [(ngModel)]="d1" [showIcon]="true" [showButtonBar]="true"></p-calendar>
+    <label for="">Fecha fin</label>
+    <p-calendar [(ngModel)]="d2" [showIcon]="true" [showButtonBar]="true"></p-calendar>
+    <button (click)="Buscar()">Buscar</button>
+</div>
+
+<p-table #dt [value]="lregistros" [exportHeader]="'Compras vs Inventarios'" 
+    dataKey="id"
+    [scrollable]="true" scrollHeight="400px" 
+    [tableStyle]="{'min-width': '60rem'}"
+    [globalFilterFields]="['nombre','familia','ubicacion']"
+    >
+    <ng-template pTemplate="caption">
+        <div class="flex">
+            <span class="p-input-icon-left ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains', dt)" placeholder="Search keyword" />
+            </span>
+        </div>
+        <!-- <div class="flex">
+            <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+        </div> -->
+    </ng-template>
+    <ng-template pTemplate="header" let-registro>
+        <tr>
+            <th pSortableColumn="familia" style="width:15%">Familia <p-sortIcon field="familia"></p-sortIcon></th>
+            <th pSortableColumn="ubicacion" style="width:15%">Ubicación <p-sortIcon field="ubicacion"></p-sortIcon></th>
+            <th pSortableColumn="nombre" style="width:30%">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
+            <th pSortableColumn="unidad" style="width:15%">Unidad<p-sortIcon field="unidad"></p-sortIcon></th>
+            <th pSortableColumn="sumatoriocompras" style="width:10%">Sum.Compras<p-sortIcon field="sumatoriocompras"></p-sortIcon></th>
+            <th pSortableColumn="sumatorioinventario" style="width:10%">Sum.Inventario<p-sortIcon field="sumatorioinventario"></p-sortIcon></th>
+            <th pSortableColumn="diferencia" style="width:10%">Diferencia<p-sortIcon field="diferencia"></p-sortIcon></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-registro>
+        <tr [pSelectableRow]="registro">
+            <td>{{ registro.familia }}</td>
+            <td>{{ registro.ubicacion }}</td>
+            <td>{{ registro.nombre}}</td>
+            <td>{{ registro.unidad }}</td>
+            <td>{{ registro.sumatoriocompras }}</td>
+            <td>{{ registro.sumatorioinventario }}</td>
+            <td>{{ registro.diferencia }}</td>
+        </tr>
+    </ng-template>
+</p-table>

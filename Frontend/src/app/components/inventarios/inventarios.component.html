@@ -1,0 +1,65 @@
+<p-toast (onClose)="navigateTo()"></p-toast>
+<div class card>
+    <label for="">Fecha :</label>
+    <p-calendar [(ngModel)]="inventario.fecha" [disabled]="true" [showIcon]="true" [showButtonBar]="true"></p-calendar>
+    <label for="observacion">Observación :</label>
+    <input type="text" pInputText id="observacion" [(ngModel)]="inventario.observacion" onfocus="this.select()" />
+</div>
+
+<p-table #dt [value]="litems" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}"
+    [globalFilterFields]="['familia','nombre','ubicacion']" [(selection)]="selectedItems"
+    [rowHover]="true" styleClass="p-datatable-sm">
+    <ng-template pTemplate="caption">
+        <div class="flex">
+            <span class="p-input-icon-left ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains', dt)" placeholder="Search keyword" />
+            </span>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header" class=".bg-productos-row">
+        <tr>
+            <!-- <th style="width: 3rem">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th> -->
+            <th pSortableColumn="familia" style="width:15%">Familia <p-sortIcon field="familia"></p-sortIcon></th>
+            <th pSortableColumn="ubicacion" style="width:15%">Ubicación <p-sortIcon field="ubicacion"></p-sortIcon></th>
+            <th pSortableColumn="nombre" style="width:20%">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
+            <th pSortableColumn="unidad" style="width:15%">Unidad<p-sortIcon field="unidad"></p-sortIcon></th>
+            <th pSortableColumn="cantidad" style="width:10%">Existencia<p-sortIcon field="existencia"></p-sortIcon></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item let-editing="editing" let-ri="rowIndex">
+        <tr>
+            <td>{{item.familia}}
+            </td>
+            <td>{{item.ubicacion}}
+            </td>
+            <td>{{item.nombre}}
+            </td>
+            <td>{{item.unidad}}
+            </td>
+            <td [pEditableColumn]="item.existencia" pEditableColumnField="existencia">
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input 
+                            pInputText 
+                            type="text" 
+                            [(ngModel)]="item.existencia" appTwoDigitDecimaNumber onfocus="this.select()"
+                            />
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{ item.existencia }}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<div class="divFlotanteGrabarContinuar">
+    <div class="">
+        <p-button type="submit" label="Grabar" (onClick)="grabarInventario()"></p-button>
+    </div>
+</div>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

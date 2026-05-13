@@ -1,0 +1,31 @@
+<div class="divLogin">
+  <form>
+
+    <div class="col-md-12 textoLogin">
+      <h1 class="h3 mb-3 fw-normal">Bienvenido a DonCho</h1>
+      <h1 class="h5 mb-3 fw-normal">Por favor ingresa tu usuario y password</h1>
+    </div>
+
+    <div class="col-md-12">
+      <div class="form-floating">
+        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" #email>
+        <label for="floatingInput">Email</label>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-floating">
+        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" #password>
+        <label for="floatingPassword">Password</label>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <button class="btn btn-lg btn-primary" style="width: 350px;" type="submit"
+        (click)="logIn(email.value, password.value)">Ingresar</button>
+    </div>
+    <div class="col-md-12 textoLogin">
+      <p class="mt-5 mb-3 text-muted">Sabemos que mueres de ganas!</p>
+    </div>
+
+  </form>
+</div>

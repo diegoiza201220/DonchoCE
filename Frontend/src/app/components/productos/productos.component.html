@@ -1,0 +1,137 @@
+<p-toast></p-toast>
+<p-toolbar styleClass="mb-4 bg-toolbar">
+  <ng-template pTemplate="left">
+    <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+    <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedProducts()"
+      [disabled]="!selectedProductos || !selectedProductos.length"></button>
+  </ng-template>
+
+  <ng-template pTemplate="right">
+    <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
+  </ng-template>
+</p-toolbar>
+
+
+<p-table #dt [value]="lproductos" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}"
+  [globalFilterFields]="['producto.grupo','producto.nombre']" [(selection)]="selectedProductos" [rowHover]="true">
+  <ng-template pTemplate="header" class=".bg-productos-row">
+    <tr >
+      <th style="width: 3rem" >
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th pSortableColumn="grupo" style="width:15%">Grupo <p-sortIcon field="grupo"></p-sortIcon></th>
+      <th pSortableColumn="nombre" style="width:40%">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
+      <th pSortableColumn="valor" style="width:15%">Precio <p-sortIcon field="valor"></p-sortIcon></th>
+      <th pSortableColumn="valor" style="width:10%">Orden aparición<p-sortIcon field="ordenAparicion"></p-sortIcon></th>
+      <th pSortableColumn="valor" style="width:10%">Pedido a cocina <p-sortIcon field="pedidoACocina"></p-sortIcon></th>
+      <th pSortableColumn="activo" style="width:10%">Activo <p-sortIcon field="activo"></p-sortIcon></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-producto let-editing="editing" let-ri="rowIndex">
+    <tr [pEditableRow]="producto" >
+      <td>
+        <p-tableCheckbox [value]="producto"></p-tableCheckbox>
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+              <p-dropdown [options]="lgrupo" appendTo="body" [(ngModel)]="producto.grupo" [style]="{'width':'100%'}"></p-dropdown>
+          </ng-template>
+          <ng-template pTemplate="output">
+              {{producto.grupo}}
+          </ng-template>
+      </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input pInputText type="text" [(ngModel)]="producto.nombre" required>
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{producto.nombre}}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input pInputText type="text" [(ngModel)]="producto.valor">
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{producto.valor | currency: 'USD'}}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input pInputText type="text" [(ngModel)]="producto.ordenAparicion" required>
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{producto.ordenAparicion}}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <p-checkbox [(ngModel)]="producto.pedidoACocina" [binary]="true" inputId="binary"></p-checkbox>
+          </ng-template>
+          <ng-template pTemplate="output">
+            <p-checkbox [(ngModel)]="producto.pedidoACocina" [binary]="true" inputId="binary" [disabled]="true"></p-checkbox>
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <p-checkbox [(ngModel)]="producto.activo" [binary]="true" inputId="binary"></p-checkbox>
+          </ng-template>
+          <ng-template pTemplate="output">
+            <p-checkbox [(ngModel)]="producto.activo" [binary]="true" inputId="binary" [disabled]="true"></p-checkbox>
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <div class="flex align-items-center justify-content-center gap-2">
+          <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+            (click)="onRowEditInit(producto)" class="p-button-rounded"></button>
+          <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+            (click)="onRowEditSave(producto)" class="p-button-rounded p-button-success mr-2"></button>
+          <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+            (click)="onRowEditCancel(producto, ri)" class="p-button-rounded p-button-danger"></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+
+<p-dialog [(visible)]="productoDialogo" [style]="{width: '450px'}" header="Detalles del producto" [modal]="true"
+  styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="p-field">
+      <label for="grupo">Grupo</label>
+      <p-dropdown [options]="lgrupo" [(ngModel)]="producto.grupo" appendTo="body"></p-dropdown>
+      <small class="p-error" *ngIf="submitted && !producto.grupo">Grupo es requerido.</small>
+    </div>
+    <div class="p-field">
+      <label for="nombre">Nombre</label>
+      <input type="text" pInputText id="nombre" [(ngModel)]="producto.nombre" required autofocus />
+      <small class="p-error" *ngIf="submitted && !producto.nombre">Nombre es requerido.</small>
+    </div>
+    <div class="p-field">
+      <label for="valor">Valor</label>
+      <p-inputNumber id="valor" [(ngModel)]="producto.valor" mode="currency" currency="USD"
+        locale="en-US"></p-inputNumber>
+    </div>
+
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Grabar" icon="pi pi-check" class="p-button-text" (click)="saveProduct()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

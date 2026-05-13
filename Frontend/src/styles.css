@@ -1,0 +1,158 @@
+/* You can add global styles to this file, and also import other style files */
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+
+body {
+    background-color: #f5de59;
+}
+
+img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: 250px;
+    margin-top: -175px;
+    /* Half the height */
+    margin-left: -250px;
+    /* Half the width */
+}
+
+.bg-nav-bar {
+    background-color: #f5de59;
+    padding: 0px 0px 0px 0px;
+}
+
+.bg-toolbar {
+    background-color: #f5de59;
+    padding: 0px 0px 0px 0px;
+    border: 1px;
+    border-color: #362216;
+}
+
+.bg-pedidos-row {
+    background-color: #f5de59;
+    padding: 0px 0px 0px 0px;
+}
+
+.bg-productos-row {
+    background-color: #ffe393;
+}
+
+.p-button.p-button-icon-only {
+    width: 2rem;
+    padding: 1px;
+    HEIGHT: 1.5REM;
+}
+
+button {
+    text-transform: none;
+    height: 80px;
+    width: 140px;
+    vertical-align: middle;
+    text-align: center;
+    display: unset;
+}
+
+.btn-choclo {
+    background-color: rgb(199, 251, 137) !important;
+    color: black !important;
+    font-size: larger;
+    line-height: 1.2rem;
+}
+
+.btn-chocho {
+    background-color: rgb(255, 216, 143) !important;
+    color: black !important;
+    font-size: larger;
+    line-height: 1.2rem;
+}
+
+.btn-porciones {
+    background-color: rgb(255, 255, 204) !important;
+    color: black !important;
+    font-size: larger;
+    line-height: 1.2rem;
+}
+
+.btn-bebidas {
+    background-color: rgb(189, 215, 238) !important;
+    color: black !important;
+    font-size: larger;
+    line-height: 1.2rem;
+}
+
+.btn-otros {
+    background-color: rgb(216, 213, 211) !important;
+    color: black !important;
+    font-size: larger;
+    line-height: 1.2rem;
+}
+
+.text-cambio {
+    font-size: large;
+    color: navy;
+}
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    border-color: white;
+    background: white;
+    color: navy;
+}
+
+/* hover */
+.p-tabview .p-tabview-nav li:not(.p-highlight):not(.p-disabled):hover .p-tabview-nav-link {
+    background: orange;
+    border-color: brown;
+    color: navy;
+}
+
+/* selected */
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+.blink_me {
+    animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+    25% {
+        opacity: 0;
+    }
+}
+
+.tab {
+    display: inline-block;
+    margin-left: 4em;
+}
+
+.divFlotanteGrabarContinuar{
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+}
+
+.divFlotanteRegresar{
+    position: fixed;
+    right: 50px;
+    bottom: 140px;
+}
+
+.divLogin{
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.textoLogin{
+    text-align: center;
+}
