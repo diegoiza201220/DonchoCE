@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="ComprobantesElectronicos/ComprobantesElectronicos.csproj" Id="d98f510b-0c71-41e4-9bb0-b4a846462e9b" />
   <Project Path="WebApiDonCho/WebApiDonCho.csproj" />
 </Solution>
