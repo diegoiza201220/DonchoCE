@@ -1,0 +1,328 @@
+[4/5/2026 21:01:33] SELECT u.id, u.nombre, u.password
+FROM usuario AS u
+WHERE u.nombre = @nombre AND u.password = @password
+LIMIT 1
+[4/5/2026 21:03:17] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[4/5/2026 21:05:23] SELECT u.id, u.nombre, u.password
+FROM usuario AS u
+WHERE u.nombre = @nombre AND u.password = @password
+LIMIT 1
+[4/5/2026 21:11:59] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[4/5/2026 22:44:20] SELECT u.id, u.nombre, u.password
+FROM usuario AS u
+WHERE u.nombre = @nombre AND u.password = @password
+LIMIT 1
+[4/5/2026 22:44:35] SELECT u.id, u.nombre, u.password
+FROM usuario AS u
+WHERE u.nombre = @nombre AND u.password = @password
+LIMIT 1
+[4/5/2026 22:45:04] SELECT u.id, u.nombre, u.password
+FROM usuario AS u
+WHERE u.nombre = @nombre AND u.password = @password
+LIMIT 1
+[5/5/2026 19:08:21] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 19:10:46] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 19:17:22] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 19:17:31] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 19:17:35] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 19:23:23] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 19:23:28] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 19:24:00] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 19:24:12] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 19:24:21] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 19:29:42] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 19:38:06] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 19:39:34] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 19:46:51] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 19:48:22] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 20:08:22] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 20:08:33] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 20:10:50] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[5/5/2026 20:11:52] SELECT p.id, p.activo, p.codigo_iva, p.grupo, p.nombre, p.orden_aparicion, p.pedido_a_cocina, p.valor
+FROM producto AS p
+[7/5/2026 22:38:47] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 22:38:48] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 22:38:54] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 22:39:02] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 22:39:04] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 22:39:08] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 22:40:39] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 22:43:12] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 22:43:16] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[7/5/2026 22:44:11] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 22:44:13] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 22:52:08] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 22:52:08] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 22:52:28] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 22:53:35] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 22:54:09] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[7/5/2026 23:09:07] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[7/5/2026 23:10:03] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 23:15:05] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 23:21:34] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 23:21:34] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 23:21:39] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[7/5/2026 23:30:30] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 23:32:08] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 23:34:30] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 23:34:31] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[7/5/2026 23:34:33] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[8/5/2026 22:01:20] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[8/5/2026 22:01:20] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[8/5/2026 22:01:28] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[8/5/2026 22:08:02] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[8/5/2026 22:08:08] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[8/5/2026 22:08:50] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[8/5/2026 22:09:05] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[8/5/2026 22:10:49] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[8/5/2026 22:10:55] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[8/5/2026 22:11:36] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[8/5/2026 22:32:18] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 19:00:33] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 19:12:54] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 19:39:27] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[9/5/2026 19:41:44] SELECT g.id, g.nombre, g.password
+FROM gen_usuario AS g
+WHERE g.nombre = @nombre AND g.password = @password
+LIMIT 1
+[9/5/2026 19:41:47] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 19:41:55] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 19:43:37] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 19:45:11] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 19:45:25] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 20:10:17] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 20:31:19] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 20:31:19] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 20:41:47] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 20:47:31] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 20:47:39] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 20:48:39] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 20:48:45] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 20:54:23] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 20:56:18] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 20:56:25] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 21:14:11] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 21:14:11] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 21:15:38] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 21:16:07] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 21:16:17] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 21:17:18] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 21:23:10] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 21:23:23] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 21:23:39] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 21:23:50] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 21:50:52] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 21:51:27] SELECT f.id, f.fecha, f.valor
+FROM fac_secuencia_dia AS f
+[9/5/2026 21:59:27] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 21:59:31] SELECT f.id, f.fecha, f.valor
+FROM fac_secuencia_dia AS f
+[9/5/2026 22:01:01] SELECT f.id, f.fecha, f.valor
+FROM fac_secuencia_dia AS f
+[9/5/2026 22:10:38] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 22:10:41] SELECT f.id, f.fecha, f.valor
+FROM fac_secuencia_dia AS f
+[9/5/2026 22:12:37] SELECT f.id, f.fecha, f.valor
+FROM fac_secuencia_dia AS f
+[9/5/2026 22:16:06] SELECT f.id, f.fecha, f.valor
+FROM fac_secuencia_dia AS f
+[9/5/2026 22:18:34] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[9/5/2026 22:18:39] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 22:57:43] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:02:19] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:05:40] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:06:56] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:08:01] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:12:56] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:18:15] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:18:46] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:19:28] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:19:35] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:20:26] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:20:33] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:21:52] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:22:14] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:37:07] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[9/5/2026 23:37:08] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[11/5/2026 15:59:04] SELECT f.id, f.activo, f.codigo_iva, f.grupo, f.nombre, f.orden_aparicion, f.pedido_a_cocina, f.valor
+FROM fac_producto AS f
+[11/5/2026 15:59:04] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[11/5/2026 15:59:22] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[11/5/2026 16:02:57] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f
+[11/5/2026 16:03:23] SELECT f.id, f.fecha, f.secuencia
+FROM fac_secuencia_dia AS f

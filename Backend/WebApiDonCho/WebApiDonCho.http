@@ -1,0 +1,43 @@
+@WebApi_HostAddress = http://localhost:5109
+
+
+GET {{WebApi_HostAddress}}/api/cliente/5
+Accept: application/json
+
+###
+POST {{WebApi_HostAddress}}/api/cliente
+Content-Type: application/json
+{
+  "nombre": "IRENE",
+  "apellido": "PAZMIÑO",
+  "cedulaRuc": "1717171717",
+  "telefonoCelular": "095",
+  "email": "AIRIN",
+  "fechaCumpleanios": "2012-05-29",
+  "direccion": null,
+  "fechaRegistro": "2026-05-02",
+  "usuarioRegistro": "DIZA"
+}
+
+
+###
+
+GET {{WebApi_HostAddress}}/api/PRODUCTO/1
+Accept: application/json
+
+###
+
+GET {{WebApi_HostAddress}}/api/ORDEN/1
+Accept: application/json
+
+###
+POST {{WebApi_HostAddress}}/api/login/validatelogin
+Content-Type: application/json
+{
+  "nombre": "doncho",
+  "password": "1"
+}
+###
+
+GET {{WebApi_HostAddress}}/api/login/9
+Accept: application/json
