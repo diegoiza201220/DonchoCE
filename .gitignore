@@ -12,3 +12,4 @@
 /Backend/ComprobantesElectronicos/obj
 /Backend/EFModel/bin/Debug/net10.0
 /Backend/EFModel/obj
+/Frontend/.vscode/launch.json
