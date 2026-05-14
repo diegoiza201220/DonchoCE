@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApiDonCho.Interfaces;
-using WebApiDonCho.Models;
+using EFModel.Interfaces;
+using EFModel.Models;
 
 namespace WebApiDonCho.Controllers;
 

@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="ComprobantesElectronicos/ComprobantesElectronicos.csproj" Id="d98f510b-0c71-41e4-9bb0-b4a846462e9b" />
+  <Project Path="EFModel/EFModel.csproj" Id="8abe0c3d-ab75-4903-bb52-7c0884736d77" />
   <Project Path="WebApiDonCho/WebApiDonCho.csproj" />
 </Solution>

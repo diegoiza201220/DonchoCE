@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using WebApiDonCho.Interfaces;
+using EFModel.Interfaces;
 
 namespace WebApiDonCho.Services
 {

@@ -1,11 +1,12 @@
-using Microsoft.EntityFrameworkCore;
-using WebApiDonCho.Interfaces;
-using WebApiDonCho.Repositories;
-using WebApiDonCho.Services;
-using WebApiDonCho.Context;
+using ComprobantesElectronicos.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using EFModel.Context;
+using EFModel.Interfaces;
+using EFModel.Repositories;
+using WebApiDonCho.Services;
 
 using ILoggerFactory factory = LoggerFactory.Create(builder =>
 {
@@ -30,6 +31,7 @@ builder.Services.AddDbContext<DonchoContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<OrdenService>();
+builder.Services.AddScoped<FirmaElectronicaService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

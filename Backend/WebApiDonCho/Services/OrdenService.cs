@@ -1,16 +1,21 @@
-﻿using WebApiDonCho.DTO;
-using WebApiDonCho.DTO.Reportes;
-using WebApiDonCho.DTO.Request;
-using WebApiDonCho.Interfaces;
-using WebApiDonCho.Models;
+﻿using ComprobantesElectronicos.Services;
+using EFModel.DTO;
+using EFModel.DTO.Reportes;
+using EFModel.DTO.Request;
+using EFModel.Interfaces;
+using EFModel.Models;
 
 namespace WebApiDonCho.Services
 {
     public class OrdenService
     {
         private readonly IUnitOfWork _uow;
-        public OrdenService(IUnitOfWork uow) => _uow = uow;
-
+        private readonly FirmaElectronicaService _firmaElectronicaService;
+        public OrdenService(IUnitOfWork uow, FirmaElectronicaService firmaElectronica)
+        {
+            _uow = uow;
+            _firmaElectronicaService = firmaElectronica;
+        }
         public async Task<FacOrden> FacturarAsync(FacOrdenDTO orden)
         {
             var secuencia = await _uow.FacSecuenciaDiaR.GetSecuenciaAsync();
@@ -49,6 +54,10 @@ namespace WebApiDonCho.Services
             _uow.FacSecuenciaDiaR.Update(secuencia);
             await _uow.FacOrdenR.AddAsync(facOrden);
             await _uow.SaveChangesAsync();
+
+            
+            //var xmlPlano = GenerarXmlFactura(orden!);   // tu método que arma el XML
+            var xmlFirmado = _firmaElectronicaService.GenerarXMLFactura();
 
             return facOrden;
         }

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using WebApiDonCho.Interfaces;
-using WebApiDonCho.Models;
+using EFModel.Interfaces;
+using EFModel.Models;
 using WebApiDonCho.Services;
 
 namespace WebApiDonCho.Controllers;
