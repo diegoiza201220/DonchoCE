@@ -176,7 +176,12 @@ public partial class DonchoContext : DbContext
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
             entity.Property(e => e.Clienteid).HasColumnName("clienteid");
-            entity.Property(e => e.CodigoIva).HasColumnName("codigo_iva");
+            entity.Property(e => e.ImpuestoCodigo).HasColumnName("impuesto_codigo");
+            entity.Property(e => e.ImpuestoCodigoPorcentaje).HasColumnName("impuesto_codigo_porcentaje");
+            entity.Property(e => e.ImpuestoValor).HasColumnName("impuesto_valor");
+            entity.Property(e => e.ClaveNumeroAutorizacion).HasColumnName("clave_numero_autorizacion");
+            entity.Property(e => e.Establecimiento).HasColumnName("establecimiento");
+            entity.Property(e => e.PuntoEmision).HasColumnName("punto_emision");
             entity.Property(e => e.EsFactura).HasColumnName("es_factura");
             entity.Property(e => e.Fecha)
                 .HasDefaultValueSql("now()")
@@ -190,10 +195,11 @@ public partial class DonchoContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("tipo_pago");
             entity.Property(e => e.TotalOrden).HasColumnName("total_orden");
+            entity.Property(e => e.TotalSinImpuestos).HasColumnName("total_sin_impuestos");
             entity.Property(e => e.UsuarioRegistro)
                 .HasColumnType("character varying")
                 .HasColumnName("usuario_registro");
-            entity.Property(e => e.ValorIva).HasColumnName("valor_iva");
+            entity.Property(e => e.ImpuestoBaseImponible).HasColumnName("impuesto_base_imponible");
             entity.Property(e => e.DocumentoPago)
                 .HasColumnType("character varying")
                 .HasColumnName("documento_pago");

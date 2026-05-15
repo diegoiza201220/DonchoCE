@@ -164,21 +164,21 @@ public partial class facturaInfoTributaria
 
     private string nombreComercialField;
 
-    private byte rucField;
+    private string rucField;
 
-    private byte claveAccesoField;
+    private string claveAccesoField;
 
-    private byte codDocField;
+    private string codDocField;
 
-    private byte estabField;
+    private string estabField;
 
-    private byte ptoEmiField;
+    private string ptoEmiField;
 
-    private byte secuencialField;
+    private string secuencialField;
 
     private string dirMatrizField;
 
-    private byte agenteRetencionField;
+    private string agenteRetencionField;
 
     private string contribuyenteRimpeField;
 
@@ -235,7 +235,7 @@ public partial class facturaInfoTributaria
     }
 
     /// <remarks/>
-    public byte ruc
+    public string ruc
     {
         get
         {
@@ -248,7 +248,7 @@ public partial class facturaInfoTributaria
     }
 
     /// <remarks/>
-    public byte claveAcceso
+    public string claveAcceso
     {
         get
         {
@@ -261,7 +261,7 @@ public partial class facturaInfoTributaria
     }
 
     /// <remarks/>
-    public byte codDoc
+    public string codDoc
     {
         get
         {
@@ -274,7 +274,7 @@ public partial class facturaInfoTributaria
     }
 
     /// <remarks/>
-    public byte estab
+    public string estab
     {
         get
         {
@@ -287,7 +287,7 @@ public partial class facturaInfoTributaria
     }
 
     /// <remarks/>
-    public byte ptoEmi
+    public string ptoEmi
     {
         get
         {
@@ -300,7 +300,7 @@ public partial class facturaInfoTributaria
     }
 
     /// <remarks/>
-    public byte secuencial
+    public string secuencial
     {
         get
         {
@@ -326,7 +326,7 @@ public partial class facturaInfoTributaria
     }
 
     /// <remarks/>
-    public byte agenteRetencion
+    public string agenteRetencion
     {
         get
         {
@@ -373,17 +373,17 @@ public partial class facturaInfoFactura
 
     private string lugarIncoTermField;
 
-    private byte paisOrigenField;
+    private string paisOrigenField;
 
     private string puertoEmbarqueField;
 
     private string puertoDestinoField;
 
-    private byte paisDestinoField;
+    private string paisDestinoField;
 
-    private byte paisAdquisicionField;
+    private string paisAdquisicionField;
 
-    private byte tipoIdentificacionCompradorField;
+    private string tipoIdentificacionCompradorField;
 
     private string guiaRemisionField;
 
@@ -401,7 +401,7 @@ public partial class facturaInfoFactura
 
     private decimal totalDescuentoField;
 
-    private byte codDocReembolsoField;
+    private string codDocReembolsoField;
 
     private decimal totalComprobantesReembolsoField;
 
@@ -527,7 +527,7 @@ public partial class facturaInfoFactura
     }
 
     /// <remarks/>
-    public byte paisOrigen
+    public string paisOrigen
     {
         get
         {
@@ -566,7 +566,7 @@ public partial class facturaInfoFactura
     }
 
     /// <remarks/>
-    public byte paisDestino
+    public string paisDestino
     {
         get
         {
@@ -579,7 +579,7 @@ public partial class facturaInfoFactura
     }
 
     /// <remarks/>
-    public byte paisAdquisicion
+    public string paisAdquisicion
     {
         get
         {
@@ -592,7 +592,7 @@ public partial class facturaInfoFactura
     }
 
     /// <remarks/>
-    public byte tipoIdentificacionComprador
+    public string tipoIdentificacionComprador
     {
         get
         {
@@ -709,7 +709,7 @@ public partial class facturaInfoFactura
     }
 
     /// <remarks/>
-    public byte codDocReembolso
+    public string codDocReembolso
     {
         get
         {
@@ -940,9 +940,9 @@ public partial class facturaInfoFactura
 public partial class facturaInfoFacturaTotalImpuesto
 {
 
-    private byte codigoField;
+    private int codigoField;
 
-    private byte codigoPorcentajeField;
+    private int codigoPorcentajeField;
 
     private decimal descuentoAdicionalField;
 
@@ -955,7 +955,7 @@ public partial class facturaInfoFacturaTotalImpuesto
     private decimal valorDevolucionIvaField;
 
     /// <remarks/>
-    public byte codigo
+    public int codigo
     {
         get
         {
@@ -968,7 +968,7 @@ public partial class facturaInfoFacturaTotalImpuesto
     }
 
     /// <remarks/>
-    public byte codigoPorcentaje
+    public int codigoPorcentaje
     {
         get
         {
@@ -1106,7 +1106,7 @@ public partial class facturaInfoFacturaCompensacion
 public partial class facturaInfoFacturaPago
 {
 
-    private byte formaPagoField;
+    private int formaPagoField;
 
     private decimal totalField;
 
@@ -1115,7 +1115,7 @@ public partial class facturaInfoFacturaPago
     private string unidadTiempoField;
 
     /// <remarks/>
-    public byte formaPago
+    public int formaPago
     {
         get
         {

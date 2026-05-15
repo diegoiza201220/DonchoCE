@@ -10,17 +10,19 @@ namespace WebApiDonCho.Services
     public class OrdenService
     {
         private readonly IUnitOfWork _uow;
-        private readonly FirmaElectronicaService _firmaElectronicaService;
-        public OrdenService(IUnitOfWork uow, FirmaElectronicaService firmaElectronica)
+        private readonly ComprobanteService _comprobanteService;
+        public OrdenService(IUnitOfWork uow, ComprobanteService comprobanteService)
         {
             _uow = uow;
-            _firmaElectronicaService = firmaElectronica;
+            _comprobanteService = comprobanteService;
         }
         public async Task<FacOrden> FacturarAsync(FacOrdenDTO orden)
         {
             var secuencia = await _uow.FacSecuenciaDiaR.GetSecuenciaAsync();
             if (secuencia is null)
                 throw new InvalidOperationException("No existe registro de secuencia del día.");
+
+            orden.Clienteid = 4; // Temporal, luego se obtiene del cliente registrado en el sistema o se crea uno nuevo
 
             var facOrden = new FacOrden
             {
@@ -30,8 +32,11 @@ namespace WebApiDonCho.Services
                 Fecha = orden.Fecha,
                 TipoPago = orden.TipoPago,
                 TotalOrden = orden.TotalOrden,
-                ValorIva = orden.ValorIva,
-                CodigoIva = orden.CodigoIva ?? 0,
+                ImpuestoCodigo = orden.ImpuestoCodigo,
+                ImpuestoCodigoPorcentaje = orden.ImpuestoCodigoPorcentaje,
+                ImpuestoBaseImponible = orden.ImpuestoBaseImponible,
+                ImpuestoValor = orden.ImpuestoValor,
+                TotalSinImpuestos = orden.TotalSinImpuestos,
                 UsuarioRegistro = orden.UsuarioRegistro,
                 EsFactura = orden.EsFactura,
                 NumeroFactura = orden.NumeroFactura,
@@ -49,16 +54,19 @@ namespace WebApiDonCho.Services
                 }).ToList()
             };
 
+            
             ActualizarSecuencia(secuencia, orden.FechaInteger);
 
             _uow.FacSecuenciaDiaR.Update(secuencia);
             await _uow.FacOrdenR.AddAsync(facOrden);
+            
+            FacCliente facCliente = await _uow.FacClienteR.GetByIdAsync(orden.Clienteid) ?? throw new InvalidOperationException("Cliente no encontrado.");
+            facOrden.Cliente = facCliente;
             await _uow.SaveChangesAsync();
 
             
             //var xmlPlano = GenerarXmlFactura(orden!);   // tu método que arma el XML
-            var xmlFirmado = _firmaElectronicaService.GenerarXMLFactura();
-
+            _ = _comprobanteService.EmitirFacturaAsync(facOrden);
             return facOrden;
         }
 
@@ -87,8 +95,6 @@ namespace WebApiDonCho.Services
                 Fecha = o.Fecha,
                 TipoPago = o.TipoPago,
                 TotalOrden = o.TotalOrden,
-                ValorIva = o.ValorIva,
-                CodigoIva = o.CodigoIva ?? 0,
                 UsuarioRegistro = o.UsuarioRegistro,
                 EsFactura = o.EsFactura,
                 NumeroFactura = o.NumeroFactura,

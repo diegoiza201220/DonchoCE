@@ -1,12 +1,14 @@
-﻿using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Cryptography.Xml;
-using System.Xml;
+﻿using EFModel.Models;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using Microsoft.Extensions.Configuration;
+using Org.BouncyCastle.Asn1.IsisMtt.Ocsp;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.X509;
-using Microsoft.Extensions.Configuration;
-using EFModel.Models;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography.Xml;
+using System.Xml;
 
 namespace ComprobantesElectronicos.Services
 {
@@ -19,19 +21,37 @@ namespace ComprobantesElectronicos.Services
 
         private X509Certificate2 CargarCertificado()
         {
-            var rutaCertificado = _config["FirmaElectronica:RutaCertificado"];
-            var clave = _config["FirmaElectronica:Clave"];
+            try
+            {
+                var rutaCertificado = _config["FirmaElectronica:RutaCertificado"];
+                var clave = _config["FirmaElectronica:Clave"];
+                X509Certificate2 cert = new X509Certificate2(rutaCertificado, clave, X509KeyStorageFlags.MachineKeySet);
 
-            return new X509Certificate2(
-                rutaCertificado!,
-                clave,
-                X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet
-            );
+                //var cert = X509CertificateLoader.LoadCertificateFromFile(rutaCertificado);
+                return cert;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"error-> {ex.Message}");
+                throw;
+            }
+
+            return null;
         }
 
-        public string FirmarXml(string xmlSinFirmar)
+        private string FirmarXml(string xmlSinFirmar)
         {
             var certificado = CargarCertificado();
+            //try
+            //{
+            //    certificado = CargarCertificado();
+            //}
+            //catch(Exception ex)
+            //{
+            //    Console.WriteLine($"error-> {ex.Message}");
+            //}
+
+
             var xmlDoc = new XmlDocument { PreserveWhitespace = true };
             xmlDoc.LoadXml(xmlSinFirmar);
 
@@ -108,28 +128,98 @@ namespace ComprobantesElectronicos.Services
             return xmlDoc.OuterXml;
         }
 
-        public string GenerarXMLFactura(FacOrden orden)
+        public string GenerarXMLFacturaFirmado(FacOrden orden)
         {
             factura factura = new()
             {
+                id = "comprobante",
                 version = "1.0",
-                
+                infoTributaria = new facturaInfoTributaria()
+                {
+                    ambiente = 1, // 1 para pruebas, 2 para producción
+                    tipoEmision = 1, // 1 para emisión normal
+                    razonSocial = "juan cuenca",
+                    nombreComercial = "JUAN CUENCA",
+                    ruc = "0993069000001",
+                    claveAcceso = "123456",
+                    codDoc = "01", // Código para factura
+                    contribuyenteRimpe = "SI",
+                    dirMatriz = "CENTRO HISTÓRICO QUITO",
+                    estab = "001",
+                    ptoEmi = "001",
+                    secuencial = orden.Secuencial.ToString("D9") // Formatear a 9 dígitos
+                },
+                infoFactura = new facturaInfoFactura()
+                {
+                    fechaEmision = orden.Fecha.ToString("dd/mm/aaaa"),
+                    dirEstablecimiento = "CENTRO HISTORICO",
+                    obligadoContabilidad = "NO",
+                    tipoIdentificacionComprador = "05",
+                    razonSocialComprador = $"{orden.Cliente.Apellido} {orden.Cliente.Nombre}",
+                    identificacionComprador = orden.Cliente.CedulaRuc,
+                    direccionComprador = orden.Cliente.Direccion ?? string.Empty,
+                    totalSinImpuestos = orden.TotalSinImpuestos,
+                    totalDescuento = 0,
+                    propina = 0,
+                    importeTotal = orden.TotalOrden,
+                    moneda = "DOLAR",
+                }
             };
-
-            facturaInfoFactura infoFactura = new()
+            factura.infoFactura.totalConImpuestos = new facturaInfoFacturaTotalImpuesto[1];
+            facturaInfoFacturaTotalImpuesto facturaInfoFacturaTotalImpuesto = new()
             {
-                
+                codigo = orden.ImpuestoCodigo,
+                codigoPorcentaje = orden.ImpuestoCodigoPorcentaje,
+                descuentoAdicional = 0,
+                baseImponible = orden.ImpuestoBaseImponible,
+                valor = orden.ImpuestoValor,
+            };
+            factura.infoFactura.totalConImpuestos[0] = facturaInfoFacturaTotalImpuesto;
+            factura.infoFactura.pagos = new facturaInfoFacturaPago[1];
+            facturaInfoFacturaPago facturaInfoFacturaPago = new()
+            {
+                formaPago = 1,
+                total = orden.TotalOrden,
+                plazo = 0,
+                unidadTiempo = "dias"
+            };
+            factura.infoFactura.pagos[0] = facturaInfoFacturaPago;
+            factura.detalles = new facturaDetalle[orden.FacDetalleOrdens.Count];
+
+            List<facturaDetalle> lfdetalle = [];
+            foreach (var item in orden.FacDetalleOrdens)
+            {
+                facturaDetalle facturaDetalle = new()
+                {
+                    codigoPrincipal = item.Productoid.ToString(),
+                    descripcion = item.Producto?.Nombre ?? string.Empty,
+                    cantidad = item.Cantidad,
+                    precioUnitario = item.PrecioUnitario,
+                    descuento = 0,
+                    precioTotalSinImpuesto = item.PrecioTotal,
+                    impuestos = new facturaDetalleImpuesto[1]
+                };
+                facturaDetalleImpuesto facturaDetalleImpuesto = new()
+                {
+                    codigo = 2,
+                    codigoPorcentaje = 4,
+                    tarifa = 15,
+                    baseImponible = item.PrecioTotal,
+                    valor = item.ValorIva
+                };
+                facturaDetalle.impuestos[0] = facturaDetalleImpuesto;
+                lfdetalle.Add(facturaDetalle);
             }
-            
 
+            var xmlFirmado = FirmarXml(factura.ToString());
 
-            factura.infoFactura.fechaEmision = orden.Fecha.ToString("yyyy-MM-dd");
-            factura.infoFactura.tipoIdentificacionComprador
-
-            return "";
+            //SriService sriService = new(_config);
+            return xmlFirmado;
             // Aquí iría la lógica para generar el XML de la factura
             // Esto podría incluir la creación de un XmlDocument, agregar los elementos necesarios,
             // y luego devolver el XML como string para ser firmado.
         }
+
+
     }
 }

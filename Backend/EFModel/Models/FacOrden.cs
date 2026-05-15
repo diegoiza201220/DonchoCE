@@ -18,16 +18,20 @@ public partial class FacOrden
     public string TipoPago { get; set; } = null!;
 
     public decimal TotalOrden { get; set; }
+    public decimal TotalSinImpuestos { get; set; }
 
-    public decimal ValorIva { get; set; }
-
-    public short? CodigoIva { get; set; }
+    public decimal ImpuestoValor { get; set; }
+    public decimal ImpuestoBaseImponible { get; set; }
+    public short ImpuestoCodigo { get; set; }
+    public short ImpuestoCodigoPorcentaje { get; set; }
 
     public string UsuarioRegistro { get; set; } = null!;
-
     public bool EsFactura { get; set; }
 
     public string? NumeroFactura { get; set; }
+    public string ClaveNumeroAutorizacion { get; set; } = string.Empty;
+    public string Establecimiento { get; set; } = string.Empty;
+    public string PuntoEmision { get; set; } = string.Empty;
     public string DocumentoPago { get; set; } = null!;
 
     public virtual FacCliente Cliente { get; set; } = null!;

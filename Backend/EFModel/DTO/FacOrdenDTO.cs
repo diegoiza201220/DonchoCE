@@ -20,10 +20,6 @@ namespace EFModel.DTO
         [Required]
         public decimal TotalOrden { get; set; }
 
-        public decimal ValorIva { get; set; }
-
-        public short? CodigoIva { get; set; }
-
         [Required]
         [StringLength(50)]
         public string UsuarioRegistro { get; set; }
@@ -34,6 +30,14 @@ namespace EFModel.DTO
         public string NumeroFactura { get; set; }
         public string DocumentoPago { get; set; }
 
+        public decimal TotalSinImpuestos { get; set; }
+        public decimal ImpuestoValor { get; set; }
+        public decimal ImpuestoBaseImponible { get; set; }
+        public short ImpuestoCodigo { get; set; }
+        public short ImpuestoCodigoPorcentaje { get; set; }
+        public string ClaveNumeroAutorizacion { get; set; } = string.Empty;
+        public string Establecimiento { get; set; } = string.Empty;
+        public string PuntoEmision { get; set; } = string.Empty;
         [Required]
         public List<FacDetalleOrdenDTO> FacDetalleOrdens { get; set; } = new();
     }

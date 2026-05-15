@@ -32,6 +32,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<OrdenService>();
 builder.Services.AddScoped<FirmaElectronicaService>();
+builder.Services.AddScoped<ComprobanteService>();
+builder.Services.AddScoped<SriService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -81,5 +83,6 @@ app.UseCors("MyPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
 
 app.Run();
