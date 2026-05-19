@@ -67,24 +67,22 @@ public class FacDetalleOrdenRepository : Repository<FacDetalleOrden>, IFacDetall
             .ToListAsync();
 
     public async Task<IEnumerable<RptProductosVendidosPorFechasDTO>> GetByFechasProductosVendidos(int fechaini, int fechafin)
-    { 
+    {
         var detalles = _dbSet.AsNoTracking()
             .Include(p => p.Producto)
             .Where(o => o.Orden.FechaInteger >= fechaini && o.Orden.FechaInteger <= fechafin)
             .Select(g => new { g.Producto.Nombre, g.Cantidad });
 
-        var catgroup = detalles.GroupBy(c => c.Nombre)
+        return detalles.GroupBy(c => c.Nombre)
                 .Select(g => new
                 {
                     g.Key,
                     SUM = g.Sum(s => s.Cantidad)
+                }).OrderByDescending(o => o.SUM).Select(d => new RptProductosVendidosPorFechasDTO
+                {
+                    Plato = d.Key,
+                    Cantidad = d.SUM
                 });
-
-        return catgroup.OrderByDescending(o => o.SUM).Select(d => new RptProductosVendidosPorFechasDTO
-        {
-            Plato = d.Key,
-            Cantidad = d.SUM
-        });
 
     }
 }
@@ -117,7 +115,7 @@ public class GenParametroRepository : Repository<GenParametro>, IGenParametroRep
         => await _dbSet.AsNoTracking().ToListAsync();
 
     public async Task<GenParametro?> GetByIdAsync(string id)
-        => await _dbSet.AsNoTracking().FirstOrDefaultAsync(g=> g.Id == id);
+        => await _dbSet.AsNoTracking().FirstOrDefaultAsync(g => g.Id == id);
 
 }
 
@@ -148,7 +146,7 @@ public class GenUsuarioRepository : Repository<GenUsuario>, IGenUsuarioRepositor
     {
         var usuario = await _dbSet.FirstOrDefaultAsync(u => u.Nombre == nombre);
         if (usuario == null) return null;
-        return BCrypt.Net.BCrypt.Verify(password, usuario.Password)? usuario: null;
+        return BCrypt.Net.BCrypt.Verify(password, usuario.Password) ? usuario : null;
     }
 }
 
