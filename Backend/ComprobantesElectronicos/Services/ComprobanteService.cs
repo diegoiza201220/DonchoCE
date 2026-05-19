@@ -5,39 +5,46 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using static Org.BouncyCastle.Math.EC.ECCurve;
+using ComprobantesElectronicos.Utils;
+using System.Xml.Serialization;
 
 namespace ComprobantesElectronicos.Services;
 
 public class ComprobanteService
 {
     private readonly IConfiguration _config;
-    public ComprobanteService(IConfiguration config)
+    private readonly HttpClient _httpclient;
+    private readonly FirmaElectronicaService _firmaElectronicaService;
+    private readonly SriService _sriService;
+    private readonly InfowareFirmaService _infowareFirmaService;
+
+    //private readonly SriService _sriService;
+    public ComprobanteService(IConfiguration config, HttpClient httpclient, FirmaElectronicaService firmaElectronicaService, SriService sriService, InfowareFirmaService infowareFirmaService)
     {
         _config = config;
-        //_esProd = bool.Parse(config["Sri:Produccion"] ?? "false");
+        _httpclient = httpclient;
+        _firmaElectronicaService = firmaElectronicaService;
+        _sriService = sriService;
+        _infowareFirmaService = infowareFirmaService;
     }
     public async Task<ResultadoEmisionDTO> EmitirFacturaAsync(FacOrden facOrden)
     {
-        // 1. Obtener la orden
-        //var orden = await _uow.FacOrdenR.GetWithDetallesAsync(ordenId);
         if (facOrden is null) throw new InvalidOperationException("Orden no encontrada.");
 
         // 2. Generar el XML del comprobante
-        FirmaElectronicaService SriService = new FirmaElectronicaService(_config);
-        var xmlFirmado = SriService.GenerarXMLFacturaFirmado(facOrden);
+        //dizavar xmlPlano = ConvertirAEntidadSri.GenerarXMLPlano(ConvertirAEntidadSri.ObtenerFactura(facOrden));
+        var xmlPlano = ConvertirAEntidadSri.ObtenerFactura(facOrden);
 
         // 3. Firmar el XML con XAdES-BES
-        //var xmlFirmado = _firma.FirmarXml(xmlPlano);
+        //diza var xmlFirmado = _firmaElectronicaService.FirmarXmlSRI(xmlPlano);
+        var xmlFirmado = _infowareFirmaService.FirmarDocumento(xmlPlano);
 
         // 4. Convertir a Base64 para enviar al SRI
-        byte[] xmlFirmadoBytesOriginal = Encoding.UTF8.GetBytes(xmlFirmado);
+        var xmlBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(xmlFirmado));
 
-        string xmlBase64 = Convert.ToBase64String(xmlFirmadoBytesOriginal);
-
-        byte[] xmlFirmadoBytesBase64 = Encoding.UTF8.GetBytes(xmlBase64);
         // 5. Enviar al SRI
-        SriService sriService = new SriService(_config);
-        var respuestaRecepcion = await sriService.EnviarComprobanteAsync(xmlFirmadoBytesBase64);
+        var respuestaRecepcion = await _sriService.EnviarComprobanteAsync(xmlBase64);
+
         if (!respuestaRecepcion.FueRecibida)
         {
             return new ResultadoEmisionDTO
@@ -50,7 +57,7 @@ public class ComprobanteService
         // 6. Esperar y consultar autorización (el SRI puede tardar unos segundos)
         await Task.Delay(2000);
         var claveAcceso = facOrden.ClaveNumeroAutorizacion; // método que arma la clave de 49 dígitos
-        var respuestaAutorizacion = await sriService.ConsultarAutorizacionAsync(claveAcceso);
+        var respuestaAutorizacion = await _sriService.ConsultarAutorizacionAsync(claveAcceso);
 
         if (!respuestaAutorizacion.FueAutorizado)
         {
@@ -76,4 +83,5 @@ public class ComprobanteService
             XmlAutorizado = respuestaAutorizacion.XmlAutorizado
         };
     }
+
 }

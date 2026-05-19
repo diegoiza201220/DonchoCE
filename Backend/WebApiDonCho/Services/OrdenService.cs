@@ -4,6 +4,9 @@ using EFModel.DTO.Reportes;
 using EFModel.DTO.Request;
 using EFModel.Interfaces;
 using EFModel.Models;
+using EFModel.Repositories;
+using System.Runtime.ConstrainedExecution;
+using WebApiDonCho.Helpers.ComprobantesElectronicos;
 
 namespace WebApiDonCho.Services
 {
@@ -22,7 +25,8 @@ namespace WebApiDonCho.Services
             if (secuencia is null)
                 throw new InvalidOperationException("No existe registro de secuencia del día.");
 
-            orden.Clienteid = 4; // Temporal, luego se obtiene del cliente registrado en el sistema o se crea uno nuevo
+            orden.Clienteid = 1; // Temporal, luego se obtiene del cliente registrado en el sistema o se crea uno nuevo
+            orden.EsFactura = true;
 
             var facOrden = new FacOrden
             {
@@ -39,25 +43,45 @@ namespace WebApiDonCho.Services
                 TotalSinImpuestos = orden.TotalSinImpuestos,
                 UsuarioRegistro = orden.UsuarioRegistro,
                 EsFactura = orden.EsFactura,
-                NumeroFactura = orden.NumeroFactura,
                 DocumentoPago = orden.DocumentoPago,
                 FacDetalleOrdens = orden.FacDetalleOrdens.Select(d => new FacDetalleOrden
                 {
                     Cantidad = d.Cantidad,
-                    CodigoIva = d.CodigoIva,
+                    ImpuestoCodigo = d.ImpuestoCodigo,
                     Ordenid = d.Ordenid,
                     PedidoACocina = d.PedidoACocina,
                     PrecioTotal = d.PrecioTotal,
                     PrecioUnitario = d.PrecioUnitario,
                     Productoid = d.ProductoId,
-                    ValorIva = d.ValorIva
+                    ImpuestoCodigoPorcentaje = d.ImpuestoCodigoPorcentaje,
+                    ImpuestoTarifa = d.ImpuestoTarifa,
+                    ImpuestoValor = d.ImpuestoValor
                 }).ToList()
             };
 
-            
+            if (orden.EsFactura)
+            {
+                CelSecuenciaSri celSecuenciaSri = _uow.CelSecuenciasSriR.GetByTipoDocumento("01");
+                CelInfoTributaria celInfoTributaria = _uow.CelInfoTributariaR.GetById(1);
+                var infoTributaria = CalcularInfoTributaria.CalcularAmbienteYTipoEmision(
+                    esProduccion: false,
+                    fecha: orden.Fecha,
+                    codDoc: "01",
+                    celInfoTributaria: celInfoTributaria,
+                    celSecuenciaSri: celSecuenciaSri
+                );
+                facOrden.Establecimiento = celSecuenciaSri.Establecimiento;
+                facOrden.PuntoEmision = celSecuenciaSri.PuntoDeEmision;
+                facOrden.NumeroFactura = infoTributaria.secuencial;
+                facOrden.ClaveNumeroAutorizacion = infoTributaria.claveAcceso;
+                celSecuenciaSri.SecuenciaActual++;
+                _uow.CelSecuenciasSriR.Update(celSecuenciaSri);
+            }   
+
             ActualizarSecuencia(secuencia, orden.FechaInteger);
 
             _uow.FacSecuenciaDiaR.Update(secuencia);
+
             await _uow.FacOrdenR.AddAsync(facOrden);
             
             FacCliente facCliente = await _uow.FacClienteR.GetByIdAsync(orden.Clienteid) ?? throw new InvalidOperationException("Cliente no encontrado.");
@@ -67,6 +91,7 @@ namespace WebApiDonCho.Services
             
             //var xmlPlano = GenerarXmlFactura(orden!);   // tu método que arma el XML
             _ = _comprobanteService.EmitirFacturaAsync(facOrden);
+            
             return facOrden;
         }
 

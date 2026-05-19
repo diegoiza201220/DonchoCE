@@ -5,7 +5,7 @@ public class ResultadoEmisionDTO
 {
     public bool Exitoso { get; set; }
     public string NumeroAutorizacion { get; set; } = "";
-    public DateTime FechaAutorizacion { get; set; }
+    public DateTimeOffset FechaAutorizacion { get; set; }
     public string XmlAutorizado { get; set; } = "";
     public List<string> Mensajes { get; set; } = new();
 }
@@ -21,7 +21,7 @@ public class RespuestaAutorizacionSri
 {
     public string Estado { get; set; } = ""; // AUTORIZADO | NO AUTORIZADO
     public string NumeroAutorizacion { get; set; } = "";
-    public DateTime FechaAutorizacion { get; set; }
+    public DateTimeOffset FechaAutorizacion { get; set; }
     public string Ambiente { get; set; } = "";
     public string XmlAutorizado { get; set; } = "";
     public List<MensajeSri> Mensajes { get; set; } = new();

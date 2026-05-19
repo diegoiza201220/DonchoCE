@@ -1106,7 +1106,7 @@ public partial class facturaInfoFacturaCompensacion
 public partial class facturaInfoFacturaPago
 {
 
-    private int formaPagoField;
+    private string formaPagoField;
 
     private decimal totalField;
 
@@ -1115,7 +1115,7 @@ public partial class facturaInfoFacturaPago
     private string unidadTiempoField;
 
     /// <remarks/>
-    public int formaPago
+    public string formaPago
     {
         get
         {

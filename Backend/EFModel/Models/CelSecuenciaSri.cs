@@ -7,7 +7,7 @@ public partial class CelSecuenciaSri
 {
     public int Id { get; set; }
 
-    public int TipoDocumento { get; set; }
+    public string TipoDocumento { get; set; } = string.Empty;
 
     public string Establecimiento { get; set; } = null!;
 

@@ -34,9 +34,11 @@ public partial class DonchoContext : DbContext
 
     public virtual DbSet<GenUsuario> GenUsuario { get; set; }
 
+    public virtual DbSet<CelInfoTributaria> CelInfoTributaria { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=135.18.167.171;Database=doncho;Username=postgres;Password=postgres1234");
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=postgres;Username=postgres;Password=postgres1234");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -147,13 +149,15 @@ public partial class DonchoContext : DbContext
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
             entity.Property(e => e.Cantidad).HasColumnName("cantidad");
-            entity.Property(e => e.CodigoIva).HasColumnName("codigo_iva");
             entity.Property(e => e.Ordenid).HasColumnName("ordenid");
             entity.Property(e => e.PedidoACocina).HasColumnName("pedido_a_cocina");
             entity.Property(e => e.PrecioTotal).HasColumnName("precio_total");
             entity.Property(e => e.PrecioUnitario).HasColumnName("precio_unitario");
             entity.Property(e => e.Productoid).HasColumnName("productoid");
-            entity.Property(e => e.ValorIva).HasColumnName("valor_iva");
+            entity.Property(e => e.ImpuestoValor).HasColumnName("impuesto_valor");
+            entity.Property(e => e.ImpuestoTarifa).HasColumnName("impuesto_tarifa");
+            entity.Property(e => e.ImpuestoCodigoPorcentaje).HasColumnName("impuesto_codigo_porcentaje");
+            entity.Property(e => e.ImpuestoCodigo).HasColumnName("impuesto_codigo");
 
             entity.HasOne(d => d.Orden).WithMany(p => p.FacDetalleOrdens)
                 .HasForeignKey(d => d.Ordenid)
@@ -282,6 +286,37 @@ public partial class DonchoContext : DbContext
             entity.Property(e => e.Password)
                 .HasColumnType("character varying")
                 .HasColumnName("password");
+        });
+
+        modelBuilder.Entity<CelInfoTributaria>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("cel_info_tributaria_pk");
+
+            entity.ToTable("cel_info_tributaria");
+
+            entity.Property(e => e.Id)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id");
+            entity.Property(e => e.RazonSocial)
+                .HasColumnType("character varying")
+                .HasColumnName("razon_social");
+            entity.Property(e => e.NombreComercial)
+                .HasColumnType("character varying")
+                .HasColumnName("nombre_comercial");
+            entity.Property(e => e.Ruc)
+                .HasColumnType("character varying")
+                .HasColumnName("ruc");
+            entity.Property(e => e.DireccionMatriz)
+                .HasColumnType("character varying")
+                .HasColumnName("direccion_matriz");
+            entity.Property(e => e.ContribuyenteEspecial)
+                .HasColumnType("character varying")
+                .HasColumnName("contribuyente_especial");
+            entity.Property(e => e.ObligadoContabilidad)
+                .HasColumnName("obligado_contabilidad");
+
+
+
         });
 
         OnModelCreatingPartial(modelBuilder);

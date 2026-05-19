@@ -12,6 +12,7 @@ public interface IUnitOfWork : IDisposable
     IGenParametroRepository GenParametroR { get; }
     IFacSecuenciaDiaRepository FacSecuenciaDiaR { get; }
     IGenUsuarioRepository GenUsuarioR { get; }
+    ICelInfoTributariaRepository CelInfoTributariaR { get; }
 
     Task<int> SaveChangesAsync();
 }

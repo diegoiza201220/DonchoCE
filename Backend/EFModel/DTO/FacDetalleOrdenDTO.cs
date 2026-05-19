@@ -17,9 +17,10 @@ namespace EFModel.DTO
         [Required]
         public decimal PrecioUnitario { get; set; }
 
-        public decimal ValorIva { get; set; }
-
-        public short CodigoIva { get; set; }
+        public decimal ImpuestoValor { get; set; }
+        public decimal ImpuestoTarifa { get; set; }
+        public short ImpuestoCodigo { get; set; }
+        public short ImpuestoCodigoPorcentaje { get; set; }
 
         public decimal PrecioTotal { get; set; }
 

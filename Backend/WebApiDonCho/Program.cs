@@ -1,12 +1,13 @@
 using ComprobantesElectronicos.Services;
+using EFModel.Context;
+using EFModel.Interfaces;
+using EFModel.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using EFModel.Context;
-using EFModel.Interfaces;
-using EFModel.Repositories;
 using WebApiDonCho.Services;
+using Infoware.SRI.Firmar;
 
 using ILoggerFactory factory = LoggerFactory.Create(builder =>
 {
@@ -34,6 +35,9 @@ builder.Services.AddScoped<OrdenService>();
 builder.Services.AddScoped<FirmaElectronicaService>();
 builder.Services.AddScoped<ComprobanteService>();
 builder.Services.AddScoped<SriService>();
+builder.Services.AddScoped<InfowareFirmaService>();
+
+builder.Services.AddSRIDocumentosElectronicos();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -68,6 +72,20 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
+});
+
+builder.Services.AddHttpClient<SriService>(client =>
+{
+    client.Timeout = TimeSpan.FromMinutes(5);
+    client.DefaultRequestHeaders.Add("Accept", "text/xml");
+})
+.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback =
+        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
+    AutomaticDecompression =
+        System.Net.DecompressionMethods.GZip |
+        System.Net.DecompressionMethods.Deflate
 });
 
 var app = builder.Build();

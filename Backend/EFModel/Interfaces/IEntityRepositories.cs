@@ -33,7 +33,10 @@ public interface ICelCertificadoRepository : IRepository<CelCertificado> { }
 
 public interface ICelLogDocumentoRepository : IRepository<CelLogDocumento> { }
 
-public interface ICelSecuenciaSriRepository : IRepository<CelSecuenciaSri> { }
+public interface ICelSecuenciaSriRepository : IRepository<CelSecuenciaSri>
+{
+    CelSecuenciaSri GetByTipoDocumento(string id);
+}
 
 public interface IGenParametroRepository
 {
@@ -55,4 +58,9 @@ public interface IGenUsuarioRepository : IRepository<GenUsuario>
 {
     Task<GenUsuario?> GetByIdAsync(int id);
     Task<GenUsuario?> ValidateLogin(string nombre, string password);
+}
+
+public interface ICelInfoTributariaRepository : IRepository<CelInfoTributaria>
+{
+    CelInfoTributaria GetById(int id);
 }

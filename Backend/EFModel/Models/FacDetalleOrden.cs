@@ -14,13 +14,11 @@ public partial class FacDetalleOrden
     public short Cantidad { get; set; }
 
     public decimal PrecioUnitario { get; set; }
-
-    public decimal ValorIva { get; set; }
-
-    public int CodigoIva { get; set; }
-
+    public decimal ImpuestoValor { get; set; }
+    public decimal ImpuestoTarifa { get; set; }
+    public short ImpuestoCodigo { get; set; }
+    public short ImpuestoCodigoPorcentaje { get; set; }
     public decimal PrecioTotal { get; set; }
-
     public bool PedidoACocina { get; set; }
 
     public virtual FacOrden Orden { get; set; } = null!;

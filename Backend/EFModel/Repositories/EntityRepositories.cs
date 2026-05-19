@@ -88,6 +88,8 @@ public class CelLogDocumentoRepository : Repository<CelLogDocumento>, ICelLogDoc
 public class CelSecuenciaSriRepository : Repository<CelSecuenciaSri>, ICelSecuenciaSriRepository
 {
     public CelSecuenciaSriRepository(DonchoContext context) : base(context) { }
+    public CelSecuenciaSri GetByTipoDocumento(string id)
+        => _dbSet.AsNoTracking().FirstOrDefault(s => s.TipoDocumento == id);
 }
 
 // ── Genparametro (PK es string, repositorio propio) ───────────────────────────
@@ -131,4 +133,14 @@ public class GenUsuarioRepository : Repository<GenUsuario>, IGenUsuarioRepositor
         if (usuario == null) return null;
         return BCrypt.Net.BCrypt.Verify(password, usuario.Password)? usuario: null;
     }
+}
+
+// ── CelInfoTributaria──────────────────────────────────────────────────────────────────
+public class CelInfoTributariaRepository : Repository<CelInfoTributaria>, ICelInfoTributariaRepository
+{
+    public CelInfoTributariaRepository(DonchoContext context) : base(context) { }
+
+    public new CelInfoTributaria GetById(int id)
+        => _dbSet.AsNoTracking().FirstOrDefault(c => c.Id == id);
+
 }
