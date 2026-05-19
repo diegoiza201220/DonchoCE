@@ -1,8 +1,5 @@
-﻿// Services/SriService.cs
-using ComprobantesElectronicos.DTO.Sri;
+﻿using ComprobantesElectronicos.DTO.Sri;
 using Microsoft.Extensions.Configuration;
-using System.Reflection.Metadata;
-using System.ServiceModel;
 using System.Text;
 using System.Xml.Linq;
 
@@ -10,7 +7,6 @@ namespace ComprobantesElectronicos.Services;
 
 public class SriService
 {
-    private readonly IConfiguration _config;
     private readonly bool _esProd;
     private HttpClient _httpClient;
 
@@ -22,7 +18,6 @@ public class SriService
 
     public SriService(IConfiguration config, HttpClient httpClient)
     {
-        _config = config;
         _esProd = bool.Parse(config["Sri:Produccion"] ?? "false");
         _httpClient = httpClient;
     }
@@ -90,25 +85,7 @@ public class SriService
             // La tarea fue cancelada a través de un CancellationToken provisto por código
             Console.WriteLine("Error: La operación fue cancelada por el usuario o el sistema.");
         }
-
- 
-
-        //return new XDocument();
-
-
-        //try
-        //{
-        //    var response = await _httpClient.PostAsync(url, content);
-        //    response.EnsureSuccessStatusCode();
-
-        //    
-        //}
-        //catch (Exception ex)
-        //{
-        //    Console.WriteLine($"{ex.Message}");
-        //}
         return new XDocument();
-
     }
 
     // ── Parsear respuesta de recepción ────────────────────────────────────────
@@ -146,9 +123,7 @@ public class SriService
                 Informacion = m.Element("informacionAdicional")?.Value ?? ""
             }).ToList();
 
-        DateTimeOffset.TryParse(
-    autorizacion.Element("fechaAutorizacion")?.Value,
-    out var fechaAutorizacion);
+        DateTimeOffset.TryParse(autorizacion.Element("fechaAutorizacion")?.Value,out var fechaAutorizacion);
 
         return new RespuestaAutorizacionSri
         {
@@ -159,39 +134,6 @@ public class SriService
             XmlAutorizado = autorizacion.Element("comprobante")?.Value ?? "",
             Mensajes = mensajes
         };
-
-        //XNamespace ns = "http://ec.gob.sri.ws.autorizacion";
-
-        //var autorizacion = xml.Descendants(ns + "autorizacionComprobanteResponse").FirstOrDefault();
-        //if (autorizacion is null)
-        //    return new RespuestaAutorizacionSri { Estado = "NO_AUTORIZADO" };
-
-        //var mensajes = autorizacion.Descendants("mensaje").Select(m => new MensajeSri
-        //{
-        //    Identificador = m.Element("identificador")?.Value ?? "",
-        //    Mensaje = m.Element("mensaje")?.Value ?? "",
-        //    Tipo = m.Element("tipo")?.Value ?? "",
-        //    Informacion = m.Element("informacionAdicional")?.Value ?? ""
-        //}).ToList();
-
-
-        //var estado = autorizacion.Value;//?.FirstNode().Value ?? "NO_AUTORIZADO";
-        //var test = autorizacion.Value;
-
-
-        //return new RespuestaAutorizacionSri
-        //{
-        //    Estado = autorizacion.Element(ns + "estado")?.Value ?? "NO_AUTORIZADO",
-        //    NumeroAutorizacion = autorizacion.Element(ns + "numeroAutorizacion")?.Value ?? "",
-        //    FechaAutorizacion = DateTime.TryParse(
-        //                             autorizacion.Element(ns + "fechaAutorizacion")?.Value,
-        //                             out var fecha) ? fecha : DateTime.MinValue,
-        //    Ambiente = autorizacion.Element(ns + "ambiente")?.Value ?? "",
-        //    //XmlAutorizado = autorizacion.Element(ns + "comprobante")?.Value ?? "",
-        //    Mensajes = mensajes
-        //};
-
-        //return 
     }
 
     public async Task<bool> VerificarConectividadAsync()
@@ -200,7 +142,6 @@ public class SriService
         {
             var url = _esProd ? UrlRecepcionProduccion : UrlRecepcionPruebas;
             using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
-            //_httpClient
             // Solo un GET para verificar que el servidor responde
             var response = await _httpClient.GetAsync(url + "?wsdl", cts.Token);
             Console.WriteLine($"SRI responde con status: {response.StatusCode}");
@@ -212,11 +153,4 @@ public class SriService
             return false;
         }
     }
-
-    //private static BasicHttpsBinding CrearBinding() => new BasicHttpsBinding
-    //{
-    //    MaxReceivedMessageSize = 5 * 1024 * 1024, // 5 MB
-    //    SendTimeout = TimeSpan.FromSeconds(30),
-    //    ReceiveTimeout = TimeSpan.FromSeconds(30)
-    //};
 }

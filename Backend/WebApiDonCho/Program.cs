@@ -32,7 +32,6 @@ builder.Services.AddDbContext<DonchoContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<OrdenService>();
-builder.Services.AddScoped<FirmaElectronicaService>();
 builder.Services.AddScoped<ComprobanteService>();
 builder.Services.AddScoped<SriService>();
 builder.Services.AddScoped<InfowareFirmaService>();

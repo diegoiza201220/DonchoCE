@@ -7,11 +7,6 @@ namespace ComprobantesElectronicos.Utils
 {
     public class ConvertirAEntidadSri
     {
-        public static string GenerarXMLPlano<T>(T entidad)
-        {
-            return XmlGenerator.ConvertirClaseAXml(entidad);
-        }
-
         public static factura ObtenerFactura(FacOrden orden)
         {
             

@@ -1,29 +1,17 @@
 ﻿using ComprobantesElectronicos.DTO.Sri;
 using EFModel.Models;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Text;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 using ComprobantesElectronicos.Utils;
-using System.Xml.Serialization;
 
 namespace ComprobantesElectronicos.Services;
 
 public class ComprobanteService
 {
-    private readonly IConfiguration _config;
-    private readonly HttpClient _httpclient;
-    private readonly FirmaElectronicaService _firmaElectronicaService;
     private readonly SriService _sriService;
     private readonly InfowareFirmaService _infowareFirmaService;
-
-    //private readonly SriService _sriService;
-    public ComprobanteService(IConfiguration config, HttpClient httpclient, FirmaElectronicaService firmaElectronicaService, SriService sriService, InfowareFirmaService infowareFirmaService)
+    public ComprobanteService(SriService sriService, InfowareFirmaService infowareFirmaService)
     {
-        _config = config;
-        _httpclient = httpclient;
-        _firmaElectronicaService = firmaElectronicaService;
         _sriService = sriService;
         _infowareFirmaService = infowareFirmaService;
     }
@@ -32,12 +20,10 @@ public class ComprobanteService
         if (facOrden is null) throw new InvalidOperationException("Orden no encontrada.");
 
         // 2. Generar el XML del comprobante
-        //dizavar xmlPlano = ConvertirAEntidadSri.GenerarXMLPlano(ConvertirAEntidadSri.ObtenerFactura(facOrden));
-        var xmlPlano = ConvertirAEntidadSri.ObtenerFactura(facOrden);
+        var entidadSri = ConvertirAEntidadSri.ObtenerFactura(facOrden);
 
         // 3. Firmar el XML con XAdES-BES
-        //diza var xmlFirmado = _firmaElectronicaService.FirmarXmlSRI(xmlPlano);
-        var xmlFirmado = _infowareFirmaService.FirmarDocumento(xmlPlano);
+        var xmlFirmado = _infowareFirmaService.FirmarDocumento(entidadSri);
 
         // 4. Convertir a Base64 para enviar al SRI
         var xmlBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(xmlFirmado));
