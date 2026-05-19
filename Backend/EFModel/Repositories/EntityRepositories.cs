@@ -1,7 +1,8 @@
-using Microsoft.EntityFrameworkCore;
 using EFModel.Context;
-using EFModel.Models;
+using EFModel.DTO.Reportes;
 using EFModel.Interfaces;
+using EFModel.Models;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace EFModel.Repositories;
@@ -65,11 +66,27 @@ public class FacDetalleOrdenRepository : Repository<FacDetalleOrden>, IFacDetall
             .Where(d => d.Ordenid == ordenId)
             .ToListAsync();
 
-    public async Task<IEnumerable<FacDetalleOrden>> GetByFechasProductosVendidos(int fechaini, int fechafin)
-        => await _dbSet.AsNoTracking()
+    public async Task<IEnumerable<RptProductosVendidosPorFechasDTO>> GetByFechasProductosVendidos(int fechaini, int fechafin)
+    { 
+        var detalles = _dbSet.AsNoTracking()
             .Include(p => p.Producto)
             .Where(o => o.Orden.FechaInteger >= fechaini && o.Orden.FechaInteger <= fechafin)
-            .ToListAsync();
+            .Select(g => new { g.Producto.Nombre, g.Cantidad });
+
+        var catgroup = detalles.GroupBy(c => c.Nombre)
+                .Select(g => new
+                {
+                    g.Key,
+                    SUM = g.Sum(s => s.Cantidad)
+                });
+
+        return catgroup.OrderByDescending(o => o.SUM).Select(d => new RptProductosVendidosPorFechasDTO
+        {
+            Plato = d.Key,
+            Cantidad = d.SUM
+        });
+
+    }
 }
 
 // ── Celcertificado ────────────────────────────────────────────────────────────

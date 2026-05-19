@@ -1,3 +1,4 @@
+using EFModel.DTO.Reportes;
 using EFModel.Models;
 
 namespace EFModel.Interfaces;
@@ -24,7 +25,7 @@ public interface IFacOrdenRepository : IRepository<FacOrden>
 public interface IFacDetalleOrdenRepository : IRepository<FacDetalleOrden>
 {
     Task<IEnumerable<FacDetalleOrden>> GetByOrdenAsync(int ordenId);
-    Task<IEnumerable<FacDetalleOrden>> GetByFechasProductosVendidos(int fechaini, int fechafin);
+    Task<IEnumerable<RptProductosVendidosPorFechasDTO>> GetByFechasProductosVendidos(int fechaini, int fechafin);
 }
 
 //public interface IProductoRepository2 : IRepository<FacProducto> { }

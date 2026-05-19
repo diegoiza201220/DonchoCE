@@ -1,4 +1,5 @@
-﻿using ComprobantesElectronicos.Services;
+﻿using ComprobantesElectronicos.DTO.Sri;
+using ComprobantesElectronicos.Services;
 using EFModel.DTO;
 using EFModel.DTO.Reportes;
 using EFModel.DTO.Request;
@@ -88,9 +89,7 @@ namespace WebApiDonCho.Services
             facOrden.Cliente = facCliente;
             await _uow.SaveChangesAsync();
 
-            
-            //var xmlPlano = GenerarXmlFactura(orden!);   // tu método que arma el XML
-            _ = _comprobanteService.EmitirFacturaAsync(facOrden);
+            ResultadoEmisionDTO resultado = await _comprobanteService.EmitirFacturaAsync(facOrden);
             
             return facOrden;
         }
@@ -129,18 +128,7 @@ namespace WebApiDonCho.Services
 
         public async Task<IEnumerable<RptProductosVendidosPorFechasDTO>> GetProductosVendidosPorFechaAsync(RqOrdenesPorFechas rq)
         {
-            var detalles = await _uow.FacDetalleOrdenR.GetByFechasProductosVendidos(rq.FechaIni, rq.FechaFin);
-            var catgroup = detalles.GroupBy(c => c.Producto.Nombre)
-                .Select(g => new
-                {
-                    g.Key,
-                    SUM = g.Sum(s => s.Cantidad)
-                });
-            return catgroup.OrderByDescending(o => o.SUM).Select(d => new RptProductosVendidosPorFechasDTO
-            {
-                Plato = d.Key,
-                Cantidad = d.SUM
-            });
+            return await _uow.FacDetalleOrdenR.GetByFechasProductosVendidos(rq.FechaIni, rq.FechaFin);
         }
     }
 }
