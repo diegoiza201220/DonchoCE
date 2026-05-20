@@ -1,5 +1,6 @@
 using EFModel.Interfaces;
 using EFModel.Context;
+using EFModel.Models;
 
 namespace EFModel.Repositories;
 
@@ -18,6 +19,8 @@ public class UnitOfWork : IUnitOfWork
     public IFacSecuenciaDiaRepository FacSecuenciaDiaR { get; }
     public IGenUsuarioRepository GenUsuarioR { get; }
     public ICelInfoTributariaRepository CelInfoTributariaR { get; }
+    public IGenCatalogoRepository GenCatalogoR { get; }
+    public IGenCatalogoDetalleRepository GenCatalogoDetalleR { get; }
 
     public UnitOfWork(DonchoContext context)
     {
@@ -33,6 +36,8 @@ public class UnitOfWork : IUnitOfWork
         FacSecuenciaDiaR = new FacSecuenciaDiaRepository(context);
         GenUsuarioR = new GenUsuarioRepository(context);
         CelInfoTributariaR = new CelInfoTributariaRepository(context);
+        GenCatalogoR = new GenCatalogoRepository(context);
+        GenCatalogoDetalleR = new GenCatalogoDetalleRepository(context);
     }
 
     public async Task<int> SaveChangesAsync()

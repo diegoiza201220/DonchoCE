@@ -1,3 +1,4 @@
+using EFModel.DTO;
 using EFModel.DTO.Reportes;
 using EFModel.Models;
 
@@ -13,6 +14,7 @@ public interface IFacProductoRepository : IRepository<FacProducto>
 {
     Task<IEnumerable<FacProducto>> GetActivosAsync();
     Task<IEnumerable<FacProducto>> GetByGrupoAsync(string grupo);
+    new Task<IEnumerable<FacProductoDTO>> GetAllAsync();
 }
 
 public interface IFacOrdenRepository : IRepository<FacOrden>
@@ -64,4 +66,19 @@ public interface IGenUsuarioRepository : IRepository<GenUsuario>
 public interface ICelInfoTributariaRepository : IRepository<CelInfoTributaria>
 {
     CelInfoTributaria GetById(int id);
+}
+
+public interface IGenCatalogoRepository : IRepository<GenCatalogo>
+{
+    GenCatalogo GetById(int id);
+    GenCatalogo GetByNombre(string codigo);
+}
+
+public interface IGenCatalogoDetalleRepository : IRepository<GenCatalogoDetalle>
+{
+    GenCatalogoDetalle GetById(int id);
+
+    GenCatalogoDetalle GetByCodigo(string codigo);
+
+    IEnumerable<GenCatalogoDetalle> GetByCatalogoId(int catalogoId);
 }

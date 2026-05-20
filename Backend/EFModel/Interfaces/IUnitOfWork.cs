@@ -13,6 +13,8 @@ public interface IUnitOfWork : IDisposable
     IFacSecuenciaDiaRepository FacSecuenciaDiaR { get; }
     IGenUsuarioRepository GenUsuarioR { get; }
     ICelInfoTributariaRepository CelInfoTributariaR { get; }
+    IGenCatalogoRepository GenCatalogoR { get; }
+    IGenCatalogoDetalleRepository GenCatalogoDetalleR { get; }
 
     Task<int> SaveChangesAsync();
 }

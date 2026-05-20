@@ -1,4 +1,5 @@
 using EFModel.Context;
+using EFModel.DTO;
 using EFModel.DTO.Reportes;
 using EFModel.Interfaces;
 using EFModel.Models;
@@ -29,6 +30,17 @@ public class FacProductoRepository : Repository<FacProducto>, IFacProductoReposi
 
     public async Task<IEnumerable<FacProducto>> GetByGrupoAsync(string grupo)
         => await _dbSet.AsNoTracking().Where(p => p.Grupo == grupo && p.Activo).ToListAsync();
+
+    public async new Task<IEnumerable<FacProductoDTO>> GetAllAsync()
+    {
+        var resultado = (from p in _context.FacProducto
+                         join d in _context.GenCatalogoDetalle
+                         on p.CodigoIva equals d.Id
+                         select new FacProductoDTO() { Activo = p.Activo, CodigoIva = p.CodigoIva, Grupo = p.Grupo, Id = p.Id, IvaTarifa = d.Codigo, IvaValor = p.Valor * Convert.ToDecimal(d.Codigo.Replace("%",""))/100, Nombre=p.Nombre, OrdenAparicion = p.OrdenAparicion, PedidoACocina = p.PedidoACocina, Valor = p.Valor, ValorTotal = p.Valor + p.Valor * Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100 }
+                         ).ToList();
+        return resultado;
+    }
+    //=> await _dbSet.fro AsNoTracking().Include(p=> p.) Where(p => p.Activo).ToListAsync();
 }
 
 // ── Orden ─────────────────────────────────────────────────────────────────────
@@ -158,4 +170,33 @@ public class CelInfoTributariaRepository : Repository<CelInfoTributaria>, ICelIn
     public new CelInfoTributaria GetById(int id)
         => _dbSet.AsNoTracking().FirstOrDefault(c => c.Id == id);
 
+}
+
+// ── GenCatalogo ───────────────────────────────────────────────────────────
+public class GenCatalogoRepository : Repository<GenCatalogo>, IGenCatalogoRepository
+{
+    public GenCatalogoRepository(DonchoContext context) : base(context) { }
+
+    public new GenCatalogo GetById(int id)
+    => _dbSet.AsNoTracking().FirstOrDefault(c => c.Id == id);
+
+    public new GenCatalogo GetByNombre(string nombre)
+=> _dbSet.AsNoTracking().FirstOrDefault(c => c.Nombre == nombre);
+}
+
+// ── GenCatalogo ───────────────────────────────────────────────────────────
+public class GenCatalogoDetalleRepository : Repository<GenCatalogoDetalle>, IGenCatalogoDetalleRepository
+{
+    public GenCatalogoDetalleRepository(DonchoContext context) : base(context) { }
+
+    public GenCatalogoDetalle GetById(int id)
+    => _dbSet.AsNoTracking().FirstOrDefault(c => c.Id == id);
+
+    public GenCatalogoDetalle GetByCodigo(string codigo)
+        => _dbSet.AsNoTracking().FirstOrDefault(c => c.Codigo == codigo);
+    public IEnumerable<GenCatalogoDetalle> GetByCatalogoId(int catalogoid)
+        => _dbSet.AsNoTracking()
+        .Include(o => o.Catalogo)
+        .Where(o => o.Catalogoid == catalogoid)
+        .ToList();
 }

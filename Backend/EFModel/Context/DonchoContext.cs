@@ -36,6 +36,10 @@ public partial class DonchoContext : DbContext
 
     public virtual DbSet<CelInfoTributaria> CelInfoTributaria { get; set; }
 
+    public virtual DbSet<GenCatalogo> GenCatalogo { get; set; }
+
+    public virtual DbSet<GenCatalogoDetalle> GenCatalogoDetalle { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=localhost;Database=postgres;Username=postgres;Password=postgres1234");
@@ -314,10 +318,42 @@ public partial class DonchoContext : DbContext
                 .HasColumnName("contribuyente_especial");
             entity.Property(e => e.ObligadoContabilidad)
                 .HasColumnName("obligado_contabilidad");
-
-
-
         });
+
+        modelBuilder.Entity<GenCatalogo>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("gen_catalogo_pk");
+
+            entity.ToTable("gen_catalogo");
+
+            entity.Property(e => e.Id)
+                .HasColumnName("id");
+            entity.Property(e => e.Nombre)
+                .HasColumnType("character varying")
+                .HasColumnName("nombre");
+            entity.Property(e => e.Activo)
+                .HasColumnName("activo");
+        });
+
+        modelBuilder.Entity<GenCatalogoDetalle>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("gen_catalogo_detalle_pk");
+
+            entity.ToTable("gen_catalogo_detalle");
+
+            entity.Property(e => e.Id)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id");
+            entity.Property(e => e.Catalogoid).HasColumnName("catalogoid");
+            entity.Property(e => e.Codigo).HasColumnName("codigo");
+            entity.Property(e => e.Valor).HasColumnName("valor");
+            entity.Property(e => e.Activo).HasColumnName("activo");
+            entity.HasOne(d => d.Catalogo).WithMany(p => p.CatalogoDetalles)
+                .HasForeignKey(d => d.Catalogoid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("gen_catalogo_detalle_gen_catalogo_fk");
+        });
+
 
         OnModelCreatingPartial(modelBuilder);
     }

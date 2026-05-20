@@ -13,7 +13,7 @@ public partial class FacProducto
 
     public decimal Valor { get; set; }
 
-    public short CodigoIva { get; set; }
+    public int CodigoIva { get; set; }
 
     public bool Activo { get; set; }
 

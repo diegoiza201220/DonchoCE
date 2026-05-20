@@ -15,7 +15,10 @@ namespace EFModel.DTO
 
         public decimal Valor { get; set; }
 
-        public short? CodigoIva { get; set; }
+        public int? CodigoIva { get; set; }
+        public string IvaTarifa { get; set; }
+        public decimal IvaValor { get; set; }
+        public decimal ValorTotal { get; set; }
 
         public bool? Activo { get; set; }
 
