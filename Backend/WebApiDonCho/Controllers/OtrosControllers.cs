@@ -1,8 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using EFModel.DTO;
+using EFModel.DTO.Request;
 using EFModel.Interfaces;
 using EFModel.Models;
+using Infoware.SRI.Core.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using WebApiDonCho.Services;
 
 namespace WebApiDonCho.Controllers;
 
@@ -220,13 +223,6 @@ public class FacSecuenciaDiaController : ControllerBase
         return item is null ? NotFound() : Ok(item);
     }
 
-    //[HttpGet("fecha/{codigo}")]
-    //public async Task<IActionResult> GetByCodigo(string codigo)
-    //{
-    //    var item = await _uow.FacSecuenciaR.GetByCodigoAsync(codigo);
-    //    return item is null ? NotFound() : Ok(item);
-    //}
-
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] FacSecuenciaDia item)
     {
@@ -234,23 +230,21 @@ public class FacSecuenciaDiaController : ControllerBase
         await _uow.SaveChangesAsync();
         return CreatedAtAction(nameof(GetById), new { id = item.Id }, item);
     }
+}
 
-    //[HttpPut("{id:int}")]
-    //public async Task<IActionResult> Update(int id, [FromBody] FacSecuenciaDia item)
-    //{
-    //    if (id != item.Id) return BadRequest();
-    //    _uow.FacSecuenciaR.Update(item);
-    //    await _uow.SaveChangesAsync();
-    //    return NoContent();
-    //}
+// ── Catalogos ────────────────────────────────────────────────────────────────
+[Authorize]
+[ApiController]
+[Route("api/[controller]")]
+public class GenCatalogoDetalleController(IUnitOfWork uow) : ControllerBase
+{
+    private readonly IUnitOfWork _uow = uow;
 
-    //[HttpDelete("{id:int}")]
-    //public async Task<IActionResult> Delete(int id)
-    //{
-    //    var item = await _uow.FacSecuenciaR.GetByIdAsync(id);
-    //    if (item is null) return NotFound();
-    //    _uow.FacSecuenciaR.Delete(item);
-    //    await _uow.SaveChangesAsync();
-    //    return NoContent();
-    //}
+    [HttpPost("getallbynombrecatalogo")]
+    public async Task<IActionResult> GetAllByNombreCatalogo([FromBody] RqConsultas item)
+    {
+        //Ok(await _ordenService.GetProductosVendidosPorFechaAsync(detalle));
+        var gencatalogodetalle = _uow.GenCatalogoDetalleR.GetByCatalogoNombre(item.ValorString1);
+        return Ok(gencatalogodetalle);
+    }
 }

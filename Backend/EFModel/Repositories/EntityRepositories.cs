@@ -37,7 +37,7 @@ public class FacProductoRepository : Repository<FacProducto>, IFacProductoReposi
                          join d in _context.GenCatalogoDetalle
                          on p.CodigoIva equals d.Id
                          select new FacProductoDTO() { Activo = p.Activo, CodigoIva = p.CodigoIva, Grupo = p.Grupo, Id = p.Id, IvaTarifa = d.Codigo, IvaValor = p.Valor * Convert.ToDecimal(d.Codigo.Replace("%",""))/100, Nombre=p.Nombre, OrdenAparicion = p.OrdenAparicion, PedidoACocina = p.PedidoACocina, Valor = p.Valor, ValorTotal = p.Valor + p.Valor * Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100 }
-                         ).ToList();
+                         ).ToList().OrderByDescending(o=> o.Nombre);
         return resultado;
     }
     //=> await _dbSet.fro AsNoTracking().Include(p=> p.) Where(p => p.Activo).ToListAsync();
@@ -129,6 +129,10 @@ public class GenParametroRepository : Repository<GenParametro>, IGenParametroRep
     public async Task<GenParametro?> GetByIdAsync(string id)
         => await _dbSet.AsNoTracking().FirstOrDefaultAsync(g => g.Id == id);
 
+    public GenParametro GetById(string id)
+    {
+        return _dbSet.AsNoTracking().FirstOrDefault(g => g.Id == id);
+    }
 }
 
 // ── Secuencium ────────────────────────────────────────────────────────────────
@@ -194,9 +198,9 @@ public class GenCatalogoDetalleRepository : Repository<GenCatalogoDetalle>, IGen
 
     public GenCatalogoDetalle GetByCodigo(string codigo)
         => _dbSet.AsNoTracking().FirstOrDefault(c => c.Codigo == codigo);
-    public IEnumerable<GenCatalogoDetalle> GetByCatalogoId(int catalogoid)
+    public IEnumerable<GenCatalogoDetalle> GetByCatalogoNombre(string catalogonombre)
         => _dbSet.AsNoTracking()
         .Include(o => o.Catalogo)
-        .Where(o => o.Catalogoid == catalogoid)
+        .Where(o => o.Catalogo.Nombre == catalogonombre)
         .ToList();
 }

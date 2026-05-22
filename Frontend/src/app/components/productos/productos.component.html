@@ -59,7 +59,7 @@
       <td>
         <p-cellEditor>
           <ng-template pTemplate="input">
-            <input pInputText type="text" [(ngModel)]="producto.valor">
+            <input pInputText type="text" [(ngModel)]="producto.valor" (ngModelChange)="calcularIVA(producto)">
           </ng-template>
           <ng-template pTemplate="output">
             {{producto.valor | currency: 'USD'}}
@@ -68,8 +68,7 @@
       </td>
       <td>
         <p-cellEditor>
-          <ng-template pTemplate="input">
-            <input pInputText type="text" [(ngModel)]="producto.ivaTarifa">
+          <ng-template pTemplate="input">{{producto.ivaTarifa}}
           </ng-template>
           <ng-template pTemplate="output">
             {{producto.ivaTarifa}}
@@ -78,21 +77,29 @@
       </td>
       <td>
         <p-cellEditor>
-          <ng-template pTemplate="input">
-            <input pInputText type="text" [(ngModel)]="producto.ivaValor">
+          <ng-template pTemplate="input">{{producto.ivaValor | currency: 'USD'}}
           </ng-template>
           <ng-template pTemplate="output">
             {{producto.ivaValor | currency: 'USD'}}
           </ng-template>
         </p-cellEditor>
-      </td>      
+      </td>
       <td>
         <p-cellEditor>
-          <ng-template pTemplate="input">
-            <input pInputText type="text" [(ngModel)]="producto.valorTotal" required>
+          <ng-template pTemplate="input">{{producto.valorTotal | currency: 'USD'}}
           </ng-template>
           <ng-template pTemplate="output">
             {{producto.valorTotal | currency: 'USD'}}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input pInputText type="text" [(ngModel)]="producto.ordenAparicion" required>
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{producto.ordenAparicion}}
           </ng-template>
         </p-cellEditor>
       </td>
@@ -146,17 +153,24 @@
       <small class="p-error" *ngIf="submitted && !producto.nombre">Nombre es requerido.</small>
     </div>
     <div class="p-field">
-      <label for="valor">Valor</label>
-      <p-inputNumber id="valor" [(ngModel)]="producto.valor" mode="currency" currency="USD"
-        locale="en-US"></p-inputNumber>
+      <label for="valor">Precio sin IVA</label>
+      <p-inputNumber id="valor" [(ngModel)]="producto.valor" mode="currency" currency="USD" locale="en-US"
+        (ngModelChange)="calcularIVA(producto)"></p-inputNumber>
     </div>
-
+    <div class="p-field">
+      <label for="valor">IVA Tarifa</label>
+      <input type="text" pInputText id="ivaTarifa" disabled="true" mode="currency" currency="USD" locale="en-US"
+        [(ngModel)]="producto.ivaTarifa" />
+    </div>
+    <div class="p-field">
+      <label for="ivaValor">Valor Total</label>
+      <input type="text" pInputText id="valorTotal" disabled="true" mode="currency" currency="USD" locale="en-US"
+        [(ngModel)]="producto.valorTotal" />
+    </div>
   </ng-template>
-
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
     <button pButton pRipple label="Grabar" icon="pi pi-check" class="p-button-text" (click)="saveProduct()"></button>
   </ng-template>
 </p-dialog>
-
 <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

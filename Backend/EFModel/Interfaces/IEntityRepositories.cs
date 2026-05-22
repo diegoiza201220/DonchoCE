@@ -48,6 +48,7 @@ public interface IGenParametroRepository
     Task AddAsync(GenParametro entity);
     void Update(GenParametro entity);
     void Delete(GenParametro entity);
+    GenParametro GetById(string id);
 }
 
 public interface IFacSecuenciaDiaRepository : IRepository<FacSecuenciaDia>
@@ -80,5 +81,5 @@ public interface IGenCatalogoDetalleRepository : IRepository<GenCatalogoDetalle>
 
     GenCatalogoDetalle GetByCodigo(string codigo);
 
-    IEnumerable<GenCatalogoDetalle> GetByCatalogoId(int catalogoId);
+    IEnumerable<GenCatalogoDetalle> GetByCatalogoNombre(string catalogonombre);
 }

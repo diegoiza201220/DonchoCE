@@ -3,6 +3,7 @@ import { MessageService, SelectItem, ConfirmationService } from 'primeng/api';
 import Producto from 'src/app/interfaces/productos.interface';
 import { ProductosService } from 'src/app/services/productos.service';
 import { LoggerService } from 'src/app/services/logger.service';
+import { CatalogosService } from 'src/app/services/catalogos.service';
 
 @Component({
   selector: 'app-productos',
@@ -12,9 +13,10 @@ import { LoggerService } from 'src/app/services/logger.service';
 })
 export class ProductosComponent implements OnInit {
 
-  producto!: Producto;
+  producto!: any;
 
   lproductos: Producto[] = [];
+  ltarifas: any[] = [];
 
   clonedProductos: { [s: string]: Producto } = {};
 
@@ -32,10 +34,11 @@ export class ProductosComponent implements OnInit {
     { label: 'OTROS', value: 'OTROS' }
   ];
 
-  constructor(private readonly productosService: ProductosService, 
-    private readonly messageService: MessageService, 
+  constructor(private readonly productosService: ProductosService,
+    private readonly messageService: MessageService,
     private readonly confirmationService: ConfirmationService,
-    private readonly logger: LoggerService) {
+    private readonly logger: LoggerService,
+    private readonly catalogosService: CatalogosService) {
   }
 
   ngOnInit(): void {
@@ -43,7 +46,7 @@ export class ProductosComponent implements OnInit {
   }
 
   openNew() {
-    this.producto = { nombre: '', valor: 0, grupo: '', activo: true, ordenaparicion:0, pedidoacocina: false};
+    this.producto = { nombre: '', valor: 0, grupo: '', activo: true, ordenaparicion: 0, pedidoacocina: false, ivaTarifa:'15%', ivaValor: 0, valorTotal: 0 };
     this.submitted = false;
     this.productoDialogo = true;
   }
@@ -57,25 +60,32 @@ export class ProductosComponent implements OnInit {
     this.submitted = true;
     this.addProducto();
     this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Producto creado' });
-    this.getProductosPromise();
     this.productoDialogo = false;
   }
 
 
-  getProductosObserver(): void {
-    this.productosService.getProductosObservable().subscribe(productos => {
-      this.lproductos = productos;
-    })
-  }
+  // getProductosObserver(): void {
+  //   this.productosService.getProductosObservable().subscribe(productos => {
+  //     this.lproductos = productos;
+  //   })
+  // }
 
-  getProductosPromise(): void{
+  getProductosPromise(): void {
     this.lproductos = [];
-    this.productosService.getProductosPromise().then( data => {
+    this.productosService.getProductosPromise().then(data => {
       data.productos.forEach((producto: Producto) => {
         this.lproductos.push(producto);
       });
     })
   }
+
+  getCatalogosPromise(): void {
+    this.ltarifas = [];
+    this.catalogosService.getCatalogosPromise({ ValorString1: 'SRI_TABLA_17_TARIFA_IVA' }).then(resp => {
+      this.ltarifas = resp;
+    });
+  }
+
 
   async addProducto() {
     this.lproductos = [];
@@ -134,4 +144,9 @@ export class ProductosComponent implements OnInit {
     });
   }
 
+  calcularIVA(value: any) {
+    const p = value;
+    p.ivaValor = p.valor * (p.ivaTarifa.toString().replace('%', '') / 100);
+    p.valorTotal = Number(p.valor) + Number(p.ivaValor);
+  }
 }
