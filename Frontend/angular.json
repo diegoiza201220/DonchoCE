@@ -68,10 +68,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "app_doncho:build:production"
+              "buildTarget": "app_doncho:build:production"
             },
             "development": {
-              "browserTarget": "app_doncho:build:development"
+              "buildTarget": "app_doncho:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -79,7 +79,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "app_doncho:build"
+            "buildTarget": "app_doncho:build"
           }
         },
         "test": {
