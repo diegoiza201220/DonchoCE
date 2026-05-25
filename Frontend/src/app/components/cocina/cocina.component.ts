@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MessageService, ConfirmationService } from 'primeng/api';
-import Ordencocina from 'src/app/interfaces/ordencocina.interface';
-import Produccioncocina from 'src/app/interfaces/produccioncocina.interface';
-import { OrdenescocinaService } from 'src/app/services/ordenescocina.service';
-import { ProduccioncocinaService } from 'src/app/services/produccioncocina.service';
-import { LoggerService } from 'src/app/services/logger.service';
+import Ordencocina from '@interfaces/ordencocina.interface';
+import Produccioncocina from '@interfaces/produccioncocina.interface';
+import { OrdenescocinaService } from '@services/ordenescocina.service';
+import { ProduccioncocinaService } from '@services/produccioncocina.service';
+import { LoggerService } from '@services/logger.service';
 
 
 @Component({
@@ -21,12 +21,13 @@ export class CocinaComponent {
   lproduccioncocina: Produccioncocina[] = [];
   clonedProduccioncocina: { [s: string]: Produccioncocina } = {};
 
+  private readonly ordenescocinaService = inject(OrdenescocinaService);
+  private readonly messageService = inject(MessageService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly produccioncocinaService = inject(ProduccioncocinaService);
+  private readonly logger = inject(LoggerService);
 
-  constructor(private ordenescocinaService: OrdenescocinaService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private produccioncocinaService: ProduccioncocinaService,
-    private readonly logger: LoggerService) {
+  constructor() {
   }
 
   ngOnInit(): void {

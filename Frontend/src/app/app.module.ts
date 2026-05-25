@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -42,44 +42,38 @@ import { RptComprasVsInventariosComponent } from './components/reportes/comprasv
 
 import { AuthInterceptor } from './services/auth.interceptor';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    ProductosComponent,
-    NavbarComponent,
-    MainComponent,
-    PedidosComponent,
-    CocinaComponent,
-    LoginComponent,
-    RptComprasComponent,
-    RptVentasComponent,
-    RptVentasproductosComponent,
-    ItemsComponent,
-    RptOrdenesComponent,
-    ComprasComponent,
-    TwoDigitDecimaNumberDirective,
-    InventariosComponent,
-    RptInventariosComponent,
-    RptComprasVsInventariosComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,       // reemplaza Firebase SDK
-    TableModule, MessagesModule, InputTextModule, InputNumberModule,
-    ToastModule, FormsModule, BrowserAnimationsModule, BadgeModule,
-    TabViewModule, ChartModule, CheckboxModule, ToolbarModule, ButtonModule,
-    DialogModule, ConfirmDialogModule, DropdownModule, SplitterModule, CalendarModule
-  ],
-  providers: [
-    ConfirmationService,
-    // Interceptor que adjunta el JWT Bearer token a cada petición HTTP
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    }
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        ProductosComponent,
+        NavbarComponent,
+        MainComponent,
+        PedidosComponent,
+        CocinaComponent,
+        LoginComponent,
+        RptComprasComponent,
+        RptVentasComponent,
+        RptVentasproductosComponent,
+        ItemsComponent,
+        RptOrdenesComponent,
+        ComprasComponent,
+        TwoDigitDecimaNumberDirective,
+        InventariosComponent,
+        RptInventariosComponent,
+        RptComprasVsInventariosComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule, // reemplaza Firebase SDK
+        TableModule, MessagesModule, InputTextModule, InputNumberModule,
+        ToastModule, FormsModule, BrowserAnimationsModule, BadgeModule,
+        TabViewModule, ChartModule, CheckboxModule, ToolbarModule, ButtonModule,
+        DialogModule, ConfirmDialogModule, DropdownModule, SplitterModule, CalendarModule], providers: [
+        ConfirmationService,
+        // Interceptor que adjunta el JWT Bearer token a cada petición HTTP
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true
+        },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }

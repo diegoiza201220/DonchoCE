@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
-import Orden from 'src/app/interfaces/orden.interface';
-import { OrdenesService } from 'src/app/services/ordenes.service';
-import { BaseComponent } from 'src/app/util/base.component';
+import { Component, inject } from '@angular/core';
+import Orden from '@interfaces/orden.interface';
+import { OrdenesService } from '@services/ordenes.service';
+import { BaseComponent } from '@util/base.component';
 import { MessageService, ConfirmationService } from 'primeng/api';
-import { AuthService } from 'src/app/services/auth.service';
-import { LoggerService } from 'src/app/services/logger.service';
+import { AuthService } from '@services/auth.service';
+import { LoggerService } from '@services/logger.service';
 
 @Component({
   selector: 'app-rpt-ordenes',
@@ -13,10 +13,15 @@ import { LoggerService } from 'src/app/services/logger.service';
   providers: [MessageService, ConfirmationService]
 })
 export class RptOrdenesComponent extends BaseComponent {
-  constructor(private ordenesService: OrdenesService, private messageService: MessageService, private confirmationService: ConfirmationService,
-    public override authService: AuthService, public override logger: LoggerService
-  ) {
-    super(authService, logger);
+
+  private readonly ordenesService = inject(OrdenesService); 
+  private readonly messageService = inject(MessageService); 
+  private readonly confirmationService = inject(ConfirmationService);
+  public override authService = inject(AuthService); 
+  public override logger = inject(LoggerService);
+
+  constructor() {
+    super();
   }
 
   [x: string]: any;
@@ -65,7 +70,7 @@ export class RptOrdenesComponent extends BaseComponent {
     dt.filterGlobal(($event.target as HTMLInputElement).value, 'contains');
   }
 
-  deleteOrden(){
+  deleteOrden() {
     this.confirmationService.confirm({
       message: '¿Estás seguro de eliminar la orden seleccionada?',
       header: 'Confirm',

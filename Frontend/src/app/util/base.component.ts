@@ -1,14 +1,17 @@
-import { Directive } from "@angular/core";
-import { AuthService } from "../services/auth.service";
-import { LoggerService } from "../services/logger.service";
+import { Directive, inject } from "@angular/core";
+import { AuthService } from "@services/auth.service";
+import { LoggerService } from "@services/logger.service";
 
 @Directive()
 export abstract class BaseComponent {
 
-    constructor(public authService: AuthService, 
-        public logger: LoggerService
-    ) {
-    }
+    public readonly authService = inject(AuthService);
+    public readonly logger = inject(LoggerService);
+
+    // constructor();public authService: AuthService,
+    //     public logger: LoggerService
+    // ) {
+    // }ks
 
     emailsPermitidos = ['gerencia@doncho.com', 'diza@doncho.com'];
 

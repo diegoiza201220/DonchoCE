@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
-import { BaseComponent } from 'src/app/util/base.component';
-import { LoggerService } from 'src/app/services/logger.service';
+import { Component, OnInit, inject } from '@angular/core';
+import { AuthService } from '@services/auth.service';
+import { BaseComponent } from '@util/base.component';
+import { LoggerService } from '@services/logger.service';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
@@ -12,10 +12,12 @@ export class NavbarComponent extends BaseComponent implements OnInit {
   mostrarItems: boolean = false;
   mostrarReportes: boolean = false;
   
-  constructor(public override authService: AuthService, 
-    public override logger: LoggerService
+  public override authService = inject(AuthService);
+  public override logger = inject(LoggerService);
+
+  constructor(
   ) {
-    super(authService, logger);
+    super();
   }
 
   ngOnInit(): void {
