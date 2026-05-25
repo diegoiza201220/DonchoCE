@@ -1,8 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { AuthService } from '@services/auth.service';
-import { OrdenesService } from '@services/ordenes.service';
-import { BaseComponent } from '@util/base.component';
-import { LoggerService } from '@services/logger.service';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
+import { OrdenesService } from 'src/app/services/ordenes.service';
+import { BaseComponent } from 'src/app/util/base.component';
+import { LoggerService } from 'src/app/services/logger.service';
 
 @Component({
   selector: 'app-rpt-ventasproductos',
@@ -28,12 +28,10 @@ export class RptVentasproductosComponent extends BaseComponent implements OnInit
   basicDataPie: any;
   basicOptionsPie: any;
 
-  private readonly ordenesService = inject(OrdenesService);
-  public override authService = inject(AuthService);
-  public override logger = inject(LoggerService);
-
-  constructor() {
-    super();
+  constructor(private readonly ordenesService: OrdenesService,
+    public override authService: AuthService,
+    public override logger: LoggerService) {
+    super(authService, logger);
   }
 
   ngOnInit(): void {

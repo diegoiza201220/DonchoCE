@@ -1,12 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { MessageService, SelectItem, ConfirmationService } from 'primeng/api';
-import Item from '@interfaces/item.interface';
-import { AuthService } from '@services/auth.service';
-import { ItemsService } from '@services/items.service';
-import { BaseComponent } from '@util/base.component';
-import { ComprasService } from '@services/compras.service';
+import Item from 'src/app/interfaces/item.interface';
+import { AuthService } from 'src/app/services/auth.service';
+import { ItemsService } from 'src/app/services/items.service';
+import { BaseComponent } from 'src/app/util/base.component';
+import { ComprasService } from 'src/app/services/compras.service';
 import { Router } from '@angular/router';
-import { LoggerService } from '@services/logger.service';
+import { LoggerService } from 'src/app/services/logger.service';
 
 @Component({
   selector: 'app-compras',
@@ -16,16 +16,15 @@ import { LoggerService } from '@services/logger.service';
 })
 export class ComprasComponent extends BaseComponent {
 
-  private readonly itemService = inject(ItemsService);
-  private readonly messageService = inject(MessageService);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly compraService = inject(ComprasService);
-  private readonly router = inject(Router);
-  public override authService = inject(AuthService);
-  public override logger: LoggerService = inject(LoggerService);
-
-  //constructor();
-
+  constructor(private itemService: ItemsService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
+    private compraService: ComprasService,
+    private router: Router,
+    public override authService: AuthService,
+    public override logger: LoggerService) {
+    super(authService, logger);
+  }
 
   item!: Item;
   litems: any;
@@ -44,19 +43,19 @@ export class ComprasComponent extends BaseComponent {
     this.submitted = false;
   }
 
-  onBlurItem(item: any) {
+  onBlurItem(item :any){
     item.preciototal = this.redondear(item.preciounitario * item.cantidad, 2);
     this.calcularTotal();
   }
 
-  calcularTotal() {
+  calcularTotal(){
     let total = 0;
-    this.litems.forEach((x: any) => {
-      if (x.cantidad > 0) {
+    this.litems.forEach((x: any)=>{
+      if (x.cantidad>0){
         total += x.preciototal;
       }
     })
-    this.compra.total = this.redondear(total, 2);
+    this.compra.total = this.redondear(total,2);
   }
 
   hideDialog() {
@@ -67,7 +66,7 @@ export class ComprasComponent extends BaseComponent {
   getItemsPromise(): void {
     this.itemService.getItemsPromise().then(items => {
       items.forEach(element => {
-        let dat: any = {};
+        let dat : any = {};
         dat = element;
         dat.cantidad = 0;
         dat.preciounitario = 0;
@@ -75,7 +74,7 @@ export class ComprasComponent extends BaseComponent {
         this.litems.push(dat);
       });
     })
-
+    
   }
 
   grabarCompra() {
@@ -85,10 +84,10 @@ export class ComprasComponent extends BaseComponent {
     this.compra.fechainteger = this.fechaToInteger(this.compra.fecha);
     this.compra.usuario = this.authService.userEmail;
     this.compra.items = [];
-
+    
     this.litems.forEach((ele: any) => {
-      if (ele.cantidad > 0) {
-        let i: any = {};
+      if (ele.cantidad>0){
+        let i : any = {};
         i.id = ele.id;
         i.nombre = ele.nombre;
         i.cantidad = ele.cantidad;
@@ -107,7 +106,7 @@ export class ComprasComponent extends BaseComponent {
     dt.filterGlobal(($event.target as HTMLInputElement).value, 'contains');
   }
 
-  navigateTo() {
+  navigateTo(){
     this.router.navigateByUrl('main');
   }
 }

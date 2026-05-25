@@ -1,14 +1,14 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 //import * as FileSaver from 'file-saver';
-import { BaseComponent } from '@util/base.component';
-import { AuthService } from '@services/auth.service';
-import Inventario from '@interfaces/inventario.interface';
-import { InventariosService } from '@services/inventarios.service';
-import { ComprasService } from '@services/compras.service';
-import { ItemsService } from '@services/items.service';
-import Compra from '@interfaces/compra.interface'
-import Item from '@interfaces/item.interface';
-import { LoggerService } from '@services/logger.service';
+import { BaseComponent } from 'src/app/util/base.component';
+import { AuthService } from 'src/app/services/auth.service';
+import Inventario from 'src/app/interfaces/inventario.interface';
+import { InventariosService } from 'src/app/services/inventarios.service';
+import { ComprasService } from 'src/app/services/compras.service';
+import { ItemsService } from 'src/app/services/items.service';
+import Compra from 'src/app/interfaces/compra.interface'
+import Item from 'src/app/interfaces/item.interface';
+import { LoggerService } from 'src/app/services/logger.service';
 
 @Component({
   selector: 'app-rpt-comprasvsinventarios',
@@ -31,14 +31,11 @@ export class RptComprasVsInventariosComponent extends BaseComponent {
 
   lregistros: any[] = [];
 
-  private readonly inventariosService = inject(InventariosService);
-  private readonly comprasServices = inject(ComprasService);
-  private readonly itemsService = inject(ItemsService);
-  public override authService = inject(AuthService);
-  public override logger = inject(LoggerService);
-
-  constructor() {
-    super();
+  constructor(private inventariosService: InventariosService,
+    private comprasServices: ComprasService,
+    private itemsService: ItemsService,
+    public override authService: AuthService, public override logger: LoggerService) {
+    super(authService, logger);
   }
 
   ngOnInit(): void {
@@ -86,8 +83,8 @@ export class RptComprasVsInventariosComponent extends BaseComponent {
     this.lregistrositems.forEach((ele) => {
       let detalle: any = {};
       detalle = ele;
-      detalle.sumatoriocompras = this.ldatacompras.find(x => x.id == ele.id)?.cantidad || 0;
-      detalle.sumatorioinventario = this.ldatainventarios.find(x => x.id == ele.id)?.cantidad || 0;
+      detalle.sumatoriocompras = this.ldatacompras.find(x=> x.id == ele.id)?.cantidad || 0;
+      detalle.sumatorioinventario = this.ldatainventarios.find(x=> x.id == ele.id)?.cantidad || 0;
       detalle.diferencia = detalle.sumatoriocompras - detalle.sumatorioinventario;
       this.lregistros.push(detalle);
     });

@@ -1,13 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { MessageService, ConfirmationService } from 'primeng/api';
-import Item from '@interfaces/item.interface';
-import { AuthService } from '@services/auth.service';
-import { ItemsService } from '@services/items.service';
-import { ComprasService } from '@services/compras.service';
-import { BaseComponent } from '@util/base.component';
-import { InventariosService } from '@services/inventarios.service';
+import Item from 'src/app/interfaces/item.interface';
+import { AuthService } from 'src/app/services/auth.service';
+import { ItemsService } from 'src/app/services/items.service';
+import { BaseComponent } from 'src/app/util/base.component';
+import { InventariosService } from 'src/app/services/inventarios.service';
 import { Router } from '@angular/router';
-import { LoggerService } from '@services/logger.service';  
+import { LoggerService } from 'src/app/services/logger.service';  
 
 @Component({
   selector: 'app-inventarios',
@@ -17,16 +16,14 @@ import { LoggerService } from '@services/logger.service';
 })
 export class InventariosComponent extends BaseComponent {
 
-  private readonly itemService = inject(ItemsService);
-  private readonly messageService = inject(MessageService);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly compraService = inject(ComprasService);
-  private readonly router = inject(Router);
-  public override authService = inject(AuthService);
-  public override logger: LoggerService = inject(LoggerService);
-
-  constructor() {
-    super();  
+  constructor(private itemService: ItemsService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
+    private inventarioService: InventariosService,
+    private router: Router,
+    public override authService: AuthService,
+    public override logger: LoggerService) {
+    super(authService, logger);
   }
 
   item!: Item;
@@ -77,7 +74,7 @@ export class InventariosComponent extends BaseComponent {
       }
     })
 
-    //this.inventarioService.addCompra(this.inventario);
+    this.inventarioService.addCompra(this.inventario);
     this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'El inventario ha sido registrado' });
   }
 

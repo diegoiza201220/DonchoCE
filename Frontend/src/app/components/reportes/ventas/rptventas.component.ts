@@ -1,10 +1,10 @@
-import { Component, inject } from '@angular/core';
-import Orden from '@interfaces/orden.interface';
-import { OrdenesService } from '@services/ordenes.service';
+import { Component } from '@angular/core';
+import Orden from 'src/app/interfaces/orden.interface';
+import { OrdenesService } from 'src/app/services/ordenes.service';
 //import * as FileSaver from 'file-saver';
-import { BaseComponent } from '@util/base.component';
-import { AuthService } from '@services/auth.service';
-import { LoggerService } from '@services/logger.service';
+import { BaseComponent } from 'src/app/util/base.component';
+import { AuthService } from 'src/app/services/auth.service';
+import { LoggerService } from 'src/app/services/logger.service';
 
 @Component({
   selector: 'app-rpt-ventas',
@@ -18,12 +18,8 @@ export class RptVentasComponent extends BaseComponent {
   d2 = new Date();
   lregistros!: any[];
 
-  private readonly ordenesService = inject(OrdenesService); 
-  public override authService = inject(AuthService); 
-  public override logger = inject(LoggerService); 
-
-  constructor() {
-    super();
+  constructor(private ordenesService: OrdenesService, public override authService: AuthService, public override logger: LoggerService) {
+    super(authService, logger);
   }
 
   ngOnInit(): void {

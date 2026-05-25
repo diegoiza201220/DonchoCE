@@ -1,9 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MessageService, SelectItem, ConfirmationService } from 'primeng/api';
-import Producto from '@interfaces/productos.interface';
-import { ProductosService } from '@services/productos.service';
-import { LoggerService } from '@services/logger.service';
-import { CatalogosService } from '@services/catalogos.service';
+import Producto from 'src/app/interfaces/productos.interface';
+import { ProductosService } from 'src/app/services/productos.service';
+import { LoggerService } from 'src/app/services/logger.service';
+import { CatalogosService } from 'src/app/services/catalogos.service';
 
 @Component({
   selector: 'app-productos',
@@ -33,13 +33,12 @@ export class ProductosComponent implements OnInit {
     { label: 'BEBIDAS', value: 'BEBIDAS' },
     { label: 'OTROS', value: 'OTROS' }
   ];
-private readonly productosService = inject(ProductosService);
-    private readonly messageService = inject(MessageService);
-    private readonly confirmationService = inject(ConfirmationService);
-    private readonly logger = inject(LoggerService);
-    private readonly catalogosService = inject(CatalogosService);
 
-  constructor() {
+  constructor(private readonly productosService: ProductosService,
+    private readonly messageService: MessageService,
+    private readonly confirmationService: ConfirmationService,
+    private readonly logger: LoggerService,
+    private readonly catalogosService: CatalogosService) {
   }
 
   ngOnInit(): void {

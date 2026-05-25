@@ -1,10 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { MessageService, SelectItem, ConfirmationService } from 'primeng/api';
-import Item from '@interfaces/item.interface';
-import { AuthService } from '@services/auth.service';
-import { ItemsService } from '@services/items.service';
-import { BaseComponent } from '@util/base.component';
-import { LoggerService } from '@services/logger.service';
+import Item from 'src/app/interfaces/item.interface';
+import { AuthService } from 'src/app/services/auth.service';
+import { ItemsService } from 'src/app/services/items.service';
+import { BaseComponent } from 'src/app/util/base.component';
+import { LoggerService } from 'src/app/services/logger.service';  
 @Component({
   selector: 'app-items',
   templateUrl: './items.component.html',
@@ -45,16 +45,13 @@ export class ItemsComponent extends BaseComponent {
     { label: 'Litros', value: 'LITROS' }
   ];
 
-  private readonly itemService = inject(ItemsService);
-  private readonly messageService = inject(MessageService);
-  private readonly confirmationService = inject(ConfirmationService);
-  public override readonly authService = inject(AuthService);
-  public override readonly logger = inject(LoggerService);
-
-  constructor() {
-    super();
+  constructor(private itemService: ItemsService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
+    public override authService: AuthService,
+    public override logger: LoggerService) {
+    super(authService, logger);
   }
-
 
   ngOnInit(): void {
     this.getItemsObserver();

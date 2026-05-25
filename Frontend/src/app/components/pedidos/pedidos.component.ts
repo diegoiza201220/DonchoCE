@@ -1,16 +1,16 @@
-import { Component, ElementRef, ViewChild, OnInit, inject } from '@angular/core';
-import Producto from '@interfaces/productos.interface';
-import { ProductosService } from '@services/productos.service';
+import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import Producto from 'src/app/interfaces/productos.interface';
+import { ProductosService } from 'src/app/services/productos.service';
 import { MessageService, ConfirmationService } from 'primeng/api';
-import { SecuenciaService } from '@services/secuencia.service';
-import { OrdenesService } from '@services/ordenes.service';
+import { SecuenciaService } from 'src/app/services/secuencia.service';
+import { OrdenesService } from 'src/app/services/ordenes.service';
 import { Router } from '@angular/router';
-import { OrdenescocinaService } from '@services/ordenescocina.service';
-import Secuencia from '@interfaces/secuencia.interface';
-import { BaseComponent } from '@util/base.component';
+import { OrdenescocinaService } from 'src/app/services/ordenescocina.service';
+import Secuencia from 'src/app/interfaces/secuencia.interface';
+import { BaseComponent } from 'src/app/util/base.component';
 import { DatePipe } from '@angular/common';
-import { AuthService } from '@services/auth.service';
-import { LoggerService } from '@services/logger.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { LoggerService } from 'src/app/services/logger.service';
 
 @Component({
   selector: 'app-pedidos',
@@ -39,18 +39,19 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   activeIndex: number = 0;
 
   @ViewChild('efectivorecibido') input: ElementRef | undefined;
-  private readonly productosService = inject(ProductosService);
-  private readonly secuenciaService = inject(SecuenciaService);
-  private readonly messageService = inject(MessageService);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly ordenesService = inject(OrdenesService);
-  private readonly ordenesCocinaService = inject(OrdenescocinaService);
-  private readonly router = inject(Router);
-  private readonly datePipe = inject(DatePipe);
-  //private override readonly authService = inject(AuthService);
-  private readonly _logger = inject(LoggerService);
-  constructor() {
-    super();//authService, logger);
+
+  constructor(private readonly productosService: ProductosService,
+    private readonly messageService: MessageService,
+    private readonly confirmationService: ConfirmationService,
+    private readonly secuenciaService: SecuenciaService,
+    private readonly ordenesService: OrdenesService,
+    private readonly ordenesCocinaService: OrdenescocinaService,
+    private readonly router: Router,
+    private readonly datePipe: DatePipe,
+    public override authService: AuthService,
+    public override logger: LoggerService
+  ) {
+    super(authService, logger);
   }
 
   ngOnInit(): void {
@@ -135,7 +136,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     // this.lproductosporciones.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
     // this.lproductosbebidas.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
     // this.lproductosotros.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
-    this._logger.log(this.mostrarCargar);
+    this.logger.log(this.mostrarCargar);
   }
 
 
