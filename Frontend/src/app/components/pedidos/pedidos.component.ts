@@ -131,11 +131,11 @@ export class PedidosComponent extends BaseComponent implements OnInit {
       }
     });
     this.mostrarCargar = false;
-    this.lproductoschoclo.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
-    this.lproductoschocho.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
-    this.lproductosporciones.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
-    this.lproductosbebidas.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
-    this.lproductosotros.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
+    // this.lproductoschoclo.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
+    // this.lproductoschocho.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
+    // this.lproductosporciones.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
+    // this.lproductosbebidas.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
+    // this.lproductosotros.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
     this.logger.log(this.mostrarCargar);
   }
 
