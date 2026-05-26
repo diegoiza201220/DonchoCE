@@ -43,7 +43,7 @@ public class ProductoController : ControllerBase
         {
             Id = producto.Id,
             Activo = producto.Activo ?? false,
-            CodigoIva = Convert.ToInt32(_uow.GenParametroR.GetById("CODIGO_IVA_DEFAULT").Valor),
+            CodigoIva = Convert.ToInt32(_uow.GenParametroR.GetById("CODIGO_TARIFA_IVA_DEFAULT").Valor),
             Grupo = producto.Grupo,
             Nombre = producto.Nombre,
             OrdenAparicion = producto.OrdenAparicion,
@@ -84,7 +84,7 @@ public class ProductoController : ControllerBase
         {
             Id = producto.Id,
             Activo = producto.Activo ?? false,
-            CodigoIva = Convert.ToInt32(_uow.GenParametroR.GetById("CODIGO_IVA_DEFAULT").Valor),
+            CodigoIva = Convert.ToInt32(_uow.GenParametroR.GetById("CODIGO_TARIFA_IVA_DEFAULT").Valor),
             Grupo = producto.Grupo,
             Nombre = producto.Nombre,
             OrdenAparicion = producto.OrdenAparicion,

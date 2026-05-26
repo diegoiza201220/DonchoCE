@@ -32,11 +32,21 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   mostrarCargar: boolean = true;
   selectedFP: string = "EF";
 
+  tarifaIva = 0;
+  codigoIva = 0;
   pago: number = 0;
   cambio: number = 0;
   loading: boolean = false;
   fechainteger: number = 0;
   activeIndex: number = 0;
+
+  cliente: any = {};
+  clienteDialog = false;
+
+  lFacturar: any[] = [
+    { label: 'Si', value: true },
+    { label: 'No', value: false }
+  ];
 
   @ViewChild('efectivorecibido') input: ElementRef | undefined;
 
@@ -55,15 +65,33 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pedido = {};
+    this.configurarPedido();
     this.getProductosPromise();
     this.getSecuenciaPromise();
+
+  }
+
+  configurarPedido() {
+    this.pedido = {};
+    this.pedido.esFactura = true;
+    this.getDatosPedido();
+  }
+
+  getDatosPedido() {
+    this.ordenesService.getDatosPedido().then(data => {
+      this.tarifaIva = data.tarifaIva;
+      this.codigoIva = data.codigoIva;
+      this.lproductos.forEach((producto: Producto) => {
+        producto.valor = this.redondear(producto.valor + (producto.valor * this.tarifaIva / 100), 2);
+      });
+    })
   }
 
   getProductosPromise(): void {
     this.lproductos = [];
     this.productosService.getProductosPromise().then(data => {
       data.productos.forEach((producto: Producto) => {
+        producto.valorsiniva = producto.valor;
         this.lproductos.push(producto);
       });
       this.fillGrupoProducto();
@@ -194,7 +222,9 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.calcularDetalles(this.lproductosporciones.filter(x => x.badge > 0));
     this.calcularDetalles(this.lproductosbebidas.filter(x => x.badge > 0));
     this.calcularDetalles(this.lproductosotros.filter(x => x.badge > 0));
-    this.pedido.TotalOrden = this.pedido.FacDetalleOrdens.reduce((sum: any, current: { PrecioTotal: any; }) => sum + current.PrecioTotal, 0);
+    this.pedido.TotalSinImpuestos = this.pedido.FacDetalleOrdens.reduce((sum: any, current: { PrecioTotal: any; }) => sum + current.PrecioTotal, 0);
+    this.pedido.ImpuestoValor = this.redondear(this.pedido.TotalSinImpuestos * this.tarifaIva / 100, 2);
+    this.pedido.TotalOrden = this.redondear(this.pedido.TotalSinImpuestos + this.pedido.ImpuestoValor, 2);
   }
 
   calcularDetalles(lista: any[]) {
@@ -204,10 +234,10 @@ export class PedidosComponent extends BaseComponent implements OnInit {
           ProductoId: element.id,
           Cantidad: element.badge,
           plato: element.nombre,
-          PrecioUnitario: element.valor,
+          PrecioUnitario: element.valorsiniva,
           ValorIva: 0,
           CodigoIva: '0',
-          PrecioTotal: element.badge * element.valor,
+          PrecioTotal: element.badge * element.valorsiniva,
           PedidoACocina: element.pedidoacocina
         });
     });
@@ -245,5 +275,17 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     }, 100);
 
     this.router.navigateByUrl('main');
+  }
+
+  openClienteDialog() {
+    this.clienteDialog = true;
+  }
+
+  hideDialogCliente() {
+    this.clienteDialog = false;
+  }
+
+  saveCliente() {
+    this.clienteDialog = false;
   }
 }

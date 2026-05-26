@@ -10,7 +10,7 @@ import { firstValueFrom } from 'rxjs';
 export class OrdenesService {
   private readonly apiUrl = `${environment.apiUrl}/orden`;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
   async addOrden(orden: any): Promise<any> {
     return firstValueFrom(this.http.post<any>(this.apiUrl + "/facturar", orden));
@@ -28,6 +28,12 @@ export class OrdenesService {
 
   async queryProductosVendidosPorFecha(rqOrdenesPorFechas: any): Promise<any> {
     const post$ = this.http.post<any>(`${this.apiUrl}/productosvendidosporfecha`, rqOrdenesPorFechas);
+    const result = await firstValueFrom(post$);
+    return result;
+  }
+
+  async getDatosPedido (): Promise<any> {
+    const post$ = this.http.get<any>(`${this.apiUrl}/datospedido`);
     const result = await firstValueFrom(post$);
     return result;
   }

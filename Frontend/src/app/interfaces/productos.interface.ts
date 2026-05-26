@@ -3,6 +3,7 @@ export default interface Producto{
     grupo: string;
     nombre: string;
     valor: number;
+    valorsiniva: number;
     activo: boolean;
     ordenaparicion: number;
     pedidoacocina: boolean;

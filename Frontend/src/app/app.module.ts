@@ -39,6 +39,7 @@ import { TwoDigitDecimaNumberDirective } from './util/directives/twodigitdecimal
 import { InventariosComponent } from './components/inventarios/inventarios.component';
 import { RptInventariosComponent } from './components/reportes/inventarios/rptinventarios.component';
 import { RptComprasVsInventariosComponent } from './components/reportes/comprasvsinventarios/rptcomprasvsinventarios.component';
+import { SelectButtonModule } from 'primeng/selectbutton';
 
 import { AuthInterceptor } from './services/auth.interceptor';
 
@@ -69,7 +70,7 @@ import { AuthInterceptor } from './services/auth.interceptor';
     TableModule, MessagesModule, InputTextModule, InputNumberModule,
     ToastModule, FormsModule, BrowserAnimationsModule, BadgeModule,
     TabViewModule, ChartModule, CheckboxModule, ToolbarModule, ButtonModule,
-    DialogModule, ConfirmDialogModule, DropdownModule, SplitterModule, CalendarModule
+    DialogModule, ConfirmDialogModule, DropdownModule, SplitterModule, CalendarModule, SelectButtonModule
   ],
   providers: [
     ConfirmationService,

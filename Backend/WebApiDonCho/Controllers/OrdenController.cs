@@ -39,6 +39,21 @@ public class OrdenController : ControllerBase
     public async Task<IActionResult> GetByCliente(int clienteId)
         => Ok(await _uow.FacOrdenR.GetByClienteAsync(clienteId));
 
+    [HttpGet("datospedido")]
+    public async Task<IActionResult> GetDatosPedido()
+    {
+        var parametro = _uow.GenParametroR.GetById("CODIGO_TARIFA_IVA_FACTURAR");
+        var tarifa = _uow.GenCatalogoDetalleR.GetById(Convert.ToInt16(parametro.Valor));
+        DatosPedidoDTO datosPedidoDTO = new()
+        {
+            CodigoIva = Convert.ToInt16(parametro.Valor),
+            TarifaIva = Convert.ToInt16(tarifa.Codigo.Replace("%",""))
+        };
+
+        return datosPedidoDTO is null ? NotFound() : Ok(datosPedidoDTO);
+    }
+
+
     [HttpPost("facturar")]
     public async Task<IActionResult> Create([FromBody] FacOrdenDTO orden)
     {

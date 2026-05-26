@@ -94,7 +94,8 @@
         </p-tabPanel>
         <p-tabPanel header="Resumen de orden">
             <h1>ORDEN NUMERO: {{ lsecuencia.secuencia }}</h1>
-
+            <p-selectButton [options]="this.lFacturar" [(ngModel)]="pedido.esFactura" optionLabel="label"
+                optionValue="value" />
             <p-table #dt [value]="pedido.FacDetalleOrdens" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
                 [rowHover]="true">
                 <ng-template pTemplate="header">
@@ -114,6 +115,24 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="summary">
+                    <tr *ngIf="pedido.esFactura">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Subtotal : <span class="tab"></span></td>
+                        <td style="color: red; font-size: xx-large;">{{ pedido.TotalSinImpuestos |
+                            currency:'USD':'symbol' }}
+                        </td>
+                    </tr>
+                    <tr *ngIf="pedido.esFactura">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>IVA : <span class="tab"></span></td>
+                        <td style="color: red; font-size: xx-large;">{{ pedido.ImpuestoValor | currency:'USD':'symbol'
+                            }}
+                        </td>
+                    </tr>
                     <tr>
                         <td></td>
                         <td></td>
@@ -162,56 +181,16 @@
                 </div>
             </div>
             <p>
-                <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <button class="btn btn-primary" type="button" (click)="openClienteDialog()">
                     Datos Adicionales
                 </button>
-                
-            </p>
-            <div class="collapse" id="collapseExample">
-                <div class="card card-body">
-                    <div class="form-group row">
-                        <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
-                        <div class="col-sm-6">
-                            <input type="text" id="nombre" class="form-control" [(ngModel)]="pedido.cliente"
-                                aria-label="Username" aria-describedby="basic-addon1">
-                        </div>
-                    </div>
 
-                    <div class="form-group row">
-                        <label for="ruc" class="col-sm-2 col-form-label">Ruc:</label>
-                        <div class="col-sm-6">
-                            <input type="text" id="nombre" class="form-control" [(ngModel)]="pedido.ruc"
-                                aria-label="Username" aria-describedby="basic-addon1">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="telefono" class="col-sm-2 col-form-label">Teléfono:</label>
-                        <div class="col-sm-6">
-                            <input type="text" id="telefono" class="form-control" [(ngModel)]="pedido.telefono"
-                                aria-label="Username" aria-describedby="basic-addon1">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="email" class="col-sm-2 col-form-label">Email:</label>
-                        <div class="col-sm-6">
-                            <input type="text" id="email" class="form-control" [(ngModel)]="pedido.email"
-                                aria-label="Username" aria-describedby="basic-addon1">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="direccion" class="col-sm-2 col-form-label">Dirección:</label>
-                        <div class="col-sm-10">
-                            <input type="text" id="direccion" class="form-control" [(ngModel)]="pedido.direccion"
-                                aria-label="Username" aria-describedby="basic-addon1">
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </p>
+
             <div class="divFlotanteRegresar">
                 <div class="">
-                <p-button label="Regresar" (onClick)="activeIndex = 0"></p-button>
-            </div>
+                    <p-button label="Regresar" (onClick)="activeIndex = 0"></p-button>
+                </div>
             </div>
             <div class="divFlotanteGrabarContinuar">
                 <div class="">
@@ -223,3 +202,90 @@
     </p-tabView>
 
 </div>
+
+<p-dialog [(visible)]="clienteDialog" [style]="{width: '450px'}" header="Detalles del cliente" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <!-- <div class="collapse" id="collapseExample"> -->
+        <!-- <div class="card card-body"> -->
+
+        <!-- <div class="p-field">
+                    <label for="familia">Familia</label>
+                    <p-dropdown [options]="lfamilia" [(ngModel)]="item.familia" appendTo="body"></p-dropdown>
+                    <small class="p-error" *ngIf="submitted && !item.familia">Familia es requerido.</small>
+                </div> -->
+
+        <div class="p-field">
+            <label for="cedula_ruc" class="col-sm-2 col-form-label">Ruc/Cédula</label>
+            <div class="col-sm-6">
+                <input type="text" id="cedula_ruc" class="form-control" [(ngModel)]="cliente.cedula_ruc"
+                    aria-describedby="basic-addon1">
+            </div>
+        </div>
+
+        <div class="p-field">
+            <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
+            <div class="col-sm-6">
+                <input type="text" id="nombre" class="form-control" [(ngModel)]="cliente.nombre"
+                    aria-describedby="basic-addon1">
+            </div>
+        </div>
+
+        <div class="p-field">
+            <label for="apellido" class="col-sm-2 col-form-label">Apellido</label>
+            <div class="col-sm-6">
+                <input type="text" id="apellido" class="form-control" [(ngModel)]="cliente.apellido"
+                    aria-describedby="basic-addon1">
+            </div>
+        </div>
+
+        <div class="p-field">
+            <label for="telefono_celular" class="col-sm-2 col-form-label">Teléfono Celular</label>
+            <div class="col-sm-6">
+                <input type="text" id="telefono_celular" class="form-control" [(ngModel)]="cliente.telefono_celular"
+                    aria-describedby="basic-addon1">
+            </div>
+        </div>
+
+        <div class="p-field">
+            <label for="email" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-6">
+                <input type="text" id="email" class="form-control" [(ngModel)]="cliente.email"
+                    aria-describedby="basic-addon1">
+            </div>
+        </div>        
+
+        <div class="p-field">
+            <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
+            <div class="col-sm-6">
+                <input type="text" id="nombre" class="form-control" [(ngModel)]="cliente.nombre" 
+                    aria-describedby="basic-addon1">
+            </div>
+        </div>        
+
+        <div class="p-field">
+            <label for="direccion" class="col-sm-2 col-form-label">Dirección</label>
+            <div class="col-sm-6">
+                <input type="text" id="direccion" class="form-control" [(ngModel)]="cliente.direccion"
+                    aria-describedby="basic-addon1">
+            </div>
+        </div>
+
+        <div class="p-field">
+            <label for="fecha_cumpleanios" class="col-sm-2 col-form-label">Fecha de Cumpleaños</label>
+            <div class="col-sm-6">
+                <input type="text" id="fecha_cumpleanios" class="form-control" [(ngModel)]="cliente.fecha_cumpleanios"
+                    aria-describedby="basic-addon1">
+            </div>
+        </div>        
+
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+            (click)="hideDialogCliente()"></button>
+        <button pButton pRipple label="Grabar" icon="pi pi-check" class="p-button-text"
+            (click)="saveCliente()"></button>
+    </ng-template>
+</p-dialog>
