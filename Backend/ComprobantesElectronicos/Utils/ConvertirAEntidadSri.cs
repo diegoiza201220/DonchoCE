@@ -1,4 +1,5 @@
-﻿using EFModel.Models;
+﻿using EFModel.DTO;
+using EFModel.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +8,7 @@ namespace ComprobantesElectronicos.Utils
 {
     public class ConvertirAEntidadSri
     {
-        public static factura ObtenerFactura(FacOrden orden)
+        public static factura ObtenerFactura(FacOrdenDTO orden)
         {
             
             factura factura = new()
@@ -18,22 +19,22 @@ namespace ComprobantesElectronicos.Utils
                 {
                     ambiente = 1,
                     tipoEmision = 1,
-                    razonSocial = "IRENE PAZMIÑO",
-                    nombreComercial = "IRENE PAZMIÑO",
-                    ruc = "1714802681001",
+                    razonSocial = orden.RazonSocial,
+                    nombreComercial = orden.NombreComercial,
+                    ruc = orden.RucDonCho,
                     claveAcceso = orden.ClaveNumeroAutorizacion,
-                    codDoc = "01",
-                    contribuyenteRimpe = "CONTRIBUYENTE RÉGIMEN RIMPE",
-                    dirMatriz = "CENTRO HISTÓRICO QUITO",
+                    codDoc = orden.CodDoc,
+                    contribuyenteRimpe = orden.ContibuyenteRimpe,
+                    dirMatriz = orden.Direccionmatriz,
                     estab = orden.Establecimiento,
                     ptoEmi = orden.PuntoEmision,
                     secuencial = orden.NumeroFactura
                 },
                 infoFactura = new facturaInfoFactura()
                 {
-                    fechaEmision = orden.Fecha.ToString("dd/MM/yyyy"),
-                    dirEstablecimiento = "CENTRO HISTORICO",
-                    obligadoContabilidad = "NO",
+                    fechaEmision = orden.Fecha.ToLocalTime().ToString("dd/MM/yyyy"),
+                    dirEstablecimiento = orden.DireccionEstablecimiento,
+                    obligadoContabilidad = orden.ObligadoContabilidad,
                     tipoIdentificacionComprador = "05",
                     razonSocialComprador = $"{orden.Cliente.Apellido} {orden.Cliente.Nombre}",
                     identificacionComprador = orden.Cliente.CedulaRuc,
@@ -50,11 +51,11 @@ namespace ComprobantesElectronicos.Utils
             {
                 new()
                 {
-                    codigo             = 2, // orden.ImpuestoCodigo,
-                    codigoPorcentaje   = 4, //orden.ImpuestoCodigoPorcentaje,
+                    codigo             = orden.ImpuestoCodigo,
+                    codigoPorcentaje   = orden.ImpuestoCodigoPorcentaje,
                     descuentoAdicional = 0,
-                    baseImponible      = 1, //orden.ImpuestoBaseImponible,
-                    valor              = 0.15m //orden.ImpuestoValor,
+                    baseImponible      = orden.ImpuestoBaseImponible,
+                    valor              = orden.ImpuestoValor,
                 }
             };
 
@@ -62,8 +63,8 @@ namespace ComprobantesElectronicos.Utils
             {
                 new()
                 {
-                    formaPago   = "01",
-                    total       = 1.15m, //orden.TotalOrden,
+                    formaPago   = orden.TipoPago == "EF"?"01":"20",
+                    total       = orden.TotalOrden,
                     plazo       = 0,
                     unidadTiempo = "dias"
                 }
@@ -74,8 +75,8 @@ namespace ComprobantesElectronicos.Utils
             {
                 lfdetalle.Add(new facturaDetalle
                 {
-                    codigoPrincipal = item.Productoid.ToString(),
-                    descripcion = item.Producto?.Nombre ?? "ALIMENTACION",
+                    codigoPrincipal = item.ProductoId.ToString(),
+                    descripcion = item.Nombre ?? "ALIMENTACION",
                     cantidad = item.Cantidad,
                     precioUnitario = item.PrecioUnitario,
                     descuento = 0,
@@ -84,11 +85,11 @@ namespace ComprobantesElectronicos.Utils
                     {
                         new()
                         {
-                            codigo           = 2,
-                            codigoPorcentaje = 4,   // IVA 15% Ecuador
-                            tarifa           = 15,
-                            baseImponible    = 1, //item.PrecioTotal,
-                            valor            = 0.15m //item.ImpuestoValor
+                            codigo           = 2, // codigo IVA
+                            codigoPorcentaje = item.ImpuestoCodigoPorcentaje ,   // IVA 15% Ecuador
+                            tarifa           = item.ImpuestoTarifa,
+                            baseImponible    = item.PrecioTotal, //item.PrecioTotal,
+                            valor            = item.ImpuestoValor //item.ImpuestoValor
                         }
                     }
                 });

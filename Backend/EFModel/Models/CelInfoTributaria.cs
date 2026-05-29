@@ -12,4 +12,5 @@ public partial class CelInfoTributaria
     public string DireccionMatriz { get; set; } = string.Empty;
     public string ContribuyenteEspecial { get; set; } = string.Empty;
     public bool ObligadoContabilidad { get; set; }
+    public string ContribuyenteRimpe { get; set; } = string.Empty;
 }

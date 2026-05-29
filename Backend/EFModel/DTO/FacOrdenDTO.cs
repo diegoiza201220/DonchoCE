@@ -38,7 +38,21 @@ namespace EFModel.DTO
         public string ClaveNumeroAutorizacion { get; set; } = string.Empty;
         public string Establecimiento { get; set; } = string.Empty;
         public string PuntoEmision { get; set; } = string.Empty;
+
+        #region Informacion tributaria para factura
+        public string RazonSocial { get; set; } = string.Empty;
+        public string NombreComercial { get; set; } = string.Empty;
+        public string RucDonCho { get; set; } = string.Empty;
+        public string Direccionmatriz { get; set; } = string.Empty;
+        public string ContibuyenteRimpe { get; set; } = string.Empty;
+        public string DireccionEstablecimiento { get; set; } = string.Empty;
+        public string ObligadoContabilidad { get; set; } = string.Empty;
+        public string CodDoc { get; set; } = string.Empty;
+        #endregion
+
+
         [Required]
         public List<FacDetalleOrdenDTO> FacDetalleOrdens { get; set; } = new();
+        public FacClienteDTO Cliente { get; set; } = new();
     }
 }

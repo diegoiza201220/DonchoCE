@@ -35,6 +35,7 @@ builder.Services.AddScoped<OrdenService>();
 builder.Services.AddScoped<ComprobanteService>();
 builder.Services.AddScoped<SriService>();
 builder.Services.AddScoped<InfowareFirmaService>();
+builder.Services.AddScoped<ClienteService>();
 
 builder.Services.AddSRIDocumentosElectronicos();
 

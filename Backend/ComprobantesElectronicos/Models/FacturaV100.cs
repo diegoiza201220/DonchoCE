@@ -1389,9 +1389,9 @@ public partial class facturaDetalleDetAdicional
 public partial class facturaDetalleImpuesto
 {
 
-    private byte codigoField;
+    private int codigoField;
 
-    private byte codigoPorcentajeField;
+    private int codigoPorcentajeField;
 
     private decimal tarifaField;
 
@@ -1400,7 +1400,7 @@ public partial class facturaDetalleImpuesto
     private decimal valorField;
 
     /// <remarks/>
-    public byte codigo
+    public int codigo
     {
         get
         {
@@ -1413,7 +1413,7 @@ public partial class facturaDetalleImpuesto
     }
 
     /// <remarks/>
-    public byte codigoPorcentaje
+    public int codigoPorcentaje
     {
         get
         {

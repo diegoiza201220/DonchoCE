@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using EFModel.Interfaces;
 using EFModel.Models;
+using EFModel.DTO;
+using WebApiDonCho.Services;
 
 namespace WebApiDonCho.Controllers;
 
@@ -11,8 +13,13 @@ namespace WebApiDonCho.Controllers;
 public class ClienteController : ControllerBase
 {
     private readonly IUnitOfWork _uow;
+    private readonly ClienteService _clienteService;
 
-    public ClienteController(IUnitOfWork uow) => _uow = uow;
+    public ClienteController(IUnitOfWork uow, ClienteService clienteService)
+    {
+        _uow = uow;
+        _clienteService = clienteService;
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
@@ -32,12 +39,18 @@ public class ClienteController : ControllerBase
         return cliente is null ? NotFound() : Ok(cliente);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] FacCliente cliente)
+    [HttpPost("crear")]
+    public async Task<IActionResult> Create([FromBody] FacClienteDTO cliente)
     {
-        await _uow.FacClienteR.AddAsync(cliente);
-        await _uow.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetById), new { id = cliente.Id }, cliente);
+        try
+        {
+            var cli = await _clienteService.AddCliente(cliente);
+            return CreatedAtAction(nameof(GetById), new { id = cli.Id }, cli);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { mensaje = ex.Message });
+        }
     }
 
     [HttpPut("{id:int}")]

@@ -318,6 +318,8 @@ public partial class DonchoContext : DbContext
                 .HasColumnName("contribuyente_especial");
             entity.Property(e => e.ObligadoContabilidad)
                 .HasColumnName("obligado_contabilidad");
+            entity.Property(e => e.ContribuyenteRimpe)
+                .HasColumnName("contribuyente_rimpe");
         });
 
         modelBuilder.Entity<GenCatalogo>(entity =>

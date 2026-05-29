@@ -45,9 +45,9 @@ export class ItemsComponent extends BaseComponent {
     { label: 'Litros', value: 'LITROS' }
   ];
 
-  constructor(private itemService: ItemsService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
+  constructor(private readonly itemService: ItemsService,
+    private readonly messageService: MessageService,
+    private readonly confirmationService: ConfirmationService,
     public override authService: AuthService,
     public override logger: LoggerService) {
     super(authService, logger);

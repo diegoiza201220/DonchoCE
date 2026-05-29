@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <div class="card" style="background-color: white;">
     <p-tabView (onChange)="onChangeTab($event)" [(activeIndex)]="activeIndex" styleClass="tabview-custom">
         <p-tabPanel header="Selección de platos">
@@ -109,7 +110,7 @@
                 <ng-template pTemplate="body" let-producto>
                     <tr>
                         <td>{{ producto.Cantidad }}</td>
-                        <td>{{ producto.plato }}</td>
+                        <td>{{ producto.Nombre }}</td>
                         <td>{{ producto.PrecioUnitario | currency:'USD':'symbol'}}</td>
                         <td>{{ producto.PrecioTotal | currency:'USD':'symbol'}}</td>
                     </tr>
@@ -206,20 +207,13 @@
 <p-dialog [(visible)]="clienteDialog" [style]="{width: '450px'}" header="Detalles del cliente" [modal]="true"
     styleClass="p-fluid">
     <ng-template pTemplate="content">
-        <!-- <div class="collapse" id="collapseExample"> -->
-        <!-- <div class="card card-body"> -->
-
-        <!-- <div class="p-field">
-                    <label for="familia">Familia</label>
-                    <p-dropdown [options]="lfamilia" [(ngModel)]="item.familia" appendTo="body"></p-dropdown>
-                    <small class="p-error" *ngIf="submitted && !item.familia">Familia es requerido.</small>
-                </div> -->
 
         <div class="p-field">
             <label for="cedula_ruc" class="col-sm-2 col-form-label">Ruc/Cédula</label>
             <div class="col-sm-6">
-                <input type="text" id="cedula_ruc" class="form-control" [(ngModel)]="cliente.cedula_ruc"
+                <input type="text" id="cedula_ruc" class="form-control" [(ngModel)]="cliente.cedulaRuc"
                     aria-describedby="basic-addon1">
+                <p-button label="Search" icon="pi pi-check" *ngIf="!clienteEncontrado" [loading]="searchingCliente" (onClick)="searchCliente()" />
             </div>
         </div>
 
@@ -253,15 +247,7 @@
                 <input type="text" id="email" class="form-control" [(ngModel)]="cliente.email"
                     aria-describedby="basic-addon1">
             </div>
-        </div>        
-
-        <div class="p-field">
-            <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
-            <div class="col-sm-6">
-                <input type="text" id="nombre" class="form-control" [(ngModel)]="cliente.nombre" 
-                    aria-describedby="basic-addon1">
-            </div>
-        </div>        
+        </div>
 
         <div class="p-field">
             <label for="direccion" class="col-sm-2 col-form-label">Dirección</label>
@@ -277,7 +263,7 @@
                 <input type="text" id="fecha_cumpleanios" class="form-control" [(ngModel)]="cliente.fecha_cumpleanios"
                     aria-describedby="basic-addon1">
             </div>
-        </div>        
+        </div>
 
 
     </ng-template>

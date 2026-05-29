@@ -4,6 +4,7 @@ import { ProductosService } from 'src/app/services/productos.service';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { SecuenciaService } from 'src/app/services/secuencia.service';
 import { OrdenesService } from 'src/app/services/ordenes.service';
+import { ClientesService } from 'src/app/services/clientes.service';
 import { Router } from '@angular/router';
 import { OrdenescocinaService } from 'src/app/services/ordenescocina.service';
 import Secuencia from 'src/app/interfaces/secuencia.interface';
@@ -39,6 +40,8 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   loading: boolean = false;
   fechainteger: number = 0;
   activeIndex: number = 0;
+  searchingCliente: boolean = false;
+  clienteEncontrado: boolean = false;
 
   cliente: any = {};
   clienteDialog = false;
@@ -56,6 +59,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     private readonly secuenciaService: SecuenciaService,
     private readonly ordenesService: OrdenesService,
     private readonly ordenesCocinaService: OrdenescocinaService,
+    private readonly clientesService: ClientesService,
     private readonly router: Router,
     private readonly datePipe: DatePipe,
     public override authService: AuthService,
@@ -68,13 +72,19 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.configurarPedido();
     this.getProductosPromise();
     this.getSecuenciaPromise();
-
+    this.getDatosPedido();
   }
 
   configurarPedido() {
     this.pedido = {};
-    this.pedido.esFactura = true;
-    this.getDatosPedido();
+    // this.lproductoschoclo = [];
+    // this.lproductoschocho = [];
+    // this.lproductosporciones = [];
+    // this.lproductosbebidas = [];
+    // this.lproductosotros = [];
+
+    this.pedido.esFactura = false;
+
   }
 
   getDatosPedido() {
@@ -110,23 +120,23 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     })
   }
 
-  getProductosObserver(): void {
-    this.productosService.getProductosObservable().subscribe(productos => {
-      this.lproductos = productos;
-    })
-  }
+  // getProductosObserver(): void {
+  //   this.productosService.getProductosObservable().subscribe(productos => {
+  //     this.lproductos = productos;
+  //   })
+  // }
 
-  getSecuenciaObserver(): void {
-    this.secuenciaService.getSecuenciaObservable().subscribe(secuencia => {
-      let d = new Date();
-      this.fechainteger = this.fechaToInteger(d);
-      this.lsecuencia = secuencia[0];
-      if (this.lsecuencia.fecha !== this.fechainteger) {
-        this.lsecuencia.fecha = this.fechainteger;
-        this.lsecuencia.secuencia = 1;
-      }
-    })
-  }
+  // getSecuenciaObserver(): void {
+  //   this.secuenciaService.getSecuenciaObservable().subscribe(secuencia => {
+  //     let d = new Date();
+  //     this.fechainteger = this.fechaToInteger(d);
+  //     this.lsecuencia = secuencia[0];
+  //     if (this.lsecuencia.fecha !== this.fechainteger) {
+  //       this.lsecuencia.fecha = this.fechainteger;
+  //       this.lsecuencia.secuencia = 1;
+  //     }
+  //   })
+  // }
 
   fillGrupoProducto() {
     if (!this.mostrarCargar) {
@@ -159,11 +169,6 @@ export class PedidosComponent extends BaseComponent implements OnInit {
       }
     });
     this.mostrarCargar = false;
-    // this.lproductoschoclo.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
-    // this.lproductoschocho.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
-    // this.lproductosporciones.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
-    // this.lproductosbebidas.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
-    // this.lproductosotros.sort((a, b) => (Number(a.ordenaparicion) < Number(b.ordenaparicion) ? -1 : 1));
     this.logger.log(this.mostrarCargar);
   }
 
@@ -233,12 +238,15 @@ export class PedidosComponent extends BaseComponent implements OnInit {
         {
           ProductoId: element.id,
           Cantidad: element.badge,
-          plato: element.nombre,
+          Nombre: element.nombre,
           PrecioUnitario: element.valorsiniva,
-          ValorIva: 0,
-          CodigoIva: '0',
+          ImpuestoCodigo: 2,
+          ImpuestoCodigoPorcentaje: this.codigoIva,
+          ImpuestoTarifa: this.tarifaIva,
+          ImpuestoValor: this.redondear(element.valorsiniva * this.tarifaIva / 100, 2),
           PrecioTotal: element.badge * element.valorsiniva,
-          PedidoACocina: element.pedidoacocina
+          PedidoACocina: element.pedidoacocina,
+          ValorIva: this.redondear(element.valorsiniva * this.tarifaIva / 100, 2)
         });
     });
   }
@@ -258,23 +266,71 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     if (this.activeIndex != 1) return;
 
     this.loading = true;
-    setTimeout(() => {
+    //setTimeout(() => {
+
+      if (!this.pedido.esFactura) {
+        this.cliente.id = 1;
+        this.cliente.nombre = 'Consumidor final';
+        this.cliente.apellido = '';
+        this.cliente.cedulaRuc = '9999999999';
+        this.cliente.direccion = 'NA';
+        this.cliente.email = 'NA';
+        this.cliente.telefono_celular = '0000000000';
+        this.cliente.usuarioRegistro = this.authService.userEmail;
+      }
+
       let d = new Date();
-      this.pedido.Clienteid = 4;
+      
+
+      this.pedido.Clienteid = this.cliente.id === null ? 1 : this.cliente.id;
       this.pedido.UsuarioRegistro = this.authService.userEmail;
       this.pedido.Secuencial = this.lsecuencia.secuencia;
       this.pedido.TipoPago = this.selectedFP;
       this.pedido.Fecha = d;
       this.pedido.FechaInteger = this.fechainteger;
-      this.pedido.ValorIva = 0;
+      this.pedido.ValorIva = this.codigoIva;
       this.pedido.NumeroFactura = '000';
-      this.pedido.CodigoIva = '0';
       this.pedido.DocumentoPago = '';
-      this.ordenesService.addOrden(this.pedido);
-      this.loading = false;
-    }, 100);
+      this.pedido.ImpuestoBaseImponible = this.pedido.TotalSinImpuestos;
+      this.pedido.ImpuestoCodigo = 2;
+      this.pedido.ImpuestoCodigoPorcentaje = this.codigoIva;
+      this.pedido.Cliente = this.cliente;
+      this.logger.log(this.pedido);
+      this.ordenesService.addOrden(this.pedido).then((data) => {  
+        this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Pedido ' + data.secuencial + ' creado' });
+        this.loading = false;
+        this.cleanPedidos();
+        //this.router.navigate(['pedidos']);
+      }, (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Ops!! ', detail: 'Error al crear el pedido' });
+        this.loading = false;
+      });
+    //}, 2000);
+  //this.ngOnInit();
+    //
+    //this.router.navigate(['pedidos']);
+  }
 
-    this.router.navigateByUrl('main');
+  cleanPedidos() {
+    this.configurarPedido();
+    this.getProductosPromise();
+    this.getSecuenciaPromise();
+    this.getDatosPedido();
+    this.lproductoschoclo.forEach(element => {
+      element.badge = '0';
+    });
+    this.lproductoschocho.forEach(element => {
+      element.badge = '0';
+    });
+    this.lproductosporciones.forEach(element => {
+      element.badge = '0';
+    });
+    this.lproductosbebidas.forEach(element => {
+      element.badge = '0';
+    });
+    this.lproductosotros.forEach(element => {
+      element.badge = '0';
+    });
   }
 
   openClienteDialog() {
@@ -283,9 +339,44 @@ export class PedidosComponent extends BaseComponent implements OnInit {
 
   hideDialogCliente() {
     this.clienteDialog = false;
+    this.cliente = {};
+    this.clienteEncontrado = false;
   }
 
   saveCliente() {
-    this.clienteDialog = false;
+    if (this.clienteEncontrado) {
+      this.clienteDialog = false;
+      return;
+    }
+    this.cliente.usuarioRegistro = this.authService.userEmail;
+    this.clientesService.addItem(this.cliente).then(data => {
+      this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Cliente creado' });
+      this.clienteDialog = false;
+      this.cliente.id = data.id;
+      this.pedido.Clienteid = this.cliente.id;
+    }).catch((error) => {
+      this.messageService.add({ severity: 'error', summary: 'Ops!! ', detail: 'Error al crear el cliente' });
+    });
+  }
+
+  searchCliente() {
+    this.searchingCliente = true;
+    this.clientesService.getClientePromiseByCedulaRuc(this.cliente.cedulaRuc).then(data => {
+      this.cliente.nombre = data.nombre;
+      this.cliente.apellido = data.apellido;
+      this.cliente.direccion = data.direccion;
+      this.cliente.telefono_celular = data.telefonoCelular;
+      this.cliente.email = data.email;
+      this.cliente.fecha_cumpleanios = data.fechaCumpleanios;
+      this.cliente.id = data.id;
+      this.searchingCliente = false;
+      this.clienteEncontrado = true;
+      this.cliente.usuarioRegistro = this.authService.userEmail;
+      this.messageService.add({ severity: 'success', summary: '¡Muy bien!', detail: '¡El cliente fue encontrado!' });
+    }).catch(error => {
+      error.status === 404 ? this.messageService.add({ severity: 'warn', summary: 'Ops!!', detail: '¡El cliente no fue encontrado!' }) : this.messageService.add({ severity: 'error', summary: 'Ops!!', detail: 'Error al buscar el cliente!' });
+      this.searchingCliente = false;
+    });
   }
 }
+

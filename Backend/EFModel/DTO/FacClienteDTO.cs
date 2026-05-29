@@ -4,19 +4,15 @@ namespace EFModel.DTO
 {
     public class FacClienteDTO
     {
-        [Required]
         public int Id { get; set; }
 
         [StringLength(100)]
-        [Required]
         public string Nombre { get; set; } = null!;
 
         [StringLength(100)]
-        [Required]
         public string Apellido { get; set; } = null!;
 
         [StringLength(20)]
-        [Required]
         public string CedulaRuc { get; set; } = null!;
 
         [StringLength(20)]

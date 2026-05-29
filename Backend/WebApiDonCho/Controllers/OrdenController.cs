@@ -35,10 +35,6 @@ public class OrdenController : ControllerBase
         return orden is null ? NotFound() : Ok(orden);
     }
 
-    [HttpGet("cliente/{clienteId:int}")]
-    public async Task<IActionResult> GetByCliente(int clienteId)
-        => Ok(await _uow.FacOrdenR.GetByClienteAsync(clienteId));
-
     [HttpGet("datospedido")]
     public async Task<IActionResult> GetDatosPedido()
     {

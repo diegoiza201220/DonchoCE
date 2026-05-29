@@ -25,5 +25,6 @@ namespace EFModel.DTO
         public decimal PrecioTotal { get; set; }
 
         public bool PedidoACocina { get; set; }
+        public string Nombre { get; set; } = string.Empty;
     }
 }

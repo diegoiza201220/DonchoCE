@@ -4,56 +4,47 @@ using EFModel.DTO;
 using EFModel.DTO.Reportes;
 using EFModel.DTO.Request;
 using EFModel.Interfaces;
-using EFModel.Mappers;
 using EFModel.Models;
+using EFModel.Repositories;
+using System.Runtime.ConstrainedExecution;
 using WebApiDonCho.Helpers.ComprobantesElectronicos;
 
 namespace WebApiDonCho.Services
 {
-    public class OrdenService
+    public class ClienteService
     {
         private readonly IUnitOfWork _uow;
         private readonly ComprobanteService _comprobanteService;
-        public OrdenService(IUnitOfWork uow, ComprobanteService comprobanteService)
+        public ClienteService(IUnitOfWork uow, ComprobanteService comprobanteService)
         {
             _uow = uow;
             _comprobanteService = comprobanteService;
         }
-        public async Task<FacOrden> FacturarAsync(FacOrdenDTO orden)
+        public async Task<FacCliente> AddCliente(FacClienteDTO cliente)
         {
-            var secuencia = await _uow.FacSecuenciaDiaR.GetSecuenciaAsync();
-            if (secuencia is null)
-                throw new InvalidOperationException("No existe registro de secuencia del día.");
-
-            var codigoPorcentaje = Convert.ToInt16(_uow.GenCatalogoDetalleR.GetById(orden.ImpuestoCodigoPorcentaje).Valor);
-            orden.ImpuestoCodigoPorcentaje = codigoPorcentaje;
-            orden.FacDetalleOrdens.ForEach(d => d.ImpuestoCodigoPorcentaje = codigoPorcentaje);
-            var facOrden = orden.ToDTO();
-
-            if (orden.EsFactura)
+            var faccliente = new FacCliente
             {
-                orden.CodDoc = "01";
-                CelSecuenciaSri celSecuenciaSri = _uow.CelSecuenciasSriR.GetByTipoDocumento("01");
-                CelInfoTributaria celInfoTributaria = _uow.CelInfoTributariaR.GetById(1);
-                InfoTributariaHelper.SetInformacion(orden, facOrden, celInfoTributaria, celSecuenciaSri, esProduccion: false);
-                celSecuenciaSri.SecuenciaActual++;
-                _uow.CelSecuenciasSriR.Update(celSecuenciaSri);
-            }   
+                Apellido = cliente.Apellido,
+                CedulaRuc = cliente.CedulaRuc,
+                Direccion = cliente.Direccion,
+                Email = cliente.Email,
+                FechaCumpleanios = cliente.FechaCumpleanios,
+                FechaRegistro = DateOnly.FromDateTime(DateTime.Now),
+                Nombre = cliente.Nombre,
+                TelefonoCelular = cliente.TelefonoCelular,
+                UsuarioRegistro = cliente.UsuarioRegistro
+            };
 
-            ActualizarSecuenciaOrdenesDiaria(secuencia, orden.FechaInteger);
-
-            _uow.FacSecuenciaDiaR.Update(secuencia);
-            await _uow.FacOrdenR.AddAsync(facOrden);
+            await _uow.FacClienteR.AddAsync(faccliente);
+            //FacCliente facCliente = await _uow.FacClienteR.GetByIdAsync(orden.Clienteid) ?? throw new InvalidOperationException("Cliente no encontrado.");
+            //facOrden.Cliente = facCliente;
             await _uow.SaveChangesAsync();
 
-            if (orden.EsFactura)
-            {
-                ResultadoEmisionDTO resultado = await _comprobanteService.EmitirFacturaAsync(orden);
-            }
-            return facOrden;
+            //ResultadoEmisionDTO resultado = await _comprobanteService.EmitirFacturaAsync(facOrden);
+            return faccliente;
         }
 
-        private static void ActualizarSecuenciaOrdenesDiaria(FacSecuenciaDia secuencia, int fecha)
+        private static void ActualizarSecuencia(FacSecuenciaDia secuencia, int fecha)
         {
             if (secuencia.Fecha == fecha)
                 secuencia.Secuencia++;
