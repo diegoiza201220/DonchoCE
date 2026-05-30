@@ -14,10 +14,13 @@ public class ComprobanteService
         _sriService = sriService;
         _infowareFirmaService = infowareFirmaService;
     }
-    public async Task<ResultadoEmisionDTO> EmitirFacturaAsync(FacOrdenDTO ordenDTO)
+    public void EmitirFacturaAsync(FacOrdenDTO ordenDTO)
     {
-        return await Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
+            //await Task.Delay(30000);
+            Console.WriteLine($"-------------------000000000000000000000000empezoooo0000000000000000000------------------");
+
             try
             {
 
@@ -43,7 +46,8 @@ public class ComprobanteService
                 }
 
                 // 5. Esperar y consultar autorización (el SRI puede tardar unos segundos)
-                await Task.Delay(30000);
+                //await Task.Delay(30000);
+                Console.WriteLine($"-------------------000000000000000000000000finaliz0000000000000000000------------------");
                 var claveAcceso = ordenDTO.ClaveNumeroAutorizacion; // método que arma la clave de 49 dígitos
                 var respuestaAutorizacion = await _sriService.ConsultarAutorizacionAsync(claveAcceso);
 
@@ -56,12 +60,12 @@ public class ComprobanteService
                     };
                 }
 
-        // 7. Guardar el número de autorización en la orden
-        //facOrden.NumeroAutorizacion = respuestaAutorizacion.NumeroAutorizacion;
-        //facOrden.FechaAutorizacion = respuestaAutorizacion.FechaAutorizacion;
-        //facOrden.XmlAutorizado = respuestaAutorizacion.XmlAutorizado;
-        //_uow.FacOrdenR.Update(orden);
-        //await _uow.SaveChangesAsync();
+                // 7. Guardar el número de autorización en la orden
+                //facOrden.NumeroAutorizacion = respuestaAutorizacion.NumeroAutorizacion;
+                //facOrden.FechaAutorizacion = respuestaAutorizacion.FechaAutorizacion;
+                //facOrden.XmlAutorizado = respuestaAutorizacion.XmlAutorizado;
+                //_uow.FacOrdenR.Update(orden);
+                //await _uow.SaveChangesAsync();
 
                 return new ResultadoEmisionDTO
                 {
@@ -80,6 +84,10 @@ public class ComprobanteService
                 };
             }
         });
+
+        //return await Task.Run(async () =>
+        //{
+
     }
 
 }

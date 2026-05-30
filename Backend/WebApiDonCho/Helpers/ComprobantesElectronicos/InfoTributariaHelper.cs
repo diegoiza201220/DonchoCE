@@ -18,7 +18,7 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
             DateTime localDate = ordenDTO.Fecha.ToLocalTime();
             string ambiente = !esProduccion ? "1" : "2";
             string tipoEmision = "1"; // Normal
-            string claveAcceso = GetClaveAcceso(ambiente, localDate, celInfoTributaria.Ruc, celSecuenciaSri.SecuenciaActual.ToString("D9"), tipoEmision, ordenDTO.CodDoc, ambiente, $"{celSecuenciaSri.Establecimiento}{celSecuenciaSri.PuntoDeEmision}");
+            string claveAcceso = GetClaveAcceso(localDate, celInfoTributaria.Ruc, celSecuenciaSri.SecuenciaActual.ToString("D9"), tipoEmision, ordenDTO.CodDoc, ambiente, $"{celSecuenciaSri.Establecimiento}{celSecuenciaSri.PuntoDeEmision}");
             orden.ClaveNumeroAutorizacion = ordenDTO.ClaveNumeroAutorizacion = claveAcceso;
             orden.NumeroFactura = ordenDTO.NumeroFactura = celSecuenciaSri.SecuenciaActual.ToString("D9");
             orden.Establecimiento = ordenDTO.Establecimiento = celSecuenciaSri.Establecimiento;
@@ -32,7 +32,7 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
             ordenDTO.ObligadoContabilidad = celInfoTributaria.ObligadoContabilidad ? "SI" : "NO";
         }
 
-        private static string GetClaveAcceso(string ambiente, DateTime fecha, string ruc, string secuencial, string tipoEmision, string tipocomprobante, string tipoAmbiente, string establecimiento_ptoemi)
+        private static string GetClaveAcceso(DateTime fecha, string ruc, string secuencial, string tipoEmision, string tipocomprobante, string tipoAmbiente, string establecimiento_ptoemi)
         {
             //15052026 01 1714802681001 1 001001 000000003 12345678 1 3
             //15052026 - fecha de emisión ddmmaaaa
@@ -48,8 +48,7 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
 
             string codigoNumerico = new Random().Next(10000000, 99999999).ToString(); // Generar un código numérico aleatorio de 8 dígitos
             string clave_acceso_sin_digito_verificador = $"{fecha.ToString("ddMMyyyy")}{tipocomprobante}{ruc}{tipoAmbiente}{establecimiento_ptoemi}{secuencial}{codigoNumerico}{tipoEmision}";
-            int digitoVerificador = CalcularDigitoVerificador(clave_acceso_sin_digito_verificador);
-            return $"{clave_acceso_sin_digito_verificador}{digitoVerificador}";
+            return $"{clave_acceso_sin_digito_verificador}{CalcularDigitoVerificador(clave_acceso_sin_digito_verificador)}";
         }
 
         private static int CalcularDigitoVerificador(string claveAccesoSinDigito)
@@ -59,13 +58,12 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
 
             foreach (var item in clave1)
             {
-
                 suma = suma + Convert.ToInt32(item.ToString()) * factor;
                 factor = factor - 1;
                 if (factor == 1)
                     factor = 7;
-
             }
+
             var digitoverificador = (suma % 11);
             digitoverificador = 11 - digitoverificador;
             if (digitoverificador == 11)

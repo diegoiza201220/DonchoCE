@@ -14,3 +14,5 @@
 /Backend/EFModel/obj
 /Frontend/.vscode/launch.json
 /Frontend/.angular/cache/16.2.16
+/Backend/EnvioCorreos/bin/Debug/net10.0
+/Backend/EnvioCorreos/obj

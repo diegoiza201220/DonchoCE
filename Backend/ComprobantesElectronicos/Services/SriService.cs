@@ -66,26 +66,19 @@ public class SriService
     private async Task<XDocument> EnviarSoapAsync(string url, string soapBody, string accion)
     {
         var content = new StringContent(soapBody, Encoding.UTF8, "text/xml");
-        var handler = new HttpClientHandler { UseCookies = false };
-        var client = new HttpClient(handler) { Timeout = TimeSpan.FromMinutes(3) };
+        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(3));
         try
         {
-            HttpResponseMessage response = await client.PostAsync(url, content);
+            var response = await _httpClient.PostAsync(url, content, cts.Token);
             response.EnsureSuccessStatusCode();
-            var responseBody = await response.Content.ReadAsStringAsync();
-            return XDocument.Parse(responseBody);
-        }
-        catch (TaskCanceledException ex) when (ex.InnerException is TimeoutException)
-        {
-            // El servidor SOAP tardó demasiado tiempo en responder (Expiró el HttpClient.Timeout)
-            Console.WriteLine("Error: La solicitud al servicio SOAP expiró por Timeout.");
+            var body = await response.Content.ReadAsStringAsync(cts.Token);
+            return XDocument.Parse(body);
         }
         catch (TaskCanceledException ex)
         {
-            // La tarea fue cancelada a través de un CancellationToken provisto por código
-            Console.WriteLine("Error: La operación fue cancelada por el usuario o el sistema.");
+            Console.WriteLine($"Timeout SRI: {ex.Message}");
+            return new XDocument();
         }
-        return new XDocument();
     }
 
     // ── Parsear respuesta de recepción ────────────────────────────────────────

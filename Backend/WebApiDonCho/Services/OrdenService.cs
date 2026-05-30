@@ -6,6 +6,8 @@ using EFModel.DTO.Request;
 using EFModel.Interfaces;
 using EFModel.Mappers;
 using EFModel.Models;
+using EnvioCorreos.Models;
+using EnvioCorreos.Services;
 using WebApiDonCho.Helpers.ComprobantesElectronicos;
 
 namespace WebApiDonCho.Services
@@ -14,10 +16,12 @@ namespace WebApiDonCho.Services
     {
         private readonly IUnitOfWork _uow;
         private readonly ComprobanteService _comprobanteService;
-        public OrdenService(IUnitOfWork uow, ComprobanteService comprobanteService)
+        private readonly EmailService _emailService;
+        public OrdenService(IUnitOfWork uow, ComprobanteService comprobanteService, EmailService emailService)
         {
             _uow = uow;
             _comprobanteService = comprobanteService;
+            _emailService = emailService;
         }
         public async Task<FacOrden> FacturarAsync(FacOrdenDTO orden)
         {
@@ -36,6 +40,8 @@ namespace WebApiDonCho.Services
                 CelSecuenciaSri celSecuenciaSri = _uow.CelSecuenciasSriR.GetByTipoDocumento("01");
                 CelInfoTributaria celInfoTributaria = _uow.CelInfoTributariaR.GetById(1);
                 InfoTributariaHelper.SetInformacion(orden, facOrden, celInfoTributaria, celSecuenciaSri, esProduccion: false);
+                CelLogDocumento celLogDocumento = CelLogDocumentoHelper.CrearLogInicial(orden);
+                await _uow.CelLogDocumentoR.AddAsync(celLogDocumento);
                 celSecuenciaSri.SecuenciaActual++;
                 _uow.CelSecuenciasSriR.Update(celSecuenciaSri);
             }   
@@ -48,7 +54,17 @@ namespace WebApiDonCho.Services
 
             if (orden.EsFactura)
             {
-                ResultadoEmisionDTO resultado = await _comprobanteService.EmitirFacturaAsync(orden);
+                //ResultadoEmisionDTO resultado = await _comprobanteService.EmitirFacturaAsync(orden);
+                _comprobanteService.EmitirFacturaAsync(orden);
+                EmailMessage emailMessage = new EmailMessage
+                {
+                    Asunto = "Factura de su compra",
+                    Cuerpo = $"Estimado {orden.Cliente.Nombre}, adjunto encontrará la factura de su compra. Gracias por elegirnos.",
+                    Destinatarios = new List<string> { orden.Cliente.Email?? "diegoiza@hotmail.com" },
+                    EsHtml = false
+                };
+                _ = _emailService.EnviarAsync(emailMessage);
+                Console.WriteLine($"-------------------000000000000000000000000salio del hiloooooooo0000000000000000000------------------");
             }
             return facOrden;
         }

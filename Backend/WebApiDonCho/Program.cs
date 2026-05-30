@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebApiDonCho.Services;
-using Infoware.SRI.Firmar;
+using EnvioCorreos.Extensions;
+using EnvioCorreos.Services;
 
 using ILoggerFactory factory = LoggerFactory.Create(builder =>
 {
@@ -36,8 +37,11 @@ builder.Services.AddScoped<ComprobanteService>();
 builder.Services.AddScoped<SriService>();
 builder.Services.AddScoped<InfowareFirmaService>();
 builder.Services.AddScoped<ClienteService>();
+builder.Services.AddScoped<EmailService>();
 
 builder.Services.AddSRIDocumentosElectronicos();
+
+builder.Services.AddEnvioCorreos(builder.Configuration);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

@@ -265,48 +265,58 @@ export class PedidosComponent extends BaseComponent implements OnInit {
 
     if (this.activeIndex != 1) return;
 
-    this.loading = true;
+    //this.loading = true;
     //setTimeout(() => {
 
-      if (!this.pedido.esFactura) {
-        this.cliente.id = 1;
-        this.cliente.nombre = 'Consumidor final';
-        this.cliente.apellido = '';
-        this.cliente.cedulaRuc = '9999999999';
-        this.cliente.direccion = 'NA';
-        this.cliente.email = 'NA';
-        this.cliente.telefono_celular = '0000000000';
-        this.cliente.usuarioRegistro = this.authService.userEmail;
-      }
+    if (!this.pedido.esFactura) {
+      this.cliente.id = 1;
+      this.cliente.nombre = 'Consumidor final';
+      this.cliente.apellido = '';
+      this.cliente.cedulaRuc = '9999999999';
+      this.cliente.direccion = 'NA';
+      this.cliente.email = 'NA';
+      this.cliente.telefono_celular = '0000000000';
+      this.cliente.usuarioRegistro = this.authService.userEmail;
+    }
 
-      let d = new Date();
-      
+    let d = new Date();
 
-      this.pedido.Clienteid = this.cliente.id === null ? 1 : this.cliente.id;
-      this.pedido.UsuarioRegistro = this.authService.userEmail;
-      this.pedido.Secuencial = this.lsecuencia.secuencia;
-      this.pedido.TipoPago = this.selectedFP;
-      this.pedido.Fecha = d;
-      this.pedido.FechaInteger = this.fechainteger;
-      this.pedido.ValorIva = this.codigoIva;
-      this.pedido.NumeroFactura = '000';
-      this.pedido.DocumentoPago = '';
-      this.pedido.ImpuestoBaseImponible = this.pedido.TotalSinImpuestos;
-      this.pedido.ImpuestoCodigo = 2;
-      this.pedido.ImpuestoCodigoPorcentaje = this.codigoIva;
-      this.pedido.Cliente = this.cliente;
-      this.logger.log(this.pedido);
-      this.ordenesService.addOrden(this.pedido).then((data) => {  
-        this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Pedido ' + data.secuencial + ' creado' });
-        this.loading = false;
-        this.cleanPedidos();
-        //this.router.navigate(['pedidos']);
-      }, (error) => {
-        this.messageService.add({ severity: 'error', summary: 'Ops!! ', detail: 'Error al crear el pedido' });
-        this.loading = false;
+
+    this.pedido.Clienteid = this.cliente.id === null ? 1 : this.cliente.id;
+    this.pedido.UsuarioRegistro = this.authService.userEmail;
+    this.pedido.Secuencial = this.lsecuencia.secuencia;
+    this.pedido.TipoPago = this.selectedFP;
+    this.pedido.Fecha = d;
+    this.pedido.FechaInteger = this.fechainteger;
+    this.pedido.ValorIva = this.codigoIva;
+    this.pedido.NumeroFactura = '000';
+    this.pedido.DocumentoPago = '';
+    this.pedido.ImpuestoBaseImponible = this.pedido.TotalSinImpuestos;
+    this.pedido.ImpuestoCodigo = 2;
+    this.pedido.ImpuestoCodigoPorcentaje = this.codigoIva;
+    this.pedido.Cliente = this.cliente;
+    this.logger.log(this.pedido);
+    this.ordenesService.addOrden(this.pedido).then((data) => {
+      //this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Pedido ' + data.secuencial + ' creado' });
+      //this.loading = false;
+      this.cleanPedidos();
+      //this.mensajeService.enviarMensaje('Pedido ' + data.secuencial + ' creadook');
+
+      this.messageService.add({
+        severity: 'success',
+        summary: '¡Éxito!',
+        detail: 'Pedido ' + data.secuencial + ' creadook',
+        life: 3000 // Duración en milisegundos (3 segundos)
       });
+
+
+      //this.router.navigate(['pedidos']);
+    }, (error) => {
+      this.messageService.add({ severity: 'error', summary: 'Ops!! ', detail: 'Error al crear el pedido' });
+      //this.loading = false;
+    });
     //}, 2000);
-  //this.ngOnInit();
+    //this.ngOnInit();
     //
     //this.router.navigate(['pedidos']);
   }
