@@ -156,3 +156,7 @@ button {
 .textoLogin{
     text-align: center;
 }
+
+.p-selectbutton .p-button {
+  height: 10px; /* Set your desired fixed height */
+}

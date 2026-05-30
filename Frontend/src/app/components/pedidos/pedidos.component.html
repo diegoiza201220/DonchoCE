@@ -94,11 +94,20 @@
 
         </p-tabPanel>
         <p-tabPanel header="Resumen de orden">
-            <h1>ORDEN NUMERO: {{ lsecuencia.secuencia }}</h1>
-            <p-selectButton [options]="this.lFacturar" [(ngModel)]="pedido.esFactura" optionLabel="label"
-                optionValue="value" />
-            <p-table #dt [value]="pedido.FacDetalleOrdens" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
-                [rowHover]="true">
+            <div>
+                <tr>
+                    <td>
+                        <h5>ORDEN NUMERO: {{ lsecuencia.secuencia }}</h5>
+                    </td>
+                    <td style="padding-left: 6rem;">Es factura?</td>
+                    <td style="padding-left: 1rem;">
+                        <p-selectButton [options]="this.lFacturar" [(ngModel)]="pedido.esFactura" optionLabel="label"
+                            optionValue="value" />
+                    </td>
+                </tr>
+            </div>
+            <p-table #dt [value]="pedido.FacDetalleOrdens" dataKey="id"
+                [tableStyle]="{'min-width': '50rem', 'height': '4rem'}" [rowHover]="true">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Cantidad</th>
@@ -117,28 +126,25 @@
                 </ng-template>
                 <ng-template pTemplate="summary">
                     <tr *ngIf="pedido.esFactura">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>Subtotal : <span class="tab"></span></td>
-                        <td style="color: red; font-size: xx-large;">{{ pedido.TotalSinImpuestos |
+                        <td style="align-content: center">Subtotal : <span class="tab"></span></td>
+                        <td style="color: red; font-size: xx-large; padding-left: 0rem;">{{ pedido.TotalSinImpuestos |
                             currency:'USD':'symbol' }}
                         </td>
-                    </tr>
+                    <!-- </tr>
                     <tr *ngIf="pedido.esFactura">
                         <td></td>
                         <td></td>
-                        <td></td>
+                        <td></td> -->
                         <td>IVA : <span class="tab"></span></td>
-                        <td style="color: red; font-size: xx-large;">{{ pedido.ImpuestoValor | currency:'USD':'symbol'
+                        <td style="color: red; font-size: xx-large; padding-left: 3rem;">{{ pedido.ImpuestoValor | currency:'USD':'symbol'
                             }}
                         </td>
-                    </tr>
+                    <!-- </tr>
                     <tr>
                         <td></td>
                         <td></td>
-                        <td></td>
-                        <td>Total a cancelar : <span class="tab"></span></td>
+                        <td></td> -->
+                        <td>Total a cancelar : <span class="tab" [style]="{'height':'0.5rem'} "></span></td>
                         <td style="color: red; font-size: xx-large;">{{ pedido.TotalOrden | currency:'USD':'symbol' }}
                         </td>
                     </tr>
@@ -146,32 +152,56 @@
             </p-table>
             <div class="form-group row">
                 <label for="formasdepago" class="col-sm-2 col-form-label">Forma de pago</label>
-                <div class="col-sm-1">
-
-                    <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" value="EF"
-                        autocomplete="off" [(ngModel)]="selectedFP" checked>
-                    <label class="btn btn-outline-success" for="success-outlined">Efectivo</label>
-
-                    <input type="radio" class="btn-check" name="options-outlined" id="success-outlined1" value="TR"
-                        autocomplete="off" [(ngModel)]="selectedFP">
-                    <label class="btn btn-outline-success" for="success-outlined1">Transferencia</label>
-                </div>
-            </div>
-
-            <div class="form-group row" style="font-size: medium; ">
-                <label for="pago" class="col-sm-2 col-form-label"
-                    style="font-size:larger; font-weight: bolder;">Efectivo recibido:</label>
-                <div class="col-sm-2">
-                    <input #efectivorecibido matInput onfocus="this.select()" type="text" id="pago" class="form-control"
-                        style="color: navy;font-size:larger; " placeholder="Pago" [(ngModel)]="pago"
-                        (ngModelChange)="calcularCambio($event)">
+                <div class="col-sm-4">
+                    <tr>
+                        <td>
+                            <input type="radio" class="btn-check" name="options-outlined" id="success-outlined"
+                                value="EF" autocomplete="off" [(ngModel)]="selectedFP" checked>
+                            <label class="btn btn-outline-success" for="success-outlined">Efectivo</label>
+                        </td>
+                        <td>
+                            <input type="radio" class="btn-check" name="options-outlined" id="success-outlined1"
+                                value="TR" autocomplete="off" [(ngModel)]="selectedFP">
+                            <label class="btn btn-outline-success" for="success-outlined1">Transferencia</label>
+                        </td>
+                    </tr>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="cambio" class="col-sm-2 col-form-label">Vuelto a entregar:</label>
-                <div class="col-sm-2 text-cambio blink_me">{{cambio | currency:'USD':'symbol'}}
+                <label for="pago" class="col-sm-2 col-form-label"
+                    style="font-size:larger; font-weight: bolder; padding-left: '2rem';">Efectivo recibido:</label>
+                <div class="col-sm-4">
+                    <tr>
+                        <td>
+                            <input #efectivorecibido matInput onfocus="this.select()" type="text" id="pago"
+                                class="form-control" style="color: navy;font-size:larger; " placeholder="Pago"
+                                [(ngModel)]="pago" (ngModelChange)="calcularCambio($event)">
+                        </td>
+                    </tr>
                 </div>
+
+                <label for="cambio" class="col-sm-4 col-form-label">Vuelto a entregar:</label>
+                <div class="col-sm-1" style="padding-left: 1rem;">
+                    <tr>
+                        <td>
+                            <div class="text-cambio blink_me" style="padding-left: 1rem;">
+                                {{cambio | currency:'USD':'symbol'}}
+                            </div>
+                        </td>
+                    </tr>
+                </div>
+
+                <!--                 
+                        <td>
+                            <label for="cambio" class="col-sm-2 col-form-label">Vuelto a entregar:</label>
+                        </td>
+                        <td>
+                            <div class="col-sm-2 text-cambio blink_me">{{cambio | currency:'USD':'symbol'}}
+                            </div>
+                        </td>
+                    </tr>
+                </div> -->
             </div>
 
             <div class="form-group row">
@@ -213,7 +243,8 @@
             <div class="col-sm-6">
                 <input type="text" id="cedula_ruc" class="form-control" [(ngModel)]="cliente.cedulaRuc"
                     aria-describedby="basic-addon1">
-                <p-button label="Search" icon="pi pi-check" *ngIf="!clienteEncontrado" [loading]="searchingCliente" (onClick)="searchCliente()" />
+                <p-button label="Search" icon="pi pi-check" *ngIf="!clienteEncontrado" [loading]="searchingCliente"
+                    (onClick)="searchCliente()" />
             </div>
         </div>
 
