@@ -1,4 +1,5 @@
-﻿using EnvioCorreos.Models;
+﻿using EFModel.DTO;
+using EnvioCorreos.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,13 +8,13 @@ namespace EnvioCorreos.Interfaces
 {
     public interface IEmailService
     {
-        Task<ResultadoEmail> EnviarAsync(EmailMessage mensaje);
+        Task<ResultadoEmail> EnviarAsync(EmailMessage mensaje, FacOrdenDTO facOrdenDTO);
         Task<ResultadoEmail> EnviarFacturaAsync(
             string destinatario,
             string nombreCliente,
             string numeroFactura,
             byte[] ridePdf,
-            string xmlFirmado);
+            string xmlFirmado, FacOrdenDTO facOrdenDTO);
     }
 
     public class ResultadoEmail

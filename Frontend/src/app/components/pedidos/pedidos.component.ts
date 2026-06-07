@@ -77,14 +77,8 @@ export class PedidosComponent extends BaseComponent implements OnInit {
 
   configurarPedido() {
     this.pedido = {};
-    // this.lproductoschoclo = [];
-    // this.lproductoschocho = [];
-    // this.lproductosporciones = [];
-    // this.lproductosbebidas = [];
-    // this.lproductosotros = [];
-
     this.pedido.esFactura = false;
-
+    this.cliente = {};
   }
 
   getDatosPedido() {
@@ -265,8 +259,15 @@ export class PedidosComponent extends BaseComponent implements OnInit {
 
     if (this.activeIndex != 1) return;
 
-    //this.loading = true;
-    //setTimeout(() => {
+    if (this.pedido.esFactura === null || this.pedido.esFactura === undefined) {
+      this.messageService.add({ severity: 'warn', summary: 'Ops!! ', detail: '¡Debe indicar si el pedido es para factura o no!' });
+      return;
+    }
+
+    if (this.pedido.FacDetalleOrdens === undefined || this.pedido.FacDetalleOrdens.length === 0) {
+      this.messageService.add({ severity: 'warn', summary: 'Ops!! ', detail: '¡Debe agregar al menos un producto al pedido!' });
+      return;
+    }
 
     if (!this.pedido.esFactura) {
       this.cliente.id = 1;
@@ -274,13 +275,14 @@ export class PedidosComponent extends BaseComponent implements OnInit {
       this.cliente.apellido = '';
       this.cliente.cedulaRuc = '9999999999';
       this.cliente.direccion = 'NA';
-      this.cliente.email = 'NA';
       this.cliente.telefono_celular = '0000000000';
       this.cliente.usuarioRegistro = this.authService.userEmail;
-    }
+    } else if (this.pedido.esFactura && this.cliente.id === undefined) {
+      this.messageService.add({ severity: 'warn', summary: 'Ops!! ', detail: '¡Debe ingresar los datos del cliente para facturar!' });
+      return;
+    } 
 
     let d = new Date();
-
 
     this.pedido.Clienteid = this.cliente.id === null ? 1 : this.cliente.id;
     this.pedido.UsuarioRegistro = this.authService.userEmail;
@@ -296,29 +298,21 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.pedido.ImpuestoCodigoPorcentaje = this.codigoIva;
     this.pedido.Cliente = this.cliente;
     this.logger.log(this.pedido);
+    this.loading = true;
     this.ordenesService.addOrden(this.pedido).then((data) => {
-      //this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Pedido ' + data.secuencial + ' creado' });
-      //this.loading = false;
       this.cleanPedidos();
-      //this.mensajeService.enviarMensaje('Pedido ' + data.secuencial + ' creadook');
-
+      this.backToSeleccion();
+      this.loading = false;
       this.messageService.add({
         severity: 'success',
         summary: '¡Éxito!',
         detail: 'Pedido ' + data.secuencial + ' creadook',
         life: 3000 // Duración en milisegundos (3 segundos)
       });
-
-
-      //this.router.navigate(['pedidos']);
     }, (error) => {
       this.messageService.add({ severity: 'error', summary: 'Ops!! ', detail: 'Error al crear el pedido' });
-      //this.loading = false;
+      this.loading = false;
     });
-    //}, 2000);
-    //this.ngOnInit();
-    //
-    //this.router.navigate(['pedidos']);
   }
 
   cleanPedidos() {
@@ -344,6 +338,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   }
 
   openClienteDialog() {
+    this.clienteEncontrado = false;
     this.clienteDialog = true;
   }
 

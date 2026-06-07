@@ -67,5 +67,30 @@ namespace WebApiDonCho.Services
             _cache.Remove(key);
             return Task.CompletedTask;
         }
+
+        public T GetOrCreatePermanent<T>(string key, Func<T> factory)
+        {
+            if (_cache.TryGetValue(key, out var cached) && cached is T existing)
+            {
+                return existing;
+            }
+
+
+            if (_cache.TryGetValue(key, out cached) && cached is T existingAfterLock)
+            {
+                return existingAfterLock;
+            }
+
+            var value = factory();
+
+            var options = new MemoryCacheEntryOptions
+            {
+                Priority = CacheItemPriority.NeverRemove
+            };
+
+            _cache.Set(key, value, options);
+
+            return value;
+        }
     }
 }

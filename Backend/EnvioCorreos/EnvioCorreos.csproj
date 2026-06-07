@@ -16,6 +16,11 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.8" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.8" />
     <PackageReference Include="MimeKit" Version="4.17.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EFModel\EFModel.csproj" />
   </ItemGroup>
 
 </Project>

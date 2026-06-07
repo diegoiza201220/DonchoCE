@@ -125,7 +125,7 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="summary">
-                    <tr *ngIf="pedido.esFactura">
+                    <tr >
                         <td style="align-content: center">Subtotal : <span class="tab"></span></td>
                         <td style="color: red; font-size: xx-large; padding-left: 0rem;">{{ pedido.TotalSinImpuestos |
                             currency:'USD':'symbol' }}
@@ -213,14 +213,14 @@
             </div>
             <p>
                 <button class="btn btn-primary" type="button" (click)="openClienteDialog()">
-                    Datos Adicionales
+                    Datos Cliente
                 </button>
 
             </p>
 
             <div class="divFlotanteRegresar">
                 <div class="">
-                    <p-button label="Regresar" (onClick)="activeIndex = 0"></p-button>
+                    <p-button label="Regresar" [loading]="loading" (onClick)="activeIndex = 0"></p-button>
                 </div>
             </div>
             <div class="divFlotanteGrabarContinuar">
@@ -302,7 +302,7 @@
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
             (click)="hideDialogCliente()"></button>
-        <button pButton pRipple label="Grabar" icon="pi pi-check" class="p-button-text"
+        <button pButton pRipple label="Continuar" icon="pi pi-check" class="p-button-text"
             (click)="saveCliente()"></button>
     </ng-template>
 </p-dialog>

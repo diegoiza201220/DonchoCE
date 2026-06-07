@@ -1,62 +1,95 @@
-﻿using EnvioCorreos.Configuration;
+﻿using EFModel.DTO;
+using EFModel.Interfaces;
+using EFModel.Models;
+using EnvioCorreos.Configuration;
 using EnvioCorreos.Interfaces;
 using EnvioCorreos.Models;
 using FastReport;
+using FastReport.Data;
+using FastReport.Data.JsonConnection;
+using FastReport.Export.PdfSimple;
+using FastReport.Utils;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using FastReport.Export.PdfSimple;
-using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Text;
+using System.Text.Json;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace EnvioCorreos.Services
 {
     public class EmailService : IEmailService
     {
+        private readonly IUnitOfWork _uow;
+        private readonly ICacheService _cache;
         private readonly EmailOptions _options;
         private readonly ILogger<EmailService> _logger;
+        private const string JSON_SCHEMA_FACTURA = "JSON_SCHEMA_FACTURA";
+        private const string PATH_LOCAL_FACTURAS = "PATH_LOCAL_FACTURAS";
+        private readonly GenParametro genParametroJsonSchemaFactura;
+        private readonly GenParametro genParametroPathLocalFacturas;
 
-        public EmailService(IOptions<EmailOptions> options, ILogger<EmailService> logger)
+
+        public EmailService(IOptions<EmailOptions> options, ILogger<EmailService> logger, ICacheService cache, IUnitOfWork uow)
         {
             _options = options.Value;
             _logger = logger;
+            _cache = cache;
+            _uow = uow;
+            genParametroJsonSchemaFactura = _cache.GetOrCreatePermanent(JSON_SCHEMA_FACTURA, () => _uow.GenParametroR.GetById(JSON_SCHEMA_FACTURA));
+            genParametroPathLocalFacturas = _cache.GetOrCreatePermanent(PATH_LOCAL_FACTURAS, () => _uow.GenParametroR.GetById(PATH_LOCAL_FACTURAS));
         }
 
-        public async Task<ResultadoEmail> EnviarAsync(EmailMessage mensaje)
+        public void ImprimirPDF(FacOrdenDTO orden)
+        {
+
+
+            using (Report report = new())
+            {
+                report.Load("reportes/test.frx");
+                var json = JsonConvert.SerializeObject(orden, Formatting.None);
+                string jsonModificado = $"Json='{json}'{genParametroJsonSchemaFactura.Valor}";
+                foreach (var connection in report.Dictionary.Connections)
+                {
+                    if (connection is JsonDataSourceConnection jsonConnection)
+                    {
+                        try
+                        {
+                            jsonConnection.ConnectionString = jsonModificado;
+                            jsonConnection.CreateAllTables();
+                        }
+                        finally
+                        {
+                            // Limpiar el archivo temporal siempre, aunque falle
+                        }
+                    }
+                }
+
+                report.Prepare();
+
+                using var pdfStream = new MemoryStream();
+                var filename = $"{genParametroPathLocalFacturas.Valor}{orden.ClaveNumeroAutorizacion}.pdf";
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    PDFSimpleExport pdfExport = new PDFSimpleExport();
+                    report.Export(pdfExport, ms);
+                    File.WriteAllBytes(filename, ms.ToArray());
+                }
+            }
+        }
+        public async Task<ResultadoEmail> EnviarAsync(EmailMessage mensaje, FacOrdenDTO orden)
         {
             try
             {
-                using (Report report = new Report())
-                {
-                    // Aquí podrías cargar un reporte FastReport y exportarlo a PDF
-                    // para adjuntarlo al correo. Este es solo un ejemplo básico.
-                    report.Load("reportes/test.frx");
-                    report.Prepare();
-
-                    //using (MemoryStream ms = new MemoryStream())
-                    //{
-                    //    PDFSimpleExport pDFSimpleExport = new PDFSimpleExport();
-                    //}
-
-                    using var pdfStream = new MemoryStream();
-                    
-                    var filename = "c:\\diza\\Proyectos\\Reporte.pdf";
-                    //report.Export(export, filename);
-
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        PDFSimpleExport pdfExport = new PDFSimpleExport();
-                        report.Export(pdfExport, ms);
-                        File.WriteAllBytes(filename, ms.ToArray());
-                    }
-
-
-                    //pdfStream.Position = 0;
-                    //mensaje.Adjuntos.Add(EmailAdjunto.DesdePdf("Reporte.pdf", pdfStream.ToArray()));
-                }
+                ImprimirPDF(orden);
 
                 var mimeMessage = ConstruirMimeMessage(mensaje);
                 _ = EnviarSmtpAsync(mimeMessage);
@@ -82,7 +115,7 @@ namespace EnvioCorreos.Services
             string nombreCliente,
             string numeroFactura,
             byte[] ridePdf,
-            string xmlFirmado)
+            string xmlFirmado, FacOrdenDTO facOrdenDTO)
         {
             var mensaje = new EmailMessage
             {
@@ -97,7 +130,7 @@ namespace EnvioCorreos.Services
                 ]
             };
 
-            return await EnviarAsync(mensaje);
+            return await EnviarAsync(mensaje, facOrdenDTO);
         }
 
         private MimeMessage ConstruirMimeMessage(EmailMessage mensaje)
