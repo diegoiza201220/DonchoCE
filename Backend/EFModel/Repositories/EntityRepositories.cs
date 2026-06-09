@@ -65,6 +65,43 @@ public class FacOrdenRepository : Repository<FacOrden>, IFacOrdenRepository
         .Where(o => o.FechaInteger >= fechaini && o.FechaInteger <= fechafin)
         .OrderByDescending(o => o.Fecha)
         .ToListAsync();
+
+    public async Task<IEnumerable<RptFacturasPorFechasDTO>> GetFacturasPorFecha(int fechaini, int fechafin)
+    {
+        //=> await _dbSet.AsNoTracking()
+        //    .Include(o => o.Cliente)
+        //    .Where(o => o.FechaInteger >= fechaini && o.FechaInteger <= fechafin)
+        //    .OrderByDescending(o => o.Fecha)
+        //    .ToListAsync();
+
+        var resultado = (from o in _context.FacOrden
+                         join c in _context.FacCliente
+                         on o.Clienteid equals c.Id
+                         join l in _context.CelLogDocumento
+                         on o.ClaveNumeroAutorizacion equals l.Autorizacion
+                         where o.FechaInteger >= fechaini && o.FechaInteger <= fechafin
+                         select new RptFacturasPorFechasDTO() 
+                         {
+                             Cliente = $"{c.Nombre} {c.Apellido}",
+                             Establecimiento = o.Establecimiento,
+                             Estado = l.Estado==0?"No Enviada":l.Estado==1?"Enviada":l.Estado==2?"Recibida":"Autorizada",
+                             Fecha = o.Fecha,
+                             ImpuestoPorcentaje = o.ImpuestoPorcentaje,
+                             ImpuestoValor = o.ImpuestoValor,
+                             NumeroAutorizacion = o.ClaveNumeroAutorizacion,
+                             NumeroFactura = o.NumeroFactura,
+                             PuntoEmision = o.PuntoEmision,
+                             Secuencial = o.Secuencial,
+                             TipoPago = o.TipoPago,
+                             TotalOrden = o.TotalOrden,
+                             TotalSinImpuestos = o.TotalSinImpuestos,
+                             Mensaje = l.Estado == 200?"OK":l.Mensaje
+                         }
+                     ).ToList().OrderBy(o => o.NumeroFactura);
+        return resultado;
+
+
+    }
 }
 
 // ── DetalleOrden ──────────────────────────────────────────────────────────────

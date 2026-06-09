@@ -1,0 +1,90 @@
+<div class card>
+    <label for="">Fecha inicio</label>
+    <p-calendar [(ngModel)]="d1" [showIcon]="true" [showButtonBar]="true"></p-calendar>
+    <label for="">Fecha fin</label>
+    <p-calendar [(ngModel)]="d2" [showIcon]="true" [showButtonBar]="true"></p-calendar>
+    <button (click)="Buscar()">Buscar</button>
+</div>
+
+<p-table #dt [value]="lregistros" 
+    [scrollable]="true" scrollHeight="400px"  
+    [tableStyle]="{'min-width': '50rem'}"
+    selectionMode="single" [(selection)]="selectedOrden" dataKey="secuencial"
+    (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)"
+    [globalFilterFields]="['cliente', 'secuencial','numeroFactura']"
+    >
+    <ng-template pTemplate="caption">
+        <div class="flex">
+            <span class="p-input-icon-left ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains', dt)" placeholder="Search keyword" />
+            </span>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="fecha">Fecha<p-sortIcon field="fecha"></p-sortIcon></th>
+            <th pSortableColumn="secuencial">Orden No.<p-sortIcon field="secuencial"></p-sortIcon></th>
+            <th pSortableColumn="establecimiento">Estab<p-sortIcon field="establecimiento"></p-sortIcon></th>
+            <th pSortableColumn="puntoEmision">Punto<br>Emisión<p-sortIcon field="puntoEmision"></p-sortIcon></th>
+            <th pSortableColumn="numeroFactura">No.Factura<p-sortIcon field="numeroFactura"></p-sortIcon></th>
+            <th pSortableColumn="estado">Estado<p-sortIcon field="estado"></p-sortIcon></th>
+            <th pSortableColumn="mensaje">Mensaje<p-sortIcon field="mensaje"></p-sortIcon></th>
+            <th pSortableColumn="cliente">Cliente<p-sortIcon field="cliente"></p-sortIcon></th>
+            <th pSortableColumn="tipoPago">Tipo de pago<p-sortIcon field="tipoPago"></p-sortIcon></th>
+            <th style="text-align: right">Total sin Impuestos</th>
+            <th style="text-align: right">Imp. %</th>
+            <th style="text-align: right">Imp. Valor</th>
+            <th style="text-align: right">Total</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-registro>
+        <tr [pSelectableRow]="registro">
+            <td>{{ registro.fecha | date:'dd.MM.yyyy HH:mm:ss'}}</td>
+            <td>{{ registro.secuencial }}</td>
+            <td>{{ registro.establecimiento }}</td>
+            <td>{{ registro.puntoEmision }}</td>
+            <td>{{ registro.numeroFactura }}</td>
+            <td>{{ registro.estado }}</td> 
+            <td>{{ registro.mensaje }}</td> 
+            <td>{{ registro.cliente }}</td>
+            <td>{{ registro.tipoPago }}</td>
+            <td style="text-align: right">{{ registro.totalSinImpuestos | currency:'USD' }}</td>
+            <td style="text-align: right">{{ registro.impuestoPorcentaje }}%</td>
+            <td style="text-align: right">{{ registro.impuestoValor | currency:'USD' }}</td>
+            <td style="text-align: right">{{ registro.totalOrden | currency: 'USD'}}</td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="ordenDialogo" [style]="{ width: '600px' }" header="Detalle de orden" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="field">
+            <p-table #dt1 [value]="lregistrosorden" 
+            [scrollable]="true" scrollHeight="400px" 
+            >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 10%">Cantidad</th>
+                    <th style="width: 60%">Producto</th>
+                    <th style="width: 15%">P.Unitario</th>
+                    <th style="width: 15%">P.Total</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-producto>
+                <tr>
+                    <td>{{ producto.cantidad }}</td>
+                    <td>{{ producto.plato }}</td>
+                    <td>{{ producto.preciounitario | currency:'USD' }}</td>
+                    <td>{{ producto.preciototal | currency:'USD' }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button *ngIf="mostrarEliminar" pButton pRipple label="Eliminar" icon="pi pi-trash" class="p-button-danger" ></button>
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    </ng-template>
+</p-dialog>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

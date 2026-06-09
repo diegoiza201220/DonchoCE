@@ -11,7 +11,7 @@ export class NavbarComponent extends BaseComponent implements OnInit {
 
   mostrarItems: boolean = false;
   mostrarReportes: boolean = false;
-  
+ 
   constructor(public override authService: AuthService, 
     public override logger: LoggerService
   ) {
@@ -28,5 +28,6 @@ export class NavbarComponent extends BaseComponent implements OnInit {
 
   configureMenu(){
     this.mostrarItems = this.mostrarReportes = this.emailsPermitidos.indexOf(this.authService.userEmail) !== -1;
+
   }
 }

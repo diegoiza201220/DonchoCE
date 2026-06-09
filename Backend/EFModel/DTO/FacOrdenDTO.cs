@@ -34,6 +34,7 @@ namespace EFModel.DTO
         public decimal ImpuestoValor { get; set; }
         public decimal ImpuestoBaseImponible { get; set; }
         public short ImpuestoCodigo { get; set; }
+        public short ImpuestoPorcentaje { get; set; }
         public short ImpuestoCodigoPorcentaje { get; set; }
         public string ClaveNumeroAutorizacion { get; set; } = string.Empty;
         public string Establecimiento { get; set; } = string.Empty;

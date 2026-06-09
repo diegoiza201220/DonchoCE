@@ -40,6 +40,7 @@ import { InventariosComponent } from './components/inventarios/inventarios.compo
 import { RptInventariosComponent } from './components/reportes/inventarios/rptinventarios.component';
 import { RptComprasVsInventariosComponent } from './components/reportes/comprasvsinventarios/rptcomprasvsinventarios.component';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { RptFacturasComponent } from './components/reportes/facturas/rptfacturas.component';
 
 import { AuthInterceptor } from './services/auth.interceptor';
 
@@ -61,7 +62,8 @@ import { AuthInterceptor } from './services/auth.interceptor';
     TwoDigitDecimaNumberDirective,
     InventariosComponent,
     RptInventariosComponent,
-    RptComprasVsInventariosComponent
+    RptComprasVsInventariosComponent,
+    RptFacturasComponent
   ],
   imports: [
     BrowserModule,

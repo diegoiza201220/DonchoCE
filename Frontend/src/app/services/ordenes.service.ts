@@ -37,4 +37,10 @@ export class OrdenesService {
     const result = await firstValueFrom(post$);
     return result;
   }
+
+  async queryFacturasPorFecha(rqFacturasPorFechas: any): Promise<any> {
+    const post$ = this.http.post<any>(`${this.apiUrl}/facturasporfecha`, rqFacturasPorFechas);
+    const result = await firstValueFrom(post$);
+    return result;
+  }
 }

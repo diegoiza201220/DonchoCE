@@ -24,6 +24,7 @@ public partial class FacOrden
     public decimal ImpuestoBaseImponible { get; set; }
     public short ImpuestoCodigo { get; set; }
     public short ImpuestoCodigoPorcentaje { get; set; }
+    public short ImpuestoPorcentaje { get; set; }
 
     public string UsuarioRegistro { get; set; } = null!;
     public bool EsFactura { get; set; }

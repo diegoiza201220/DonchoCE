@@ -8,9 +8,12 @@ export abstract class BaseComponent {
     constructor(public authService: AuthService, 
         public logger: LoggerService
     ) {
+        this.actualizarTotalesPedidos();
     }
 
     emailsPermitidos = ['gerencia@doncho.com', 'diza@doncho.com'];
+    totalPedidosFacturados: number = 0;
+    totalPedidosNotaventa: number = 0;
 
     fechaToInteger(fecha: Date): number {
         if (this.estaVacio(fecha)) {
@@ -59,4 +62,10 @@ export abstract class BaseComponent {
     get isloggedIn(): boolean {
         return this.authService.isLoggedIn;
     }
+
+    actualizarTotalesPedidos() {
+        this.totalPedidosFacturados = Math.random() * 100; 
+        this.totalPedidosNotaventa = Math.random() * 100;
+    }   
+
 }

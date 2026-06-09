@@ -204,6 +204,7 @@ public partial class DonchoContext : DbContext
                 .HasColumnName("tipo_pago");
             entity.Property(e => e.TotalOrden).HasColumnName("total_orden");
             entity.Property(e => e.TotalSinImpuestos).HasColumnName("total_sin_impuestos");
+            entity.Property(e => e.ImpuestoPorcentaje).HasColumnName("impuesto_porcentaje");
             entity.Property(e => e.UsuarioRegistro)
                 .HasColumnType("character varying")
                 .HasColumnName("usuario_registro");

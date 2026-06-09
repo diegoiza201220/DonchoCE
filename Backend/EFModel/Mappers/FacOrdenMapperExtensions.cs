@@ -22,6 +22,7 @@ namespace EFModel.Mappers
                 ImpuestoCodigoPorcentaje = orden.ImpuestoCodigoPorcentaje,
                 ImpuestoBaseImponible = orden.ImpuestoBaseImponible,
                 ImpuestoValor = orden.ImpuestoValor,
+                ImpuestoPorcentaje = orden.ImpuestoPorcentaje,
                 TotalSinImpuestos = orden.TotalSinImpuestos,
                 UsuarioRegistro = orden.UsuarioRegistro,
                 EsFactura = orden.EsFactura,

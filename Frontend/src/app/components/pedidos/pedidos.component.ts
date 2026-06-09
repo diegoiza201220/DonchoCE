@@ -33,7 +33,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   mostrarCargar: boolean = true;
   selectedFP: string = "EF";
 
-  tarifaIva = 0;
+  impuestoPorcentaje = 0;
   codigoIva = 0;
   pago: number = 0;
   cambio: number = 0;
@@ -83,10 +83,10 @@ export class PedidosComponent extends BaseComponent implements OnInit {
 
   getDatosPedido() {
     this.ordenesService.getDatosPedido().then(data => {
-      this.tarifaIva = data.tarifaIva;
+      this.impuestoPorcentaje = data.impuestoPorcentaje;
       this.codigoIva = data.codigoIva;
       this.lproductos.forEach((producto: Producto) => {
-        producto.valor = this.redondear(producto.valor + (producto.valor * this.tarifaIva / 100), 2);
+        producto.valor = this.redondear(producto.valor + (producto.valor * this.impuestoPorcentaje / 100), 2);
       });
     })
   }
@@ -222,7 +222,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.calcularDetalles(this.lproductosbebidas.filter(x => x.badge > 0));
     this.calcularDetalles(this.lproductosotros.filter(x => x.badge > 0));
     this.pedido.TotalSinImpuestos = this.pedido.FacDetalleOrdens.reduce((sum: any, current: { PrecioTotal: any; }) => sum + current.PrecioTotal, 0);
-    this.pedido.ImpuestoValor = this.redondear(this.pedido.TotalSinImpuestos * this.tarifaIva / 100, 2);
+    this.pedido.ImpuestoValor = this.redondear(this.pedido.TotalSinImpuestos * this.impuestoPorcentaje / 100, 2);
     this.pedido.TotalOrden = this.redondear(this.pedido.TotalSinImpuestos + this.pedido.ImpuestoValor, 2);
   }
 
@@ -236,11 +236,11 @@ export class PedidosComponent extends BaseComponent implements OnInit {
           PrecioUnitario: element.valorsiniva,
           ImpuestoCodigo: 2,
           ImpuestoCodigoPorcentaje: this.codigoIva,
-          ImpuestoTarifa: this.tarifaIva,
-          ImpuestoValor: this.redondear(element.valorsiniva * this.tarifaIva / 100, 2),
+          ImpuestoTarifa: this.impuestoPorcentaje,
+          ImpuestoValor: this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2),
           PrecioTotal: element.badge * element.valorsiniva,
           PedidoACocina: element.pedidoacocina,
-          ValorIva: this.redondear(element.valorsiniva * this.tarifaIva / 100, 2)
+          ValorIva: this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2)
         });
     });
   }
@@ -297,6 +297,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.pedido.ImpuestoCodigo = 2;
     this.pedido.ImpuestoCodigoPorcentaje = this.codigoIva;
     this.pedido.Cliente = this.cliente;
+    this.pedido.ImpuestoPorcentaje = this.impuestoPorcentaje;
     this.logger.log(this.pedido);
     this.loading = true;
     this.ordenesService.addOrden(this.pedido).then((data) => {
@@ -313,6 +314,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
       this.messageService.add({ severity: 'error', summary: 'Ops!! ', detail: 'Error al crear el pedido' });
       this.loading = false;
     });
+    super.actualizarTotalesPedidos();
   }
 
   cleanPedidos() {

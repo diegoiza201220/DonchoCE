@@ -34,12 +34,15 @@
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="/rptventas">Ventas</a></li>
             <li><a class="dropdown-item" href="/rptventasproductos">Ventas productos</a></li>
+            <li><a class="dropdown-item" href="/rptfacturas">Facturas</a></li>
             <li><a class="dropdown-item" href="/rptcompras">Compras</a></li>
             <li><a class="dropdown-item" href="/rptinventarios">Inventarios</a></li>
             <li><a class="dropdown-item" href="/rptcomprasvsinventarios">Compras vs Inventarios</a></li>
           </ul>
         </li>
       </ul>
+      <span class="navbar-text">Total Pedidos Facturados: {{ totalPedidosFacturados }}</span>
+      <span class="navbar-text">Total Pedidos Nota de Venta: {{ totalPedidosNotaventa }}</span>
       <span class="navbar-text">
         <button class="btn btn-outline-success" type="submit" (click)=logOut()>Salir</button>
       </span>

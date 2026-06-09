@@ -15,6 +15,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { InventariosComponent } from './components/inventarios/inventarios.component';
 import { RptInventariosComponent } from './components/reportes/inventarios/rptinventarios.component';
 import { RptComprasVsInventariosComponent } from './components/reportes/comprasvsinventarios/rptcomprasvsinventarios.component';
+import { RptFacturasComponent } from './components/reportes/facturas/rptfacturas.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/login',pathMatch: 'full'},
@@ -29,6 +30,7 @@ const routes: Routes = [
   {path: 'rptordenes', component: RptOrdenesComponent, canActivate: [AuthGuard]},
   {path: 'rptcompras', component: RptComprasComponent, canActivate: [AuthGuard]},
   {path: 'rptventas', component: RptVentasComponent, canActivate: [AuthGuard]},
+  {path: 'rptfacturas', component: RptFacturasComponent, canActivate: [AuthGuard]},
   {path: 'rptventasproductos', component: RptVentasproductosComponent, canActivate: [AuthGuard]},
   {path: 'rptinventarios', component: RptInventariosComponent, canActivate: [AuthGuard]},
   {path: 'rptcomprasvsinventarios', component: RptComprasVsInventariosComponent, canActivate: [AuthGuard]},
