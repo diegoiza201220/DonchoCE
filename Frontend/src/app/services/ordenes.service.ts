@@ -43,4 +43,10 @@ export class OrdenesService {
     const result = await firstValueFrom(post$);
     return result;
   }
+
+  async queryDocumentosPorFecha(rqDocumentosPorFechas: any): Promise<any> {
+    const post$ = this.http.post<any>(`${this.apiUrl}/documentosporfecha`, rqDocumentosPorFechas);
+    const result = await firstValueFrom(post$);
+    return result;
+  }
 }

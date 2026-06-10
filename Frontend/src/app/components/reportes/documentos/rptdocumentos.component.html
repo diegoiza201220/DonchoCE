@@ -1,0 +1,33 @@
+<div class="container">
+    <div class card>
+        <label for="">Fecha inicio</label>
+        <p-calendar [(ngModel)]="d1" [showIcon]="true" [showButtonBar]="true"></p-calendar>
+        <label for="">Fecha fin</label>
+        <p-calendar [(ngModel)]="d2" [showIcon]="true" [showButtonBar]="true"></p-calendar>
+        <button (click)="Buscar()">Buscar</button>
+        <button *ngIf="ready" (click)="procesarData()">Procesar reporte</button>
+    </div>
+
+    <div class="card">
+        <p-chart type="bar" [data]="basicDataBar" [options]="basicOptionsBar" width="100%" height="400px" [responsive]="true"></p-chart>
+    </div>
+    <div class="card flex justify-content-center">
+        <p-chart type="pie" [data]="basicDataPie" [options]="basicOptionsPie" width="100%" height="400px" [responsive]="true"></p-chart>
+    </div>
+    <p-table #dt [value]="ldataBar" [exportHeader]="'resumen de ventas por productos'"  
+        [scrollable]="true" scrollHeight="400px"  [rowHover]="true"  dataKey="cantidad"
+        [tableStyle]="{'min-width': '60rem'}">
+        <ng-template pTemplate="header" let-registro>
+            <tr>
+                <th  scope="col" pSortableColumn="documento">Documento<p-sortIcon field="documento"></p-sortIcon></th>
+                <th scope="col" pSortableColumn="cantidad">Total<p-sortIcon field="cantidad"></p-sortIcon></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-registro>
+            <tr>
+                <td>{{ registro.documento }}</td>
+                <td>{{ registro.cantidad }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

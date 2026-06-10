@@ -13,7 +13,9 @@ import { LoggerService } from 'src/app/services/logger.service';
   providers: [MessageService, ConfirmationService]
 })
 export class RptFacturasComponent extends BaseComponent {
-  constructor(private ordenesService: OrdenesService, private messageService: MessageService, private confirmationService: ConfirmationService,
+  constructor(private readonly ordenesService: OrdenesService, 
+    private readonly messageService: MessageService, 
+    private readonly confirmationService: ConfirmationService,
     public override authService: AuthService, public override logger: LoggerService
   ) {
     super(authService, logger);

@@ -21,7 +21,7 @@ namespace EFModel.DTO
         [StringLength(50)]
         public string? Email { get; set; }
 
-        public DateOnly? FechaCumpleanios { get; set; }
+        public int FechaCumpleanios { get; set; }
         
         [StringLength(200)]
         public string? Direccion { get; set; }

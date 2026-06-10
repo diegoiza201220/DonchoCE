@@ -49,6 +49,7 @@ namespace EFModel.DTO
         public string DireccionEstablecimiento { get; set; } = string.Empty;
         public string ObligadoContabilidad { get; set; } = string.Empty;
         public string CodDoc { get; set; } = string.Empty;
+        public string Xml { get; set; } = string.Empty;
         #endregion
 
 

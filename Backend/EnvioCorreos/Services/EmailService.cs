@@ -11,6 +11,8 @@ using FastReport.Export.PdfSimple;
 using FastReport.Utils;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -36,25 +38,26 @@ namespace EnvioCorreos.Services
         private const string PATH_LOCAL_FACTURAS = "PATH_LOCAL_FACTURAS";
         private readonly GenParametro genParametroJsonSchemaFactura;
         private readonly GenParametro genParametroPathLocalFacturas;
+        private readonly IConfiguration _config;
 
-
-        public EmailService(IOptions<EmailOptions> options, ILogger<EmailService> logger, ICacheService cache, IUnitOfWork uow)
+        public EmailService(IOptions<EmailOptions> options, ILogger<EmailService> logger, ICacheService cache, IUnitOfWork uow, IConfiguration config)
         {
             _options = options.Value;
             _logger = logger;
             _cache = cache;
             _uow = uow;
+            _config = config;
             genParametroJsonSchemaFactura = _cache.GetOrCreatePermanent(JSON_SCHEMA_FACTURA, () => _uow.GenParametroR.GetById(JSON_SCHEMA_FACTURA));
             genParametroPathLocalFacturas = _cache.GetOrCreatePermanent(PATH_LOCAL_FACTURAS, () => _uow.GenParametroR.GetById(PATH_LOCAL_FACTURAS));
         }
 
-        public void ImprimirPDF(FacOrdenDTO orden)
+        public MemoryStream ImprimirPDF(FacOrdenDTO orden)
         {
 
 
             using (Report report = new())
             {
-                report.Load("reportes/test.frx");
+                report.Load("reportes/rptFactura.frx");
                 var json = JsonConvert.SerializeObject(orden, Formatting.None);
                 string jsonModificado = $"Json='{json}'{genParametroJsonSchemaFactura.Valor}";
                 foreach (var connection in report.Dictionary.Connections)
@@ -81,15 +84,30 @@ namespace EnvioCorreos.Services
                 {
                     PDFSimpleExport pdfExport = new PDFSimpleExport();
                     report.Export(pdfExport, ms);
-                    File.WriteAllBytes(filename, ms.ToArray());
+                    //File.WriteAllBytes(filename, ms.ToArray());
+                    return ms;
                 }
+
             }
         }
-        public async Task<ResultadoEmail> EnviarAsync(EmailMessage mensaje, FacOrdenDTO orden)
+        public async Task<ResultadoEmail> EnviarAsync(FacOrdenDTO orden)
         {
             try
             {
-                ImprimirPDF(orden);
+                MemoryStream pdfFactura = ImprimirPDF(orden);
+
+                var mensaje = new EmailMessage
+                {
+                    Destinatarios = new List<string> { orden.Cliente.Email ?? _config["Email:usuario"] },
+                    Asunto = $"Doncho - Factura Electrónica {orden.Establecimiento}-{orden.PuntoEmision}-{orden.NumeroFactura}",
+                    EsHtml = true,
+                    Cuerpo = PlantillaFactura(orden.Cliente.Nombre, $"{orden.Establecimiento}-{orden.PuntoEmision}-{orden.NumeroFactura}"),
+                    Adjuntos =
+                            [
+                                EmailAdjunto.DesdePdf($"Factura_{orden.Establecimiento}-{orden.PuntoEmision}-{orden.NumeroFactura}.pdf", pdfFactura.ToArray()),
+                                EmailAdjunto.DesdeXml($"Factura_{orden.Establecimiento}-{orden.PuntoEmision}-{orden.NumeroFactura}.xml", orden.Xml)
+                            ]
+                };
 
                 var mimeMessage = ConstruirMimeMessage(mensaje);
                 _ = EnviarSmtpAsync(mimeMessage);
@@ -104,7 +122,7 @@ namespace EnvioCorreos.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error enviando email a {Destinatarios}",
-                    string.Join(", ", mensaje.Destinatarios));
+                    string.Join(", ", $"{orden.Cliente.Nombre} {orden.Cliente.Apellido}-{orden.Cliente.Email}"));
                 return ResultadoEmail.Fallo(ex.Message);
             }
         }
@@ -130,7 +148,7 @@ namespace EnvioCorreos.Services
                 ]
             };
 
-            return await EnviarAsync(mensaje, facOrdenDTO);
+            return await EnviarAsync(facOrdenDTO);
         }
 
         private MimeMessage ConstruirMimeMessage(EmailMessage mensaje)

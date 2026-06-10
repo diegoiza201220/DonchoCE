@@ -41,7 +41,8 @@ import { RptInventariosComponent } from './components/reportes/inventarios/rptin
 import { RptComprasVsInventariosComponent } from './components/reportes/comprasvsinventarios/rptcomprasvsinventarios.component';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { RptFacturasComponent } from './components/reportes/facturas/rptfacturas.component';
-
+import { RptDocumentosComponent } from './components/reportes/documentos/rptdocumentos.component';
+import { ClientesComponent } from './components/clientes/clientes.component';
 import { AuthInterceptor } from './services/auth.interceptor';
 
 @NgModule({
@@ -63,7 +64,9 @@ import { AuthInterceptor } from './services/auth.interceptor';
     InventariosComponent,
     RptInventariosComponent,
     RptComprasVsInventariosComponent,
-    RptFacturasComponent
+    RptFacturasComponent,
+    RptDocumentosComponent,
+    ClientesComponent
   ],
   imports: [
     BrowserModule,

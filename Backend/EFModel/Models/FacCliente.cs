@@ -17,7 +17,7 @@ public partial class FacCliente
 
     public string? Email { get; set; }
 
-    public DateOnly? FechaCumpleanios { get; set; }
+    public int FechaCumpleanios { get; set; }
 
     public string? Direccion { get; set; }
 

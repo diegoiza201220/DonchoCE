@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -19,15 +19,15 @@ export class ClientesService {
     return firstValueFrom(this.http.get<any>(`${this.apiUrl}/cedula/${cedulaRuc}`));
   }
 
-  // getItemsObservable(): Observable<Item[]> {
-  //   return this.http.get<Item[]>(this.apiUrl);
-  // }
+  async getClientesPromise(): Promise<any> {
+    return firstValueFrom(this.http.get<any>(this.apiUrl));
+  }
 
-  // deleteItem(item: Item): Observable<void> {
-  //   return this.http.delete<void>(`${this.apiUrl}/${item.id}`);
-  // }
-
-  // updateItem(item: Item): Observable<Item> {
-  //   return this.http.put<Item>(`${this.apiUrl}/${item.id}`, item);
-  // }
+  async deleteCliente(cliente: any): Promise<any> {
+      return firstValueFrom(this.http.delete(this.apiUrl + "/eliminar", { body: cliente }));
+    }
+  
+  async updateCliente(cliente: any): Promise<any> {
+      return firstValueFrom(this.http.put(this.apiUrl + "/actualizar", cliente));
+    }
 }

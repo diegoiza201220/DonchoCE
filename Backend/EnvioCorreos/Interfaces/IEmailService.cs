@@ -8,7 +8,7 @@ namespace EnvioCorreos.Interfaces
 {
     public interface IEmailService
     {
-        Task<ResultadoEmail> EnviarAsync(EmailMessage mensaje, FacOrdenDTO facOrdenDTO);
+        Task<ResultadoEmail> EnviarAsync(FacOrdenDTO facOrdenDTO);
         Task<ResultadoEmail> EnviarFacturaAsync(
             string destinatario,
             string nombreCliente,

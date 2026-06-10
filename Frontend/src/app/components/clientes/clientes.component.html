@@ -1,0 +1,163 @@
+<p-toast></p-toast>
+<p-toolbar styleClass="mb-4 bg-toolbar">
+  <ng-template pTemplate="left">
+    <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+    <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedClientes()"
+      [disabled]="!selectedClientes || !selectedClientes.length"></button>
+  </ng-template>
+
+  <ng-template pTemplate="right">
+    <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
+  </ng-template>
+</p-toolbar>
+
+
+<p-table #dt [value]="lclientes" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}"
+  [globalFilterFields]="['cliente.nombre','cliente.cedulaRuc']" [(selection)]="selectedClientes" [rowHover]="true">
+  <ng-template pTemplate="header" class=".bg-productos-row">
+    <tr>
+      <th scope="col" style="width: 3rem">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+      </th>
+      <th pSortableColumn="nombre" style="width:15%">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
+      <th pSortableColumn="apellido" style="width:15%">Apellido <p-sortIcon field="apellido"></p-sortIcon></th>
+      <th pSortableColumn="cedulaRuc" style="width:15%">Cédula Ruc<p-sortIcon field="cedulaRuc"></p-sortIcon></th>
+      <th pSortableColumn="telefonoCelular" style="width:15%">Telf.Celular<p-sortIcon
+          field="telefonoCelular"></p-sortIcon></th>
+      <th pSortableColumn="email" style="width:20%">Email <p-sortIcon field="email"></p-sortIcon></th>
+      <th pSortableColumn="fechaCumpleanios" style="width:10%">Fecha Cumpleaños<p-sortIcon
+          field="fechaCumpleanios"></p-sortIcon></th>
+      <th pSortableColumn="direccion" style="width:20%">Dirección <p-sortIcon field="direccion"></p-sortIcon></th>
+      <!-- <th pSortableColumn="activo" style="width:10%">Activo <p-sortIcon field="activo"></p-sortIcon></th> -->
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-cliente let-editing="editing" let-ri="rowIndex">
+    <tr [pEditableRow]="cliente">
+      <td>
+        <p-tableCheckbox [value]="cliente"></p-tableCheckbox>
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input pInputText type="text" [(ngModel)]="cliente.nombre" required>
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{cliente.nombre}}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input pInputText type="text" [(ngModel)]="cliente.apellido" required>
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{cliente.apellido}}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">{{cliente.cedulaRuc}}
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{cliente.cedulaRuc}}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">{{cliente.telefonoCelular}}
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{cliente.telefonoCelular}}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">{{cliente.email}}
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{cliente.email}}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">{{cliente.fechaCumpleanios}}
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{cliente.fechaCumpleanios}}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">{{cliente.direccion}}
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{cliente.direccion}}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <div class="flex align-items-center justify-content-center gap-2">
+          <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+            (click)="onRowEditInit(cliente)" class="p-button-rounded"></button>
+          <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+            (click)="onRowEditSave(cliente)" class="p-button-rounded p-button-success mr-2"></button>
+          <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+            (click)="onRowEditCancel(cliente, ri)" class="p-button-rounded p-button-danger"></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+
+<p-dialog [(visible)]="clienteDialogo" [style]="{width: '450px'}" header="Detalles del cliente" [modal]="true"
+  styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="p-field">
+      <label for="nombre">Nombre</label>
+      <input type="text" pInputText id="nombre" [(ngModel)]="cliente.nombre" required autofocus />
+      <small class="p-error" *ngIf="submitted && !cliente.nombre">Nombre es requerido.</small>
+    </div>
+    <div class="p-field">
+      <label for="apellido">Apellido</label>
+      <input type="text" pInputText id="apellido" [(ngModel)]="cliente.apellido" required autofocus />
+      <small class="p-error" *ngIf="submitted && !cliente.apellido">Apellido es requerido.</small>
+    </div>
+    <div class="p-field">
+      <label for="cedulaRuc">Cédula/Ruc</label>
+      <input type="text" pInputText id="cedulaRuc" [(ngModel)]="cliente.cedulaRuc" required autofocus />
+      <small class="p-error" *ngIf="submitted && !cliente.cedulaRuc">Cédula/Ruc es requerido.</small>
+    </div>
+    <div class="p-field">
+      <label for="telefonoCelular">Teléfono Celular</label>
+      <input type="text" pInputText id="telefonoCelular" [(ngModel)]="cliente.telefonoCelular" required autofocus />
+      <small class="p-error" *ngIf="submitted && !cliente.telefonoCelular">Teléfono Celular es requerido.</small>
+    </div>
+    <div class="p-field">
+      <label for="email">Email</label>
+      <input type="text" pInputText id="email" [(ngModel)]="cliente.email" required autofocus />
+      <small class="p-error" *ngIf="submitted && !cliente.email">Email es requerido.</small>
+    </div>
+    <div class="p-field">
+      <label for="direccion">Dirección</label>
+      <input type="text" pInputText id="direccion" [(ngModel)]="cliente.direccion" required autofocus />
+      <small class="p-error" *ngIf="submitted && !cliente.direccion">Dirección es requerida.</small>
+    </div>
+    <div class="p-field">
+      <label for="fechaCumpleanios">Fecha de Cumpleaños</label>
+      <input type="text" pInputText id="fechaCumpleanios" [(ngModel)]="cliente.fechaCumpleanios" required autofocus />
+      <small class="p-error" *ngIf="submitted && !cliente.fechaCumpleanios">Fecha de Cumpleaños es requerida.</small>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Grabar" icon="pi pi-check" class="p-button-text" (click)="saveCliente()"></button>
+  </ng-template>
+</p-dialog>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

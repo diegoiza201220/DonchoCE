@@ -68,12 +68,6 @@ public class FacOrdenRepository : Repository<FacOrden>, IFacOrdenRepository
 
     public async Task<IEnumerable<RptFacturasPorFechasDTO>> GetFacturasPorFecha(int fechaini, int fechafin)
     {
-        //=> await _dbSet.AsNoTracking()
-        //    .Include(o => o.Cliente)
-        //    .Where(o => o.FechaInteger >= fechaini && o.FechaInteger <= fechafin)
-        //    .OrderByDescending(o => o.Fecha)
-        //    .ToListAsync();
-
         var resultado = (from o in _context.FacOrden
                          join c in _context.FacCliente
                          on o.Clienteid equals c.Id
@@ -99,9 +93,15 @@ public class FacOrdenRepository : Repository<FacOrden>, IFacOrdenRepository
                          }
                      ).ToList().OrderBy(o => o.NumeroFactura);
         return resultado;
-
-
     }
+
+    public async Task<IEnumerable<RptDocumentosPorFechasDTO>> GetDocumentosPorFecha(int fechaini, int fechafin) 
+        => _dbSet.AsNoTracking().Where(x=> x.FechaInteger >= fechaini && x.FechaInteger<=fechafin).GroupBy(x => x.EsFactura)
+            .Select(g => new RptDocumentosPorFechasDTO
+            {
+                Documento = g.Key ? "Factura" : "Orden",
+                Cantidad = g.Count()
+            });
 }
 
 // ── DetalleOrden ──────────────────────────────────────────────────────────────

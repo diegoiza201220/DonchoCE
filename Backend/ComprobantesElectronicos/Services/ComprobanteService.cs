@@ -17,7 +17,7 @@ public class ComprobanteService
     private readonly InfowareFirmaService _infowareFirmaService;
     private readonly IUnitOfWork _uow;
     private readonly EmailService _emailService;
-    private readonly IConfiguration _config;
+
 
     public ComprobanteService(SriService sriService, InfowareFirmaService infowareFirmaService, IUnitOfWork uow, EmailService emailService, IConfiguration config)
     {
@@ -25,7 +25,6 @@ public class ComprobanteService
         _infowareFirmaService = infowareFirmaService;
         _uow = uow;
         _emailService = emailService;
-        _config = config;
     }
     public async Task<ResultadoEmisionDTO> EmitirFacturaAsync(FacOrdenDTO ordenDTO, CelLogDocumento celLogDocumento)
     {
@@ -73,20 +72,21 @@ public class ComprobanteService
                 };
             }
 
-            celLogDocumento.XmlFirmado = respuestaAutorizacion.XmlAutorizado;
+            celLogDocumento.XmlFirmado = ordenDTO.Xml = respuestaAutorizacion.XmlAutorizado;
             SetInformacionCelLogDocumento(celLogDocumento, estado: 200, mensaje: "Comprobante autorizado exitosamente");
 
             await _uow.SaveChangesAsync();
 
-            EmailMessage emailMessage = new()
-            {
-                Asunto = "Factura de su compra",
-                Cuerpo = $"Estimado {ordenDTO.Cliente.Nombre}, adjunto encontrará la factura de su compra. Gracias por elegirnos.",
-                Destinatarios = new List<string> { ordenDTO.Cliente.Email ?? _config["Email:usuario"] },
-                EsHtml = false
-            };
+            //EmailMessage emailMessage = new()
+            //{
+            //    Asunto = "Factura de su compra",
+            //    Cuerpo = $"Estimado {ordenDTO.Cliente.Nombre}, adjunto encontrará la factura de su compra. Gracias por elegirnos.",
+            //    Destinatarios = new List<string> { ordenDTO.Cliente.Email ?? _config["Email:usuario"] },
+            //    EsHtml = false
+            //};
 
-            _ = _emailService.EnviarAsync(emailMessage, ordenDTO);
+
+            _ = _emailService.EnviarAsync(ordenDTO);
 
             return new ResultadoEmisionDTO
             {

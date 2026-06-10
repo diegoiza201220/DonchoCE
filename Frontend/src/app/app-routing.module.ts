@@ -16,25 +16,29 @@ import { InventariosComponent } from './components/inventarios/inventarios.compo
 import { RptInventariosComponent } from './components/reportes/inventarios/rptinventarios.component';
 import { RptComprasVsInventariosComponent } from './components/reportes/comprasvsinventarios/rptcomprasvsinventarios.component';
 import { RptFacturasComponent } from './components/reportes/facturas/rptfacturas.component';
+import { RptDocumentosComponent } from './components/reportes/documentos/rptdocumentos.component';
+import { ClientesComponent } from './components/clientes/clientes.component';
 
 const routes: Routes = [
-  {path: '', redirectTo: '/login',pathMatch: 'full'},
-  {path: 'login', component: LoginComponent},
-  {path: 'main', component: MainComponent, canActivate: [AuthGuard] },
-  {path: 'productos', component: ProductosComponent, canActivate: [AuthGuard]},
-  {path: 'items', component: ItemsComponent, canActivate: [AuthGuard]},
-  {path: 'compras', component: ComprasComponent, canActivate: [AuthGuard]},
-  {path: 'inventarios', component: InventariosComponent, canActivate: [AuthGuard]},
-  {path: 'pedidos', component: PedidosComponent, canActivate: [AuthGuard]},
-  {path: 'cocina', component: CocinaComponent, canActivate: [AuthGuard]},
-  {path: 'rptordenes', component: RptOrdenesComponent, canActivate: [AuthGuard]},
-  {path: 'rptcompras', component: RptComprasComponent, canActivate: [AuthGuard]},
-  {path: 'rptventas', component: RptVentasComponent, canActivate: [AuthGuard]},
-  {path: 'rptfacturas', component: RptFacturasComponent, canActivate: [AuthGuard]},
-  {path: 'rptventasproductos', component: RptVentasproductosComponent, canActivate: [AuthGuard]},
-  {path: 'rptinventarios', component: RptInventariosComponent, canActivate: [AuthGuard]},
-  {path: 'rptcomprasvsinventarios', component: RptComprasVsInventariosComponent, canActivate: [AuthGuard]},
-  {path: '**', component: LoginComponent}
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
+  { path: 'main', component: MainComponent, canActivate: [AuthGuard] },
+  { path: 'productos', component: ProductosComponent, canActivate: [AuthGuard] },
+  { path: 'clientes', component: ClientesComponent, canActivate: [AuthGuard] },
+  { path: 'items', component: ItemsComponent, canActivate: [AuthGuard] },
+  { path: 'compras', component: ComprasComponent, canActivate: [AuthGuard] },
+  { path: 'inventarios', component: InventariosComponent, canActivate: [AuthGuard] },
+  { path: 'pedidos', component: PedidosComponent, canActivate: [AuthGuard] },
+  { path: 'cocina', component: CocinaComponent, canActivate: [AuthGuard] },
+  { path: 'rptordenes', component: RptOrdenesComponent, canActivate: [AuthGuard] },
+  { path: 'rptcompras', component: RptComprasComponent, canActivate: [AuthGuard] },
+  { path: 'rptventas', component: RptVentasComponent, canActivate: [AuthGuard] },
+  { path: 'rptfacturas', component: RptFacturasComponent, canActivate: [AuthGuard] },
+  { path: 'rptventasproductos', component: RptVentasproductosComponent, canActivate: [AuthGuard] },
+  { path: 'rptdocumentos', component: RptDocumentosComponent, canActivate: [AuthGuard] },
+  { path: 'rptinventarios', component: RptInventariosComponent, canActivate: [AuthGuard] },
+  { path: 'rptcomprasvsinventarios', component: RptComprasVsInventariosComponent, canActivate: [AuthGuard] },
+  { path: '**', component: LoginComponent }
 ];
 
 @NgModule({

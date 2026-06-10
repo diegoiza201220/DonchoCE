@@ -90,5 +90,10 @@ namespace WebApiDonCho.Services
         {
             return await uow.FacOrdenR.GetFacturasPorFecha(rq.FechaIni, rq.FechaFin);
         }
+
+        public async Task<IEnumerable<RptDocumentosPorFechasDTO>> GetDocumentosPorFechaAsync(RqOrdenesPorFechas rq)
+        {
+            return await uow.FacOrdenR.GetDocumentosPorFecha(rq.FechaIni, rq.FechaFin);
+        }
     }
 }

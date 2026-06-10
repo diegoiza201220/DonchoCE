@@ -43,7 +43,7 @@ public class OrdenController : ControllerBase
         DatosPedidoDTO datosPedidoDTO = new()
         {
             CodigoIva = Convert.ToInt16(parametro.Valor),
-            ImpuestoPorcentaje = Convert.ToInt16(tarifa.Codigo.Replace("%",""))
+            ImpuestoPorcentaje = Convert.ToInt16(tarifa.Codigo.Replace("%", ""))
         };
 
         return datosPedidoDTO is null ? NotFound() : Ok(datosPedidoDTO);
@@ -75,4 +75,8 @@ public class OrdenController : ControllerBase
     [HttpPost("facturasporfecha")]
     public async Task<IActionResult> FacturasPorFecha([FromBody] RqOrdenesPorFechas detalle)
     => Ok(await _ordenService.GetFacturasPorFechaAsync(detalle));
+
+    [HttpPost("documentosporfecha")]
+    public async Task<IActionResult> DocumentosPorFecha([FromBody] RqOrdenesPorFechas detalle)
+    => Ok(await _ordenService.GetDocumentosPorFechaAsync(detalle));
 }

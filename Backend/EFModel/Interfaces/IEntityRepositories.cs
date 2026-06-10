@@ -23,6 +23,7 @@ public interface IFacOrdenRepository : IRepository<FacOrden>
     Task<IEnumerable<FacOrden>> GetByClienteAsync(int clienteId);
     Task<IEnumerable<FacOrden>> GetByFechas(int fechaini, int fechafin);
     Task<IEnumerable<RptFacturasPorFechasDTO>> GetFacturasPorFecha(int fechaini, int fechafin);
+    Task<IEnumerable<RptDocumentosPorFechasDTO>> GetDocumentosPorFecha(int fechaini, int fechafin);
 }
 
 public interface IFacDetalleOrdenRepository : IRepository<FacDetalleOrden>
