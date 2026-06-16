@@ -65,8 +65,11 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.configurarPedido();
     this.getProductosPromise();
+    // this.getDatosPedido().then(() => {
+    //   this.getProductosPromise();
+    // } );
     this.getSecuenciaPromise();
-    this.getDatosPedido();
+    //this.getDatosPedido();
   }
 
   configurarPedido() {
@@ -75,24 +78,30 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.cliente = {};
   }
 
-  getDatosPedido() {
-    this.ordenesService.getDatosPedido().then(data => {
-      this.impuestoPorcentaje = data.impuestoPorcentaje;
-      this.codigoIva = data.codigoIva;
-      this.lproductos.forEach((producto: Producto) => {
-        producto.valor = this.redondear(producto.valor + (producto.valor * this.impuestoPorcentaje / 100), 2);
-      });
-    })
-  }
+  // getDatosPedido() {
+  //   this.ordenesService.getDatosPedido().then(data => {
+  //     this.impuestoPorcentaje = data.impuestoPorcentaje;
+  //     this.codigoIva = data.codigoIva;
+  //     // this.lproductos.forEach((producto: Producto) => {
+  //     //   producto.valor = this.redondear(producto.valor + (producto.valor * this.impuestoPorcentaje / 100), 2);
+  //     // });
+  //   })
+  // }
 
   getProductosPromise(): void {
     this.lproductos = [];
-    this.productosService.getProductosPromise().then(data => {
-      data.productos.forEach((producto: Producto) => {
-        producto.valorsiniva = producto.valor;
-        this.lproductos.push(producto);
-      });
-      this.fillGrupoProducto();
+
+    this.ordenesService.getDatosPedido().then(data => {
+      this.impuestoPorcentaje = data.impuestoPorcentaje;
+      this.codigoIva = data.codigoIva;
+      this.productosService.getProductosPromise().then(data => {
+        data.productos.forEach((producto: Producto) => {
+          producto.valorsiniva = producto.valor;
+          producto.valor = this.redondear(producto.valor + (producto.valor * this.impuestoPorcentaje / 100), 2);
+          this.lproductos.push(producto);
+        });
+        this.fillGrupoProducto();
+      })
     })
   }
 
@@ -257,7 +266,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     } else if (this.pedido.esFactura && this.cliente.id === undefined) {
       this.messageService.add({ severity: 'warn', summary: 'Ops!! ', detail: '¡Debe ingresar los datos del cliente para facturar!' });
       return;
-    } 
+    }
 
     let d = new Date();
 
@@ -298,7 +307,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.configurarPedido();
     this.getProductosPromise();
     this.getSecuenciaPromise();
-    this.getDatosPedido();
+    //this.getDatosPedido();
     this.lproductoschoclo.forEach(element => {
       element.badge = '0';
     });
