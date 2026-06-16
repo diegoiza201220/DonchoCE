@@ -23,8 +23,10 @@ public class ClienteController : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
-        => Ok(await _uow.FacClienteR.GetAllAsync());
-
+    {
+        var resultado = await _uow.FacClienteR.GetAllAsync();
+        return Ok(resultado.OrderBy(x => x.Id));
+    }
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {

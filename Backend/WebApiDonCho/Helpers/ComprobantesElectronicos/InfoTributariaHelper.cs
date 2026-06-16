@@ -11,18 +11,32 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
 {
     public class InfoTributariaHelper
     {
-        public static void SetInformacion(FacOrdenDTO ordenDTO, FacOrden orden, CelInfoTributaria celInfoTributaria, CelSecuenciaSri celSecuenciaSri, bool esProduccion)
+        public static void SetInformacion(FacOrdenDTO ordenDTO, FacOrden orden, CelInfoTributaria celInfoTributaria, CelSecuenciaSri celSecuenciaSri, bool esProduccion, int coddoc)
         {
             // Para este ejemplo, asumimos que el ambiente es 1 (producción) o 2 (pruebas)
-            // y el tipo de emisión es 1 (normal) para ambos casos.
-            DateTime localDate = ordenDTO.Fecha.ToLocalTime();
+            // y el tipo de emisión es 1 (normal) para ambos casos.            
             string ambiente = !esProduccion ? "1" : "2";
             string tipoEmision = "1"; // Normal
-            string claveAcceso = GetClaveAcceso(localDate, celInfoTributaria.Ruc, celSecuenciaSri.SecuenciaActual.ToString("D9"), tipoEmision, ordenDTO.CodDoc, ambiente, $"{celSecuenciaSri.Establecimiento}{celSecuenciaSri.PuntoDeEmision}");
-            orden.ClaveNumeroAutorizacion = ordenDTO.ClaveNumeroAutorizacion = claveAcceso;
-            orden.NumeroFactura = ordenDTO.NumeroFactura = celSecuenciaSri.SecuenciaActual.ToString("D9");
-            orden.Establecimiento = ordenDTO.Establecimiento = celSecuenciaSri.Establecimiento;
-            orden.PuntoEmision = ordenDTO.PuntoEmision = celSecuenciaSri.PuntoDeEmision;            
+            switch (coddoc)
+            {
+                case 1: //factura
+                    DateTime localDate = ordenDTO.Fecha.ToLocalTime();
+                    string claveAcceso = GetClaveAcceso(localDate, celInfoTributaria.Ruc, celSecuenciaSri.SecuenciaActual.ToString("D9"), tipoEmision, ordenDTO.CodDoc, ambiente, $"{celSecuenciaSri.Establecimiento}{celSecuenciaSri.PuntoDeEmision}");
+                    orden.ClaveNumeroAutorizacion = ordenDTO.ClaveNumeroAutorizacion = claveAcceso;
+                    orden.NumeroFactura = ordenDTO.NumeroFactura = celSecuenciaSri.SecuenciaActual.ToString("D9");
+                    orden.Establecimiento = ordenDTO.Establecimiento = celSecuenciaSri.Establecimiento;
+                    orden.PuntoEmision = ordenDTO.PuntoEmision = celSecuenciaSri.PuntoDeEmision;
+                    break;
+
+                case 2: //notacredito
+                    DateTime nclocalDate = ordenDTO.NotaCreditoFecha.ToLocalTime();
+                    string ncclaveAcceso = GetClaveAcceso(nclocalDate, celInfoTributaria.Ruc, celSecuenciaSri.SecuenciaActual.ToString("D9"), tipoEmision, "03", ambiente, $"{celSecuenciaSri.Establecimiento}{celSecuenciaSri.PuntoDeEmision}");
+                    orden.NotaCreditoClaveNumeroAutorizacion = ordenDTO.NotaCreditoClaveNumeroAutorizacion = ncclaveAcceso;
+                    orden.NotaCreditoNumeroNotaCredito = ordenDTO.NotaCreditoNumeroNotaCredito = celSecuenciaSri.SecuenciaActual.ToString("D9");
+                    break;
+                default:
+                    break;
+            }
             ordenDTO.RazonSocial = celInfoTributaria.RazonSocial;
             ordenDTO.NombreComercial = celInfoTributaria.NombreComercial;
             ordenDTO.RucDonCho = celInfoTributaria.Ruc;

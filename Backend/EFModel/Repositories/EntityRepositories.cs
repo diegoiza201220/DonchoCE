@@ -31,16 +31,28 @@ public class FacProductoRepository : Repository<FacProducto>, IFacProductoReposi
     public async Task<IEnumerable<FacProducto>> GetByGrupoAsync(string grupo)
         => await _dbSet.AsNoTracking().Where(p => p.Grupo == grupo && p.Activo).ToListAsync();
 
-    public async new Task<IEnumerable<FacProductoDTO>> GetAllAsync()
+    public async Task<IEnumerable<FacProductoDTO>> GetAllDtoAsync()
     {
         var resultado = (from p in _context.FacProducto
                          join d in _context.GenCatalogoDetalle
                          on p.CodigoIva equals d.Id
-                         select new FacProductoDTO() { Activo = p.Activo, CodigoIva = p.CodigoIva, Grupo = p.Grupo, Id = p.Id, IvaTarifa = d.Codigo, IvaValor = p.Valor * Convert.ToDecimal(d.Codigo.Replace("%",""))/100, Nombre=p.Nombre, OrdenAparicion = p.OrdenAparicion, PedidoACocina = p.PedidoACocina, Valor = p.Valor, ValorTotal = p.Valor + p.Valor * Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100 }
+                         select new FacProductoDTO() { Activo = p.Activo, CodigoIva = p.CodigoIva, Grupo = p.Grupo, Id = p.Id, IvaTarifa = d.Codigo, IvaValor = p.Valor * Convert.ToDecimal(d.Codigo.Replace("%",""))/100, Nombre=p.Nombre, OrdenAparicion = p.OrdenAparicion, PedidoACocina = p.PedidoACocina, Valor = p.Valor, ValorDoncho = p.ValorDoncho, ValorTotal = p.Valor + p.Valor * Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100 }
                          ).ToList().OrderByDescending(o=> o.Nombre);
         return resultado;
     }
-    //=> await _dbSet.fro AsNoTracking().Include(p=> p.) Where(p => p.Activo).ToListAsync();
+
+    public async new Task<IEnumerable<FacProducto>> GetAllAsync() => await _dbSet.ToListAsync();
+
+    public IEnumerable<FacProducto> GetAll() => [.. _dbSet];
+
+    public IEnumerable<FacProductoDTO> GetAllDto() {
+        var resultado = (from p in _context.FacProducto
+                         join d in _context.GenCatalogoDetalle
+                         on p.CodigoIva equals d.Id
+                         select new FacProductoDTO() { Activo = p.Activo, CodigoIva = p.CodigoIva, Grupo = p.Grupo, Id = p.Id, IvaTarifa = d.Codigo, IvaValor = p.Valor * Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100, Nombre = p.Nombre, OrdenAparicion = p.OrdenAparicion, PedidoACocina = p.PedidoACocina, Valor = p.Valor, ValorDoncho = p.ValorDoncho, ValorTotal = p.Valor + p.Valor * Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100 }
+                             ).ToList().OrderByDescending(o => o.Nombre);
+        return resultado;
+    }
 }
 
 // ── Orden ─────────────────────────────────────────────────────────────────────
@@ -240,4 +252,12 @@ public class GenCatalogoDetalleRepository : Repository<GenCatalogoDetalle>, IGen
         .Include(o => o.Catalogo)
         .Where(o => o.Catalogo.Nombre == catalogonombre)
         .ToList();
+}
+
+public class GenFeriadoRepository : Repository<GenFeriado>, IGenFeriadoRepository
+{
+    public GenFeriadoRepository(DonchoContext context) : base(context) { }
+
+    public bool GetByFecha(int fechainteger)
+    => _dbSet.Any(c => c.Fecha == fechainteger);
 }

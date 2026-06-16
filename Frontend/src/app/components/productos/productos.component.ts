@@ -4,6 +4,9 @@ import Producto from 'src/app/interfaces/productos.interface';
 import { ProductosService } from 'src/app/services/productos.service';
 import { LoggerService } from 'src/app/services/logger.service';
 import { CatalogosService } from 'src/app/services/catalogos.service';
+import { OrdenesService } from 'src/app/services/ordenes.service';
+import { BaseComponent } from 'src/app/util/base.component';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-productos',
@@ -11,7 +14,7 @@ import { CatalogosService } from 'src/app/services/catalogos.service';
   styleUrls: ['./productos.component.css'],
   providers: [MessageService, ConfirmationService]
 })
-export class ProductosComponent implements OnInit {
+export class ProductosComponent extends BaseComponent implements OnInit {
 
   producto!: any;
 
@@ -25,6 +28,9 @@ export class ProductosComponent implements OnInit {
   submitted!: boolean;
 
   productoDialogo!: boolean;
+  impuestoPorcentaje = 0;
+  codigoIva = 0;
+  idCatDetalleIva = 0;
 
   lgrupo: SelectItem[] = [
     { label: 'CHOCLO', value: 'CHOCLO' },
@@ -37,16 +43,22 @@ export class ProductosComponent implements OnInit {
   constructor(private readonly productosService: ProductosService,
     private readonly messageService: MessageService,
     private readonly confirmationService: ConfirmationService,
-    private readonly logger: LoggerService,
+    private readonly ordenesService: OrdenesService,
+    public override authService: AuthService,
+    public override logger: LoggerService,
     private readonly catalogosService: CatalogosService) {
+    super(authService, logger);
   }
 
   ngOnInit(): void {
     this.getProductosPromise();
+    this.getDatosPedido();
   }
 
   openNew() {
-    this.producto = { nombre: '', valor: 0, grupo: '', activo: true, ordenaparicion: 0, pedidoacocina: false, ivaTarifa:'15%', ivaValor: 0, valorTotal: 0 };
+    this.producto = { nombre: '', valor: 0, grupo: '', activo: true, ordenaparicion: 0, 
+      pedidoacocina: false , ivaValor: 0, 
+      valorTotal: 0, codigoIva: this.idCatDetalleIva, valorDoncho: 0 };
     this.submitted = false;
     this.productoDialogo = true;
   }
@@ -64,11 +76,13 @@ export class ProductosComponent implements OnInit {
   }
 
 
-  // getProductosObserver(): void {
-  //   this.productosService.getProductosObservable().subscribe(productos => {
-  //     this.lproductos = productos;
-  //   })
-  // }
+  getDatosPedido() {
+    this.ordenesService.getDatosPedido().then(data => {
+      this.impuestoPorcentaje = data.impuestoPorcentaje;
+      this.codigoIva = data.codigoIva;
+      this.idCatDetalleIva = data.idCatDetalleIva;
+    })
+  }
 
   getProductosPromise(): void {
     this.lproductos = [];
@@ -146,7 +160,7 @@ export class ProductosComponent implements OnInit {
 
   calcularIVA(value: any) {
     const p = value;
-    p.ivaValor = p.valor * (p.ivaTarifa.toString().replace('%', '') / 100);
-    p.valorTotal = Number(p.valor) + Number(p.ivaValor);
+    p.ivaValor = this.redondear(p.valor * (this.impuestoPorcentaje / 100), 2);
+    p.valorTotal = this.redondear(Number(p.valor) + Number(p.ivaValor), 2);
   }
 }

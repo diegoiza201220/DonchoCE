@@ -44,6 +44,7 @@ import { RptFacturasComponent } from './components/reportes/facturas/rptfacturas
 import { RptDocumentosComponent } from './components/reportes/documentos/rptdocumentos.component';
 import { ClientesComponent } from './components/clientes/clientes.component';
 import { AuthInterceptor } from './services/auth.interceptor';
+import { InputMaskModule } from 'primeng/inputmask';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,7 @@ import { AuthInterceptor } from './services/auth.interceptor';
     RptComprasVsInventariosComponent,
     RptFacturasComponent,
     RptDocumentosComponent,
-    ClientesComponent
+    ClientesComponent  
   ],
   imports: [
     BrowserModule,
@@ -75,7 +76,7 @@ import { AuthInterceptor } from './services/auth.interceptor';
     TableModule, MessagesModule, InputTextModule, InputNumberModule,
     ToastModule, FormsModule, BrowserAnimationsModule, BadgeModule,
     TabViewModule, ChartModule, CheckboxModule, ToolbarModule, ButtonModule,
-    DialogModule, ConfirmDialogModule, DropdownModule, SplitterModule, CalendarModule, SelectButtonModule
+    DialogModule, ConfirmDialogModule, DropdownModule, SplitterModule, CalendarModule, SelectButtonModule, InputMaskModule
   ],
   providers: [
     ConfirmationService,

@@ -8,7 +8,7 @@ namespace EFModel.Mappers
 {
     public static class FacOrdenMapperExtensions
     {
-        public static FacOrden ToDTO(this FacOrdenDTO orden)
+        public static FacOrden FromDTO(this FacOrdenDTO orden)
         {
             return new FacOrden
             {
@@ -27,6 +27,11 @@ namespace EFModel.Mappers
                 UsuarioRegistro = orden.UsuarioRegistro,
                 EsFactura = orden.EsFactura,
                 DocumentoPago = orden.DocumentoPago,
+                EsNotaCredito = orden.EsNotaCredito,
+                NotaCreditoClaveNumeroAutorizacion = orden.NotaCreditoClaveNumeroAutorizacion,
+                NotaCreditoNumeroNotaCredito = orden.NotaCreditoNumeroNotaCredito,
+                NotaCreditoMotivo = orden.NotaCreditoMotivo,
+                NotaCreditoFecha = orden.NotaCreditoFecha,
                 FacDetalleOrdens = orden.FacDetalleOrdens.Select(d => new FacDetalleOrden
                 {
                     Cantidad = d.Cantidad,

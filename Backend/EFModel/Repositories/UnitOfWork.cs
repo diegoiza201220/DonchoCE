@@ -21,6 +21,7 @@ public class UnitOfWork : IUnitOfWork
     public ICelInfoTributariaRepository CelInfoTributariaR { get; }
     public IGenCatalogoRepository GenCatalogoR { get; }
     public IGenCatalogoDetalleRepository GenCatalogoDetalleR { get; }
+    public IGenFeriadoRepository GenFeriadoR { get; }
 
     public UnitOfWork(DonchoContext context)
     {
@@ -38,6 +39,7 @@ public class UnitOfWork : IUnitOfWork
         CelInfoTributariaR = new CelInfoTributariaRepository(context);
         GenCatalogoR = new GenCatalogoRepository(context);
         GenCatalogoDetalleR = new GenCatalogoDetalleRepository(context);
+        GenFeriadoR = new GenFeriadoRepository(context);
     }
 
     public async Task<int> SaveChangesAsync()

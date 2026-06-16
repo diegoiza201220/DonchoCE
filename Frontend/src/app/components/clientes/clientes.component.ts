@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { MessageService, SelectItem, ConfirmationService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { ClientesService } from 'src/app/services/clientes.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoggerService } from 'src/app/services/logger.service';
 import { BaseComponent } from 'src/app/util/base.component';
 
+
 @Component({
   selector: 'app-clientes',
   templateUrl: './clientes.component.html',
-  styleUrls: ['./clientes.component.css'],
-  providers: [MessageService, ConfirmationService]
+  styleUrls: ['./clientes.component.css']
 })
 export class ClientesComponent extends BaseComponent implements OnInit {
   cliente: any;
@@ -34,7 +34,8 @@ export class ClientesComponent extends BaseComponent implements OnInit {
 
   openNew() {
     let d = new Date();
-    this.cliente = { id:0,
+    this.cliente = {
+      id: 0,
       nombre: '', apellido: '', cedulaRuc: '', telefonoCelular: '', email: '',
       fechaCumpleanios: this.fechaToInteger(d), direccion: '', usuarioRegistro: this.authService.userEmail
     };
@@ -49,11 +50,33 @@ export class ClientesComponent extends BaseComponent implements OnInit {
 
   saveCliente() {
     this.submitted = true;
+    if (!this.validarCliente(this.cliente)) {
+      return;
+    }
     this.addCliente();
-    this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Cliente creado' });
     this.clienteDialogo = false;
   }
 
+  validarCliente(cliente: any): boolean {
+    let mensaje = '';
+    if (cliente.nombre.trim() === '') {
+      mensaje += 'Nombre es requerido. ';
+    }
+    if (cliente.apellido.trim() === '') {
+      mensaje += 'Apellido es requerido. ';
+    }
+    if (cliente.cedulaRuc.trim() === '') {
+      mensaje += 'Cédula/Ruc es requerido. ';
+    }
+    if (cliente.email.trim() === '') {
+      mensaje += 'Email es requerido. ';
+    }
+    if (mensaje !== '') {
+      this.messageService.add({ severity: 'warn', summary: 'Ops!! ', detail: mensaje });
+      return false;
+    }
+    return true;
+  }
 
   getClientesPromise(): void {
     this.lclientes = [];
@@ -69,24 +92,37 @@ export class ClientesComponent extends BaseComponent implements OnInit {
     this.clientesService.addItem(this.cliente).then(response => {
       this.logger.log(response);
       this.getClientesPromise();
+      this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Cliente creado' });
+    }).catch(error => {
+      this.logger.log(error);
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el cliente' });
     });
   }
 
   async deleteCliente(cliente: any) {
     this.lclientes = [];
     this.clientesService.deleteCliente(cliente)
-    .then(response => {
-      this.logger.log(response);
-      this.getClientesPromise();
-    });     
+      .then(response => {
+        this.logger.log(response);
+        this.getClientesPromise();
+      });
   }
 
   async updateCliente(cliente: any) {
+    if (!this.validarCliente(cliente)) {
+      return;
+    }
     this.lclientes = [];
+    cliente.fechaCumpleanios = cliente.fechaCumpleanios.indexOf('-') !== -1 ?
+      cliente.fechaCumpleanios.replaceAll('-', '') : cliente.fechaCumpleanios;
     this.clientesService.updateCliente(cliente)
       .then(response => {
         this.logger.log(response);
         this.getClientesPromise();
+            this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Cliente actualizado' });
+      }).catch(error => {
+        this.logger.log(error);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar el cliente' });
       });
   }
 
@@ -96,7 +132,6 @@ export class ClientesComponent extends BaseComponent implements OnInit {
 
   onRowEditSave(cliente: any) {
     this.updateCliente(cliente);
-    this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Cliente actualizado' });
   }
 
   onRowEditCancel(cliente: any, index: number) {

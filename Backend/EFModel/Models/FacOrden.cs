@@ -35,6 +35,11 @@ public partial class FacOrden
     public string PuntoEmision { get; set; } = string.Empty;
     public string DocumentoPago { get; set; } = null!;
 
+    public bool EsNotaCredito { get; set; } = false;
+    public string NotaCreditoClaveNumeroAutorizacion { get; set; } = string.Empty;
+    public string NotaCreditoNumeroNotaCredito { get; set; } = string.Empty;
+    public string NotaCreditoMotivo { get; set; } = string.Empty;
+    public DateTime NotaCreditoFecha { get; set; }
     public virtual FacCliente Cliente { get; set; } = null!;
 
     public virtual ICollection<FacDetalleOrden> FacDetalleOrdens { get; set; } = new List<FacDetalleOrden>();

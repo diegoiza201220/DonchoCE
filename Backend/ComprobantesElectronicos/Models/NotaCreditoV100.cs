@@ -133,21 +133,21 @@ public partial class notaCreditoInfoTributaria
 
     private string nombreComercialField;
 
-    private byte rucField;
+    private string rucField;
 
-    private byte claveAccesoField;
+    private string claveAccesoField;
 
-    private byte codDocField;
+    private string codDocField;
 
-    private byte estabField;
+    private string estabField;
 
-    private byte ptoEmiField;
+    private string ptoEmiField;
 
-    private byte secuencialField;
+    private string secuencialField;
 
     private string dirMatrizField;
 
-    private byte agenteRetencionField;
+    private string agenteRetencionField;
 
     private string contribuyenteRimpeField;
 
@@ -204,7 +204,7 @@ public partial class notaCreditoInfoTributaria
     }
 
     /// <remarks/>
-    public byte ruc
+    public string ruc
     {
         get
         {
@@ -217,7 +217,7 @@ public partial class notaCreditoInfoTributaria
     }
 
     /// <remarks/>
-    public byte claveAcceso
+    public string claveAcceso
     {
         get
         {
@@ -230,7 +230,7 @@ public partial class notaCreditoInfoTributaria
     }
 
     /// <remarks/>
-    public byte codDoc
+    public string codDoc
     {
         get
         {
@@ -243,7 +243,7 @@ public partial class notaCreditoInfoTributaria
     }
 
     /// <remarks/>
-    public byte estab
+    public string estab
     {
         get
         {
@@ -256,7 +256,7 @@ public partial class notaCreditoInfoTributaria
     }
 
     /// <remarks/>
-    public byte ptoEmi
+    public string ptoEmi
     {
         get
         {
@@ -269,7 +269,7 @@ public partial class notaCreditoInfoTributaria
     }
 
     /// <remarks/>
-    public byte secuencial
+    public string secuencial
     {
         get
         {
@@ -295,7 +295,7 @@ public partial class notaCreditoInfoTributaria
     }
 
     /// <remarks/>
-    public byte agenteRetencion
+    public string agenteRetencion
     {
         get
         {
@@ -332,7 +332,7 @@ public partial class notaCreditoInfoNotaCredito
 
     private string dirEstablecimientoField;
 
-    private byte tipoIdentificacionCompradorField;
+    private string tipoIdentificacionCompradorField;
 
     private string razonSocialCompradorField;
 
@@ -344,7 +344,7 @@ public partial class notaCreditoInfoNotaCredito
 
     private string riseField;
 
-    private byte codDocModificadoField;
+    private string codDocModificadoField;
 
     private string numDocModificadoField;
 
@@ -389,7 +389,7 @@ public partial class notaCreditoInfoNotaCredito
     }
 
     /// <remarks/>
-    public byte tipoIdentificacionComprador
+    public string tipoIdentificacionComprador
     {
         get
         {
@@ -467,7 +467,7 @@ public partial class notaCreditoInfoNotaCredito
     }
 
     /// <remarks/>
-    public byte codDocModificado
+    public string codDocModificado
     {
         get
         {
@@ -646,9 +646,9 @@ public partial class notaCreditoInfoNotaCreditoCompensacion
 public partial class notaCreditoInfoNotaCreditoTotalImpuesto
 {
 
-    private byte codigoField;
+    private int codigoField;
 
-    private byte codigoPorcentajeField;
+    private int codigoPorcentajeField;
 
     private decimal baseImponibleField;
 
@@ -657,7 +657,7 @@ public partial class notaCreditoInfoNotaCreditoTotalImpuesto
     private decimal valorDevolucionIvaField;
 
     /// <remarks/>
-    public byte codigo
+    public int codigo
     {
         get
         {
@@ -670,7 +670,7 @@ public partial class notaCreditoInfoNotaCreditoTotalImpuesto
     }
 
     /// <remarks/>
-    public byte codigoPorcentaje
+    public int codigoPorcentaje
     {
         get
         {
@@ -914,9 +914,9 @@ public partial class notaCreditoDetalleDetAdicional
 public partial class notaCreditoDetalleImpuesto
 {
 
-    private byte codigoField;
+    private int codigoField;
 
-    private byte codigoPorcentajeField;
+    private int codigoPorcentajeField;
 
     private decimal tarifaField;
 
@@ -925,7 +925,7 @@ public partial class notaCreditoDetalleImpuesto
     private decimal valorField;
 
     /// <remarks/>
-    public byte codigo
+    public int codigo
     {
         get
         {
@@ -938,7 +938,7 @@ public partial class notaCreditoDetalleImpuesto
     }
 
     /// <remarks/>
-    public byte codigoPorcentaje
+    public int codigoPorcentaje
     {
         get
         {

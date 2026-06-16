@@ -2,13 +2,14 @@ using ComprobantesElectronicos.Services;
 using EFModel.Context;
 using EFModel.Interfaces;
 using EFModel.Repositories;
+using EnvioCorreos.Extensions;
+using EnvioCorreos.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using WebApiDonCho;
 using WebApiDonCho.Services;
-using EnvioCorreos.Extensions;
-using EnvioCorreos.Services;
 
 using ILoggerFactory factory = LoggerFactory.Create(builder =>
 {
@@ -38,6 +39,8 @@ builder.Services.AddScoped<SriService>();
 builder.Services.AddScoped<InfowareFirmaService>();
 builder.Services.AddScoped<ClienteService>();
 builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<DailyConfigurationValidatorService>();
+builder.Services.AddScoped<CacheWarmupService>();
 
 builder.Services.AddSRIDocumentosElectronicos();
 
@@ -99,6 +102,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+await AppStartup.EjecutarAsync(app.Services);
 
 app.UseRouting();
 app.UseCors("MyPolicy");

@@ -4,6 +4,8 @@ namespace EFModel.DTO
 {
     public class FacOrdenDTO
     {
+        public int Id { get; set; }
+
         [Required]
         public int Clienteid { get; set; }
 
@@ -52,6 +54,13 @@ namespace EFModel.DTO
         public string Xml { get; set; } = string.Empty;
         #endregion
 
+        #region NotaCredito
+        public bool EsNotaCredito { get; set; } = false;
+        public string NotaCreditoClaveNumeroAutorizacion { get; set; } = string.Empty;
+        public string NotaCreditoNumeroNotaCredito { get; set; } = string.Empty;
+        public string NotaCreditoMotivo { get; set; } = string.Empty;
+        public DateTime NotaCreditoFecha { get; set; }
+        #endregion NotaCredito
 
         [Required]
         public List<FacDetalleOrdenDTO> FacDetalleOrdens { get; set; } = new();

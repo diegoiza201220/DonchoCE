@@ -20,6 +20,7 @@ public partial class FacProducto
     public short? OrdenAparicion { get; set; }
 
     public bool? PedidoACocina { get; set; }
+    public decimal ValorDoncho { get; set; }
 
     //public virtual ICollection<FacDetalleOrden> FacDetalleOrdens { get; set; } = new List<FacDetalleOrden>();
 }

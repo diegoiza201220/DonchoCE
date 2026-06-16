@@ -39,6 +39,7 @@ public partial class DonchoContext : DbContext
     public virtual DbSet<GenCatalogo> GenCatalogo { get; set; }
 
     public virtual DbSet<GenCatalogoDetalle> GenCatalogoDetalle { get; set; }
+    public virtual DbSet<GenFeriado> GenFeriado { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -212,6 +213,19 @@ public partial class DonchoContext : DbContext
             entity.Property(e => e.DocumentoPago)
                 .HasColumnType("character varying")
                 .HasColumnName("documento_pago");
+            entity.Property(e => e.EsNotaCredito)
+                .HasColumnName("es_nota_credito");
+            entity.Property(e => e.NotaCreditoNumeroNotaCredito)
+                .HasColumnType("character varying")
+                .HasColumnName("nota_credito_numero_nota_credito");
+            entity.Property(e => e.NotaCreditoClaveNumeroAutorizacion)
+                .HasColumnType("character varying")
+                .HasColumnName("nota_credito_clave_numero_autorizacion");
+            entity.Property(e => e.NotaCreditoMotivo)
+                .HasColumnType("character varying")
+                .HasColumnName("nota_credito_motivo");
+            entity.Property(e => e.NotaCreditoFecha)
+                .HasColumnName("nota_credito_fecha");
             entity.HasOne(d => d.Cliente).WithMany(p => p.FacOrdens)
                 .HasForeignKey(d => d.Clienteid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -274,6 +288,7 @@ public partial class DonchoContext : DbContext
                 .HasDefaultValue(false)
                 .HasColumnName("pedido_a_cocina");
             entity.Property(e => e.Valor).HasColumnName("valor");
+            entity.Property(e => e.ValorDoncho).HasColumnName("valor_doncho");
         });
 
         modelBuilder.Entity<GenUsuario>(entity =>
@@ -357,6 +372,17 @@ public partial class DonchoContext : DbContext
                 .HasConstraintName("gen_catalogo_detalle_gen_catalogo_fk");
         });
 
+        modelBuilder.Entity<GenFeriado>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("gen_feriado_pk");
+
+            entity.ToTable("gen_feriado");
+
+            entity.Property(e => e.Id)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id");
+            entity.Property(e => e.Fecha).HasColumnName("fecha");
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }

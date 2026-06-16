@@ -15,6 +15,7 @@ public interface IUnitOfWork : IDisposable
     ICelInfoTributariaRepository CelInfoTributariaR { get; }
     IGenCatalogoRepository GenCatalogoR { get; }
     IGenCatalogoDetalleRepository GenCatalogoDetalleR { get; }
+    IGenFeriadoRepository GenFeriadoR { get; }
 
     Task<int> SaveChangesAsync();
 }

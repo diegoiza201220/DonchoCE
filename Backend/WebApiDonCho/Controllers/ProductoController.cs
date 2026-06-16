@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using EFModel.DTO;
 using EFModel.Interfaces;
 using EFModel.Models;
+using EFModel.Mappers;
 //using AutoMapper;
 
 namespace WebApiDonCho.Controllers;
@@ -24,7 +25,7 @@ public class ProductoController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var productos = await _cache.GetOrCreatePermanentAsync("productos_all",() => _uow.FacProductoR.GetAllAsync());
+        _ = _cache.TryGet<IEnumerable<FacProductoDTO>>("PRODUCTOS_ALL", out var productos);
         return Ok(new { productos });
     }
 
@@ -39,17 +40,8 @@ public class ProductoController : ControllerBase
     public async Task<IActionResult> Update([FromBody] FacProductoDTO producto)
     {
         if (producto.Id <= 0) return BadRequest();
-        FacProducto facproducto = new()
-        {
-            Id = producto.Id,
-            Activo = producto.Activo ?? false,
-            CodigoIva = Convert.ToInt32(_uow.GenParametroR.GetById("CODIGO_TARIFA_IVA_DEFAULT").Valor),
-            Grupo = producto.Grupo,
-            Nombre = producto.Nombre,
-            OrdenAparicion = producto.OrdenAparicion,
-            PedidoACocina = producto.PedidoACocina ?? false,
-            Valor = producto.Valor
-        };
+        
+        FacProducto facproducto = producto.FromDTO();
         _uow.FacProductoR.Update(facproducto);
         await _uow.SaveChangesAsync();
         await CargarItemsEnCacheAsync();
@@ -59,18 +51,9 @@ public class ProductoController : ControllerBase
     [HttpDelete("eliminar")]
     public async Task<IActionResult> Delete([FromBody] FacProductoDTO producto)
     {
-        FacProducto facproducto = new()
-        {
-            Id = producto.Id,
-            Activo = producto.Activo ?? false,
-            CodigoIva = producto.CodigoIva ?? 0,
-            Grupo = producto.Grupo,
-            Nombre = producto.Nombre,
-            OrdenAparicion = producto.OrdenAparicion,
-            PedidoACocina = producto.PedidoACocina ?? false,
-            Valor = producto.Valor
-        };
         if (producto.Id <= 0) return BadRequest();
+
+        FacProducto facproducto = producto.FromDTO();
         _uow.FacProductoR.Delete(facproducto);
         await _uow.SaveChangesAsync();
         await CargarItemsEnCacheAsync();
@@ -80,18 +63,9 @@ public class ProductoController : ControllerBase
     [HttpPost("crear")]
     public async Task<IActionResult> Create([FromBody] FacProductoDTO producto)
     {
-        FacProducto facproducto = new()
-        {
-            Id = producto.Id,
-            Activo = producto.Activo ?? false,
-            CodigoIva = Convert.ToInt32(_uow.GenParametroR.GetById("CODIGO_TARIFA_IVA_DEFAULT").Valor),
-            Grupo = producto.Grupo,
-            Nombre = producto.Nombre,
-            OrdenAparicion = producto.OrdenAparicion,
-            PedidoACocina = producto.PedidoACocina ?? false,
-            Valor = producto.Valor
-        };
         if (producto.Id != 0) return BadRequest();
+
+        FacProducto facproducto = producto.FromDTO();
         await _uow.FacProductoR.AddAsync(facproducto);
         await _uow.SaveChangesAsync();
         await CargarItemsEnCacheAsync();
@@ -100,7 +74,7 @@ public class ProductoController : ControllerBase
 
     private async Task CargarItemsEnCacheAsync()
     {
-        var productos = await _uow.FacProductoR.GetAllAsync();
-        _cache.SetPermanent("productos_all", productos);
+        var productos = await _uow.FacProductoR.GetAllDtoAsync();
+        _cache.SetPermanent("PRODUCTOS_ALL", productos);
     }
 }

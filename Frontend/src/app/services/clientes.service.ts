@@ -24,10 +24,10 @@ export class ClientesService {
   }
 
   async deleteCliente(cliente: any): Promise<any> {
-      return firstValueFrom(this.http.delete(this.apiUrl + "/eliminar", { body: cliente }));
+      return firstValueFrom(this.http.delete(this.apiUrl + `/${cliente.id}`, cliente ));
     }
   
   async updateCliente(cliente: any): Promise<any> {
-      return firstValueFrom(this.http.put(this.apiUrl + "/actualizar", cliente));
+      return firstValueFrom(this.http.put(this.apiUrl + `/${cliente.id}`, cliente));
     }
 }

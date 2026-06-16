@@ -10,10 +10,10 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
         {
             CelLogDocumento documento = new()
             {
-                TipoDocumento = int.Parse(ordenDTO.CodDoc),
+                TipoDocumento = ordenDTO.EsNotaCredito ? 3 : int.Parse(ordenDTO.CodDoc),
                 Estado = 0,
                 Mensaje = string.Empty,
-                Autorizacion = ordenDTO.ClaveNumeroAutorizacion,
+                Autorizacion = ordenDTO.EsNotaCredito? ordenDTO.NotaCreditoClaveNumeroAutorizacion : ordenDTO.ClaveNumeroAutorizacion,
                 XmlFirmado = string.Empty,
                 Ambiente = 0,
                 TipoEmision = 0

@@ -6,7 +6,7 @@ namespace EFModel.Interfaces;
 
 public interface IFacClienteRepository : IRepository<FacCliente>
 {
-    Task<FacCliente?> GetByIdAsync(int id);
+    //Task<FacCliente?> GetByIdAsync(int id);
     Task<FacCliente?> GetByCedulaRucAsync(string cedulaRuc);
 }
 
@@ -14,7 +14,10 @@ public interface IFacProductoRepository : IRepository<FacProducto>
 {
     Task<IEnumerable<FacProducto>> GetActivosAsync();
     Task<IEnumerable<FacProducto>> GetByGrupoAsync(string grupo);
-    new Task<IEnumerable<FacProductoDTO>> GetAllAsync();
+    Task<IEnumerable<FacProductoDTO>> GetAllDtoAsync();
+    new Task<IEnumerable<FacProducto>> GetAllAsync();
+    IEnumerable<FacProducto> GetAll();
+    IEnumerable<FacProductoDTO> GetAllDto();
 }
 
 public interface IFacOrdenRepository : IRepository<FacOrden>
@@ -84,4 +87,9 @@ public interface IGenCatalogoDetalleRepository : IRepository<GenCatalogoDetalle>
     GenCatalogoDetalle GetByCodigo(string codigo);
 
     IEnumerable<GenCatalogoDetalle> GetByCatalogoNombre(string catalogonombre);
+}
+
+public interface IGenFeriadoRepository : IRepository<GenFeriado>
+{
+    bool GetByFecha(int fechainteger);
 }

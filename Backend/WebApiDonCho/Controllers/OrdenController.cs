@@ -1,28 +1,19 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using EFModel.DTO;
-//using AutoMapper;
-using EFModel.DTO.Reportes;
 using EFModel.DTO.Request;
 using EFModel.Interfaces;
-using EFModel.Models;
 using WebApiDonCho.Services;
-
 namespace WebApiDonCho.Controllers;
 
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class OrdenController : ControllerBase
+public class OrdenController(IUnitOfWork uow, OrdenService ordenService, ICacheService cache) : ControllerBase
 {
-    private readonly IUnitOfWork _uow;
-    private readonly OrdenService _ordenService;
-
-    public OrdenController(IUnitOfWork uow, OrdenService ordenService)
-    {
-        _uow = uow;
-        _ordenService = ordenService;
-    }
+    private readonly IUnitOfWork _uow = uow;
+    private readonly OrdenService _ordenService = ordenService;
+    private readonly ICacheService _cache = cache;
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
@@ -38,12 +29,15 @@ public class OrdenController : ControllerBase
     [HttpGet("datospedido")]
     public async Task<IActionResult> GetDatosPedido()
     {
-        var parametro = _uow.GenParametroR.GetById("CODIGO_TARIFA_IVA_FACTURAR");
-        var tarifa = _uow.GenCatalogoDetalleR.GetById(Convert.ToInt16(parametro.Valor));
+        _cache.TryGet("PORCENTAJE_IVA", out string porcentajeIva);
+        _cache.TryGet("CODIGO_IVA", out string codigoIva);  
+        _cache.TryGet("ID_CATDETALLE_IVA", out int idCatDetalleIva);
+
         DatosPedidoDTO datosPedidoDTO = new()
         {
-            CodigoIva = Convert.ToInt16(parametro.Valor),
-            ImpuestoPorcentaje = Convert.ToInt16(tarifa.Codigo.Replace("%", ""))
+            CodigoIva = Convert.ToInt16(codigoIva),
+            ImpuestoPorcentaje = Convert.ToInt16(porcentajeIva),
+            IdCatDetalleIva = idCatDetalleIva
         };
 
         return datosPedidoDTO is null ? NotFound() : Ok(datosPedidoDTO);
@@ -51,11 +45,25 @@ public class OrdenController : ControllerBase
 
 
     [HttpPost("facturar")]
-    public async Task<IActionResult> Create([FromBody] FacOrdenDTO orden)
+    public async Task<IActionResult> CreateFactura([FromBody] FacOrdenDTO orden)
     {
         try
         {
-            var facOrden = await _ordenService.FacturarAsync(orden);
+            var facOrden = await _ordenService.GenerarFacturaAsync(orden);
+            return CreatedAtAction(nameof(GetById), new { id = facOrden.Id }, facOrden);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { mensaje = ex.Message });
+        }
+    }
+
+    [HttpPost("devolver")]
+    public async Task<IActionResult> CreateNotaCredito([FromBody] FacOrdenDTO orden)
+    {
+        try
+        {
+            var facOrden = await _ordenService.GenerarNotaCreditoAsync(orden);
             return CreatedAtAction(nameof(GetById), new { id = facOrden.Id }, facOrden);
         }
         catch (InvalidOperationException ex)
