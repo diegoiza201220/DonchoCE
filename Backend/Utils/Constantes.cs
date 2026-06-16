@@ -11,5 +11,6 @@
         public const string ID_CATDETALLE_IVA = "ID_CATDETALLE_IVA";
         public const string PORCENTAJE_IVA = "PORCENTAJE_IVA";
         public const string CODIGO_IVA = "CODIGO_IVA";
+        public const string CELINFOTRIBUTARIA = "CELINFOTRIBUTARIA";
     }
 }

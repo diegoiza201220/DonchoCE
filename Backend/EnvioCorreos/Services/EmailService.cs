@@ -78,10 +78,10 @@ namespace EnvioCorreos.Services
                 report.Prepare();
 
                 using var pdfStream = new MemoryStream();
-                var filename = $"{genParametroPathLocalFacturas.Valor}{orden.ClaveNumeroAutorizacion}.pdf";
-                using (MemoryStream ms = new MemoryStream())
+                //var filename = $"{genParametroPathLocalFacturas.Valor}{orden.ClaveNumeroAutorizacion}.pdf";
+                using (MemoryStream ms = new())
                 {
-                    PDFSimpleExport pdfExport = new PDFSimpleExport();
+                    PDFSimpleExport pdfExport = new();
                     report.Export(pdfExport, ms);
                     //File.WriteAllBytes(filename, ms.ToArray());
                     return ms;

@@ -50,6 +50,8 @@ namespace WebApiDonCho.Services
                 _cache.SetPermanent(Constantes.PORCENTAJE_IVA, esFeriado ? porcentajeIvaFeriado : porcentajeIvaDefault);
                 _cache.SetPermanent(Constantes.CODIGO_IVA, esFeriado ? CdIvaFeriados.Valor : CdIvaDefault.Valor);
                 _cache.GetOrCreatePermanent(Constantes.JSON_SCHEMA_FACTURA, () => _uow.GenParametroR.GetById(Constantes.JSON_SCHEMA_FACTURA));
+                _cache.GetOrCreatePermanent(Constantes.PATH_LOCAL_FACTURAS, () => _uow.GenParametroR.GetById(Constantes.PATH_LOCAL_FACTURAS));
+                _cache.GetOrCreatePermanent(Constantes.CELINFOTRIBUTARIA, () => _uow.CelInfoTributariaR.GetById(1));
             }
             catch (Exception ex)
             {

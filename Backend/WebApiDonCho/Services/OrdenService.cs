@@ -6,6 +6,8 @@ using EFModel.DTO.Request;
 using EFModel.Interfaces;
 using EFModel.Mappers;
 using EFModel.Models;
+using System.Reflection.Metadata;
+using Utils;
 using WebApiDonCho.Helpers.ComprobantesElectronicos;
 
 namespace WebApiDonCho.Services
@@ -31,7 +33,7 @@ namespace WebApiDonCho.Services
 
             orden.CodDoc = "01";
             CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("01");
-            CelInfoTributaria celInfoTributaria = cache.GetOrCreatePermanent("CELINFOTRIBUTARIA", () =>  uow.CelInfoTributariaR.GetById(1));
+            _ = cache.TryGet(Constantes.CELINFOTRIBUTARIA, out CelInfoTributaria celInfoTributaria);
             InfoTributariaHelper.SetInformacion(orden, facOrden, celInfoTributaria, celSecuenciaSri, esProduccion: false, (int)ComprobantesElectronicos.Enums.CodigoDocumento.Factura);
             CelLogDocumento celLogDocumento = CelLogDocumentoHelper.CrearLogInicial(orden);
             await uow.CelLogDocumentoR.AddAsync(celLogDocumento);

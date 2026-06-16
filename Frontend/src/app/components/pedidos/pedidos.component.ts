@@ -5,8 +5,6 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 import { SecuenciaService } from 'src/app/services/secuencia.service';
 import { OrdenesService } from 'src/app/services/ordenes.service';
 import { ClientesService } from 'src/app/services/clientes.service';
-import { Router } from '@angular/router';
-import { OrdenescocinaService } from 'src/app/services/ordenescocina.service';
 import Secuencia from 'src/app/interfaces/secuencia.interface';
 import { BaseComponent } from 'src/app/util/base.component';
 import { DatePipe } from '@angular/common';
@@ -55,13 +53,9 @@ export class PedidosComponent extends BaseComponent implements OnInit {
 
   constructor(private readonly productosService: ProductosService,
     private readonly messageService: MessageService,
-    private readonly confirmationService: ConfirmationService,
     private readonly secuenciaService: SecuenciaService,
     private readonly ordenesService: OrdenesService,
-    private readonly ordenesCocinaService: OrdenescocinaService,
     private readonly clientesService: ClientesService,
-    private readonly router: Router,
-    private readonly datePipe: DatePipe,
     public override authService: AuthService,
     public override logger: LoggerService
   ) {
@@ -113,24 +107,6 @@ export class PedidosComponent extends BaseComponent implements OnInit {
       }
     })
   }
-
-  // getProductosObserver(): void {
-  //   this.productosService.getProductosObservable().subscribe(productos => {
-  //     this.lproductos = productos;
-  //   })
-  // }
-
-  // getSecuenciaObserver(): void {
-  //   this.secuenciaService.getSecuenciaObservable().subscribe(secuencia => {
-  //     let d = new Date();
-  //     this.fechainteger = this.fechaToInteger(d);
-  //     this.lsecuencia = secuencia[0];
-  //     if (this.lsecuencia.fecha !== this.fechainteger) {
-  //       this.lsecuencia.fecha = this.fechainteger;
-  //       this.lsecuencia.secuencia = 1;
-  //     }
-  //   })
-  // }
 
   fillGrupoProducto() {
     if (!this.mostrarCargar) {
@@ -240,7 +216,9 @@ export class PedidosComponent extends BaseComponent implements OnInit {
           ImpuestoValor: this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2),
           PrecioTotal: element.badge * element.valorsiniva,
           PedidoACocina: element.pedidoacocina,
-          ValorIva: this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2)
+          ValorIva: this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2),
+          PrecioUnitarioDoncho: this.redondear(element.valorsiniva + this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2), 2),
+          PrecioTotalDoncho: this.redondear(element.badge * (element.valorsiniva + this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2)), 2)
         });
     });
   }
@@ -256,7 +234,6 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   }
 
   grabarOrden() {
-
     if (this.activeIndex != 1) return;
 
     if (this.pedido.esFactura === null || this.pedido.esFactura === undefined) {

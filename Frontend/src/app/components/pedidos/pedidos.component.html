@@ -114,6 +114,8 @@
                         <th>Detalle plato</th>
                         <th>Precio Unitario</th>
                         <th>Precio Total</th>
+                        <th>P.Uni.DCho</th>
+                        <th>P.Tot.Dcho</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-producto>
@@ -122,28 +124,21 @@
                         <td>{{ producto.Nombre }}</td>
                         <td>{{ producto.PrecioUnitario | currency:'USD':'symbol'}}</td>
                         <td>{{ producto.PrecioTotal | currency:'USD':'symbol'}}</td>
+                        <td>{{ producto.PrecioUnitarioDoncho | currency:'USD':'symbol'}}</td>
+                        <td>{{ producto.PrecioTotalDoncho | currency:'USD':'symbol'}}</td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="summary">
-                    <tr >
+                    <tr>
                         <td style="align-content: center">Subtotal : <span class="tab"></span></td>
                         <td style="color: red; font-size: xx-large; padding-left: 0rem;">{{ pedido.TotalSinImpuestos |
                             currency:'USD':'symbol' }}
                         </td>
-                    <!-- </tr>
-                    <tr *ngIf="pedido.esFactura">
-                        <td></td>
-                        <td></td>
-                        <td></td> -->
                         <td>IVA : <span class="tab"></span></td>
-                        <td style="color: red; font-size: xx-large; padding-left: 3rem;">{{ pedido.ImpuestoValor | currency:'USD':'symbol'
+                        <td style="color: red; font-size: xx-large; padding-left: 3rem;">{{ pedido.ImpuestoValor |
+                            currency:'USD':'symbol'
                             }}
                         </td>
-                    <!-- </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td> -->
                         <td>Total a cancelar : <span class="tab" [style]="{'height':'0.5rem'} "></span></td>
                         <td style="color: red; font-size: xx-large;">{{ pedido.TotalOrden | currency:'USD':'symbol' }}
                         </td>
@@ -191,17 +186,6 @@
                         </td>
                     </tr>
                 </div>
-
-                <!--                 
-                        <td>
-                            <label for="cambio" class="col-sm-2 col-form-label">Vuelto a entregar:</label>
-                        </td>
-                        <td>
-                            <div class="col-sm-2 text-cambio blink_me">{{cambio | currency:'USD':'symbol'}}
-                            </div>
-                        </td>
-                    </tr>
-                </div> -->
             </div>
 
             <div class="form-group row">
@@ -215,9 +199,7 @@
                 <button class="btn btn-primary" type="button" (click)="openClienteDialog()">
                     Datos Cliente
                 </button>
-
             </p>
-
             <div class="divFlotanteRegresar">
                 <div class="">
                     <p-button label="Regresar" [loading]="loading" (onClick)="activeIndex = 0"></p-button>
@@ -228,7 +210,6 @@
                     <p-button label="Grabar" [loading]="loading" (onClick)="grabarOrden()"></p-button>
                 </div>
             </div>
-
         </p-tabPanel>
     </p-tabView>
 
@@ -237,7 +218,6 @@
 <p-dialog [(visible)]="clienteDialog" [style]="{width: '450px'}" header="Detalles del cliente" [modal]="true"
     styleClass="p-fluid">
     <ng-template pTemplate="content">
-
         <div class="p-field">
             <label for="cedula_ruc" class="col-sm-2 col-form-label">Ruc/Cédula</label>
             <div class="col-sm-6">
@@ -247,7 +227,6 @@
                     (onClick)="searchCliente()" />
             </div>
         </div>
-
         <div class="p-field">
             <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
             <div class="col-sm-6">
@@ -255,7 +234,6 @@
                     aria-describedby="basic-addon1">
             </div>
         </div>
-
         <div class="p-field">
             <label for="apellido" class="col-sm-2 col-form-label">Apellido</label>
             <div class="col-sm-6">
@@ -263,7 +241,6 @@
                     aria-describedby="basic-addon1">
             </div>
         </div>
-
         <div class="p-field">
             <label for="telefono_celular" class="col-sm-2 col-form-label">Teléfono Celular</label>
             <div class="col-sm-6">
@@ -271,7 +248,6 @@
                     aria-describedby="basic-addon1">
             </div>
         </div>
-
         <div class="p-field">
             <label for="email" class="col-sm-2 col-form-label">Email</label>
             <div class="col-sm-6">
@@ -279,7 +255,6 @@
                     aria-describedby="basic-addon1">
             </div>
         </div>
-
         <div class="p-field">
             <label for="direccion" class="col-sm-2 col-form-label">Dirección</label>
             <div class="col-sm-6">
@@ -287,7 +262,6 @@
                     aria-describedby="basic-addon1">
             </div>
         </div>
-
         <div class="p-field">
             <label for="fecha_cumpleanios" class="col-sm-2 col-form-label">Fecha de Cumpleaños</label>
             <div class="col-sm-6">
@@ -295,8 +269,6 @@
                     aria-describedby="basic-addon1">
             </div>
         </div>
-
-
     </ng-template>
 
     <ng-template pTemplate="footer">

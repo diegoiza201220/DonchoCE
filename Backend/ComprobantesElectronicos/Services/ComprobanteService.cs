@@ -32,9 +32,7 @@ public class ComprobanteService
         //{
         try
         {
-            Console.WriteLine("a emitir factura");
-            //await Task.Delay(60000);
-            Console.WriteLine("ahora si a emitir factura");
+            Console.WriteLine("emitir factura");
             // 1. Generar el XML del comprobante
             var entidadSri = ConvertirAEntidadSri.ObtenerFactura(ordenDTO);
 
@@ -50,6 +48,7 @@ public class ComprobanteService
             if (!respuestaRecepcion.FueRecibida)
             {
                 SetInformacionCelLogDocumento(celLogDocumento,estado: 1, string.Join("; ", respuestaRecepcion.Mensajes.Select(m => m.Mensaje)));// estado 1 error en recepción
+                await _uow.SaveChangesAsync();
                 return new ResultadoEmisionDTO
                 {
                     Exitoso = false,
@@ -58,13 +57,14 @@ public class ComprobanteService
             }
 
             // 5. Esperar y consultar autorización (el SRI puede tardar unos segundos)
-            await Task.Delay(3000);
+            await Task.Delay(2000);
             var claveAcceso = ordenDTO.ClaveNumeroAutorizacion;
             var respuestaAutorizacion = await _sriService.ConsultarAutorizacionAsync(claveAcceso);
 
             if (!respuestaAutorizacion.FueAutorizado)
             {
                 SetInformacionCelLogDocumento(celLogDocumento, estado: 2, string.Join("; ", respuestaRecepcion.Mensajes.Select(m => m.Mensaje)));// estado 2 error en autorización
+                await _uow.SaveChangesAsync();
                 return new ResultadoEmisionDTO
                 {
                     Exitoso = false,
@@ -76,15 +76,6 @@ public class ComprobanteService
             SetInformacionCelLogDocumento(celLogDocumento, estado: 200, mensaje: "Comprobante autorizado exitosamente");
 
             await _uow.SaveChangesAsync();
-
-            //EmailMessage emailMessage = new()
-            //{
-            //    Asunto = "Factura de su compra",
-            //    Cuerpo = $"Estimado {ordenDTO.Cliente.Nombre}, adjunto encontrará la factura de su compra. Gracias por elegirnos.",
-            //    Destinatarios = new List<string> { ordenDTO.Cliente.Email ?? _config["Email:usuario"] },
-            //    EsHtml = false
-            //};
-
 
             _ = _emailService.EnviarAsync(ordenDTO);
 
