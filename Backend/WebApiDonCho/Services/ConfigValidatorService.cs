@@ -1,8 +1,7 @@
-﻿using EFModel.DTO;
-using EFModel.Interfaces;
+﻿using EFModel.Interfaces;
 using EFModel.Models;
-using MimeKit.Tnef;
-using WebApiDonCho.Utils;
+using Utils;
+
 
 namespace WebApiDonCho.Services
 {
@@ -26,10 +25,9 @@ namespace WebApiDonCho.Services
             try
             {
                 bool esFeriado = _uow.GenFeriadoR.GetByFecha(DateTime.Now.ToIntFecha());
-                //var productos = await _uow.FacProductoR.GetAllDtoAsync();
                 var lproductos = _uow.FacProductoR.GetAll();
-                string parametroIvaDefault = _uow.GenParametroR.GetById("ID_CAT_DETALLE_IVA_DEFAULT").Valor;
-                string parametroIvaFeriados = _uow.GenParametroR.GetById("ID_CAT_DETALLE_IVA_FERIADOS").Valor;
+                string parametroIvaDefault = _uow.GenParametroR.GetById(Constantes.ID_CAT_DETALLE_IVA_DEFAULT).Valor;
+                string parametroIvaFeriados = _uow.GenParametroR.GetById(Constantes.ID_CAT_DETALLE_IVA_FERIADOS).Valor;
                 GenCatalogoDetalle CdIvaDefault = _uow.GenCatalogoDetalleR.GetById(int.Parse(parametroIvaDefault));
                 GenCatalogoDetalle CdIvaFeriados = _uow.GenCatalogoDetalleR.GetById(int.Parse(parametroIvaFeriados));
                 string porcentajeIvaDefault = CdIvaDefault.Codigo.Replace("%", "");
@@ -46,11 +44,12 @@ namespace WebApiDonCho.Services
                 }
                 _ = _uow.SaveChangesAsync();
                 var productos = _uow.FacProductoR.GetAllDto();
-                _cache.SetPermanent("PRODUCTOS_ALL", productos);
-                _cache.SetPermanent("ES_FERIADO", esFeriado);
-                _cache.SetPermanent("ID_CATDETALLE_IVA", esFeriado ? CdIvaFeriados.Id: CdIvaDefault.Id);
-                _cache.SetPermanent("PORCENTAJE_IVA", esFeriado ? porcentajeIvaFeriado : porcentajeIvaDefault);
-                _cache.SetPermanent("CODIGO_IVA", esFeriado ? CdIvaFeriados.Valor : CdIvaDefault.Valor);
+                _cache.SetPermanent(Constantes.PRODUCTOS_ALL, productos);
+                _cache.SetPermanent(Constantes.ES_FERIADO, esFeriado);
+                _cache.SetPermanent(Constantes.ID_CATDETALLE_IVA, esFeriado ? CdIvaFeriados.Id: CdIvaDefault.Id);
+                _cache.SetPermanent(Constantes.PORCENTAJE_IVA, esFeriado ? porcentajeIvaFeriado : porcentajeIvaDefault);
+                _cache.SetPermanent(Constantes.CODIGO_IVA, esFeriado ? CdIvaFeriados.Valor : CdIvaDefault.Valor);
+                _cache.GetOrCreatePermanent(Constantes.JSON_SCHEMA_FACTURA, () => _uow.GenParametroR.GetById(Constantes.JSON_SCHEMA_FACTURA));
             }
             catch (Exception ex)
             {

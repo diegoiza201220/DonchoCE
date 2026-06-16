@@ -5,7 +5,7 @@ import { LoggerService } from "../services/logger.service";
 @Directive()
 export abstract class BaseComponent {
 
-    constructor(public authService: AuthService, 
+    constructor(public authService: AuthService,
         public logger: LoggerService
     ) {
         this.actualizarTotalesPedidos();
@@ -64,8 +64,26 @@ export abstract class BaseComponent {
     }
 
     actualizarTotalesPedidos() {
-        this.totalPedidosFacturados = Math.random() * 100; 
+        this.totalPedidosFacturados = Math.random() * 100;
         this.totalPedidosNotaventa = Math.random() * 100;
-    }   
+    }
+
+    tryConvertIntToDate(num: number): boolean {
+        try {
+            const dateStr = num.toString().replaceAll('-', ''); 
+            const anio = dateStr.slice(0, 4);
+            const mes = dateStr.slice(4, 6);
+            const dia = dateStr.slice(6, 8);
+            const date = new Date(`${anio}-${mes}-${dia}`);
+            if (isNaN(date.getTime())) {
+                return false;
+            }   
+            return true;
+        }
+        catch {
+            return false;
+        }
+
+    }
 
 }

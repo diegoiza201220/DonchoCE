@@ -36,11 +36,7 @@ namespace WebApiDonCho.Services
             };
 
             await _uow.FacClienteR.AddAsync(faccliente);
-            //FacCliente facCliente = await _uow.FacClienteR.GetByIdAsync(orden.Clienteid) ?? throw new InvalidOperationException("Cliente no encontrado.");
-            //facOrden.Cliente = facCliente;
             await _uow.SaveChangesAsync();
-
-            //ResultadoEmisionDTO resultado = await _comprobanteService.EmitirFacturaAsync(facOrden);
             return faccliente;
         }
 

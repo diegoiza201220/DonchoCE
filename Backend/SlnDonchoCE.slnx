@@ -2,5 +2,6 @@
   <Project Path="ComprobantesElectronicos/ComprobantesElectronicos.csproj" Id="d98f510b-0c71-41e4-9bb0-b4a846462e9b" />
   <Project Path="EFModel/EFModel.csproj" Id="8abe0c3d-ab75-4903-bb52-7c0884736d77" />
   <Project Path="EnvioCorreos/EnvioCorreos.csproj" Id="d23a0af9-a0fb-48b0-aa51-7a46ee2d7bd0" />
+  <Project Path="Utils/Utils.csproj" Id="04ac9702-eb68-4db5-9e2b-945ce5504c9b" />
   <Project Path="WebApiDonCho/WebApiDonCho.csproj" />
 </Solution>

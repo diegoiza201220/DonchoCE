@@ -34,6 +34,7 @@
     <ProjectReference Include="..\ComprobantesElectronicos\ComprobantesElectronicos.csproj" />
     <ProjectReference Include="..\EFModel\EFModel.csproj" />
     <ProjectReference Include="..\EnvioCorreos\EnvioCorreos.csproj" />
+    <ProjectReference Include="..\Utils\Utils.csproj" />
   </ItemGroup>
 
 </Project>

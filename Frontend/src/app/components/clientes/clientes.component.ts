@@ -5,7 +5,6 @@ import { AuthService } from 'src/app/services/auth.service';
 import { LoggerService } from 'src/app/services/logger.service';
 import { BaseComponent } from 'src/app/util/base.component';
 
-
 @Component({
   selector: 'app-clientes',
   templateUrl: './clientes.component.html',
@@ -89,6 +88,8 @@ export class ClientesComponent extends BaseComponent implements OnInit {
 
   async addCliente() {
     this.lclientes = [];
+    this.cliente.fechaCumpleanios = this.cliente.fechaCumpleanios.indexOf('-') !== -1 ?
+      this.cliente.fechaCumpleanios.replaceAll('-', '') : this.cliente.fechaCumpleanios;
     this.clientesService.addItem(this.cliente).then(response => {
       this.logger.log(response);
       this.getClientesPromise();
@@ -113,8 +114,8 @@ export class ClientesComponent extends BaseComponent implements OnInit {
       return;
     }
     this.lclientes = [];
-    cliente.fechaCumpleanios = cliente.fechaCumpleanios.indexOf('-') !== -1 ?
-      cliente.fechaCumpleanios.replaceAll('-', '') : cliente.fechaCumpleanios;
+    cliente.fechaCumpleanios = cliente.fechaCumpleanios.toString().indexOf('-') !== -1 ?
+      cliente.fechaCumpleanios.toString().replaceAll('-', '') : cliente.fechaCumpleanios.toString();
     this.clientesService.updateCliente(cliente)
       .then(response => {
         this.logger.log(response);
@@ -154,4 +155,12 @@ export class ClientesComponent extends BaseComponent implements OnInit {
       }
     });
   }
+
+  handleBlurFechaCumpleanios(event: any) {
+    if (!this.tryConvertIntToDate(event.target.value)) {
+      event.target.value = "0000-00-00";
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Fecha de cumpleaños no es válida' });
+    } 
+  }
+
 }

@@ -23,6 +23,7 @@ using System.Data;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using Utils;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
@@ -34,8 +35,6 @@ namespace EnvioCorreos.Services
         private readonly ICacheService _cache;
         private readonly EmailOptions _options;
         private readonly ILogger<EmailService> _logger;
-        private const string JSON_SCHEMA_FACTURA = "JSON_SCHEMA_FACTURA";
-        private const string PATH_LOCAL_FACTURAS = "PATH_LOCAL_FACTURAS";
         private readonly GenParametro genParametroJsonSchemaFactura;
         private readonly GenParametro genParametroPathLocalFacturas;
         private readonly IConfiguration _config;
@@ -47,8 +46,8 @@ namespace EnvioCorreos.Services
             _cache = cache;
             _uow = uow;
             _config = config;
-            genParametroJsonSchemaFactura = _cache.GetOrCreatePermanent(JSON_SCHEMA_FACTURA, () => _uow.GenParametroR.GetById(JSON_SCHEMA_FACTURA));
-            genParametroPathLocalFacturas = _cache.GetOrCreatePermanent(PATH_LOCAL_FACTURAS, () => _uow.GenParametroR.GetById(PATH_LOCAL_FACTURAS));
+            _ = _cache.TryGet(Constantes.JSON_SCHEMA_FACTURA, out genParametroJsonSchemaFactura);
+            _ = _cache.TryGet(Constantes.PATH_LOCAL_FACTURAS, out genParametroPathLocalFacturas);
         }
 
         public MemoryStream ImprimirPDF(FacOrdenDTO orden)

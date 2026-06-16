@@ -89,10 +89,11 @@
       <td>
         <p-cellEditor>
           <ng-template pTemplate="input">
-            <p-inputMask mask="9999-99-99" [(ngModel)]="cliente.fechaCumpleanios" placeholder="9999-99-99" />
+            <p-inputMask mask="9999-99-99" [(ngModel)]="cliente.fechaCumpleanios" 
+            placeholder="9999-99-99"  (onBlur)="handleBlurFechaCumpleanios($event)"/>
           </ng-template>
           <ng-template pTemplate="output">
-            {{cliente.fechaCumpleanios }}
+            {{cliente.fechaCumpleanios | fechaint}}
           </ng-template>
         </p-cellEditor>
       </td>
@@ -127,26 +128,23 @@
     <div class="p-field">
       <label for="nombre">Nombre</label>
       <input type="text" pInputText id="nombre" [(ngModel)]="cliente.nombre" required autofocus />
-      <!-- <small class="p-error" *ngIf="submitted && cliente.nombre === ''">Nombre es requerido.</small> -->
     </div>
     <div class="p-field">
       <label for="apellido">Apellido</label>
       <input type="text" pInputText id="apellido" [(ngModel)]="cliente.apellido" required autofocus />
-      <!-- <small class="p-error" *ngIf="submitted && cliente.apellido === ''">Apellido es requerido.</small> -->
     </div>
     <div class="p-field">
       <label for="cedulaRuc">Cédula/Ruc</label>
       <input type="text" pInputText id="cedulaRuc" [(ngModel)]="cliente.cedulaRuc" required autofocus />
-      <!-- <small class="p-error" *ngIf="submitted && cliente.cedulaRuc === ''">Cédula/Ruc es requerido.</small> -->
     </div>
     <div class="p-field">
       <label for="email">Email</label>
       <input type="text" pInputText id="email" [(ngModel)]="cliente.email" required autofocus />
-      <!-- <small class="p-error" *ngIf="submitted && cliente.email === ''">Email es requerido.</small> -->
     </div>
     <div class="p-field">
       <label for="fechaCumpleanios">Fecha de Cumpleaños</label>
-      <p-inputMask mask="9999-99-99" [(ngModel)]="cliente.fechaCumpleanios" placeholder="9999-99-99" />
+      <p-inputMask mask="9999-99-99" [(ngModel)]="cliente.fechaCumpleanios" placeholder="9999-99-99" 
+      (onBlur)="handleBlurFechaCumpleanios($event)"/>
     </div>
     <div class="p-field">
       <label for="telefonoCelular">Teléfono Celular</label>

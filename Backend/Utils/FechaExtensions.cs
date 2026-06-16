@@ -1,4 +1,4 @@
-﻿namespace WebApiDonCho.Utils
+﻿namespace Utils
 {
     public static class FechaExtensions
     {
