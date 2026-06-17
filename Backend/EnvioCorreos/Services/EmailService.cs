@@ -43,41 +43,36 @@ namespace EnvioCorreos.Services
         {
 
 
-            using (Report report = new())
+            using Report report = new();
+            report.Load("reportes/rptFactura.frx");
+            var json = JsonConvert.SerializeObject(orden, Formatting.None);
+            string jsonModificado = $"Json='{json}'{genParametroJsonSchemaFactura.Valor}";
+            foreach (var connection in report.Dictionary.Connections)
             {
-                report.Load("reportes/rptFactura.frx");
-                var json = JsonConvert.SerializeObject(orden, Formatting.None);
-                string jsonModificado = $"Json='{json}'{genParametroJsonSchemaFactura.Valor}";
-                foreach (var connection in report.Dictionary.Connections)
+                if (connection is JsonDataSourceConnection jsonConnection)
                 {
-                    if (connection is JsonDataSourceConnection jsonConnection)
+                    try
                     {
-                        try
-                        {
-                            jsonConnection.ConnectionString = jsonModificado;
-                            jsonConnection.CreateAllTables();
-                        }
-                        finally
-                        {
-                            // Limpiar el archivo temporal siempre, aunque falle
-                        }
+                        jsonConnection.ConnectionString = jsonModificado;
+                        jsonConnection.CreateAllTables();
+                    }
+                    finally
+                    {
+                        // Limpiar el archivo temporal siempre, aunque falle
                     }
                 }
-
-                report.Prepare();
-
-                using var pdfStream = new MemoryStream();
-                //var filename = $"{genParametroPathLocalFacturas.Valor}{orden.ClaveNumeroAutorizacion}.pdf";
-                using (MemoryStream ms = new())
-                {
-                    PDFSimpleExport pdfExport = new();
-
-                    report.Export(pdfExport, ms);
-                    //File.WriteAllBytes(filename, ms.ToArray());
-                    return ms;
-                }
-
             }
+
+            report.Prepare();
+
+            using var pdfStream = new MemoryStream();
+            //var filename = $"{genParametroPathLocalFacturas.Valor}{orden.ClaveNumeroAutorizacion}.pdf";
+            using MemoryStream ms = new();
+            PDFSimpleExport pdfExport = new();
+
+            report.Export(pdfExport, ms);
+            //File.WriteAllBytes(filename, ms.ToArray());
+            return ms;
         }
         public async Task<ResultadoEmail> EnviarAsync(FacOrdenDTO orden)
         {
@@ -87,7 +82,7 @@ namespace EnvioCorreos.Services
 
                 var mensaje = new EmailMessage
                 {
-                    Destinatarios = new List<string> { orden.Cliente.Email ?? _config["Email:usuario"] },
+                    Destinatarios = [orden.Cliente.Email ?? _config["Email:usuario"]],
                     Asunto = $"Doncho - Factura Electrónica {orden.Establecimiento}-{orden.PuntoEmision}-{orden.NumeroFactura}",
                     EsHtml = true,
                     Cuerpo = PlantillaFactura(orden.Cliente.Nombre, $"{orden.Establecimiento}-{orden.PuntoEmision}-{orden.NumeroFactura}"),
@@ -101,10 +96,10 @@ namespace EnvioCorreos.Services
                 var mimeMessage = ConstruirMimeMessage(mensaje);
                 _ = EnviarSmtpAsync(mimeMessage);
 
-                _logger.LogInformation(
-                    "Email enviado a {Destinatarios} — Asunto: {Asunto}",
-                    string.Join(", ", mensaje.Destinatarios),
-                    mensaje.Asunto);
+                //_logger.LogInformation(
+                //    "Email enviado a {Destinatarios} — Asunto: {Asunto}",
+                //    string.Join(", ", mensaje.Destinatarios),
+                //    mensaje.Asunto);
 
                 return ResultadoEmail.Ok();
             }
@@ -124,7 +119,7 @@ namespace EnvioCorreos.Services
             byte[] ridePdf,
             string xmlFirmado, FacOrdenDTO facOrdenDTO)
         {
-            var mensaje = new EmailMessage
+            _ = new EmailMessage
             {
                 Destinatarios = [destinatario],
                 Asunto = $"Factura Electrónica {numeroFactura}",

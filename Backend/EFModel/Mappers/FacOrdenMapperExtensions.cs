@@ -29,7 +29,7 @@ namespace EFModel.Mappers
                 NotaCreditoNumeroNotaCredito = orden.NotaCreditoNumeroNotaCredito,
                 NotaCreditoMotivo = orden.NotaCreditoMotivo,
                 NotaCreditoFecha = orden.NotaCreditoFecha,
-                FacDetalleOrdens = orden.FacDetalleOrdens.Select(d => new FacDetalleOrden
+                FacDetalleOrdens = [.. orden.FacDetalleOrdens.Select(d => new FacDetalleOrden
                 {
                     Cantidad = d.Cantidad,
                     ImpuestoCodigo = d.ImpuestoCodigo,
@@ -41,7 +41,7 @@ namespace EFModel.Mappers
                     ImpuestoCodigoPorcentaje = d.ImpuestoCodigoPorcentaje,
                     ImpuestoTarifa = d.ImpuestoTarifa,
                     ImpuestoValor = d.ImpuestoValor
-                }).ToList()
+                })]
             };
         }
     }

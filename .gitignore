@@ -19,3 +19,8 @@
 /Frontend/dist/app_doncho
 /Backend/Utils/bin/Debug/net10.0
 /Backend/Utils/obj
+/Backend/ComprobantesElectronicos/bin/Release/net10.0
+/Backend/EFModel/bin/Release/net10.0
+/Backend/EnvioCorreos/bin/Release/net10.0
+/Backend/Utils/bin/Release/net10.0
+/Backend/WebApiDonCho/bin/Release/net10.0/linux-x64

@@ -10,34 +10,25 @@ namespace WebApiDonCho.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class ClienteController : ControllerBase
+public class ClienteController(IUnitOfWork uow, ClienteService clienteService) : ControllerBase
 {
-    private readonly IUnitOfWork _uow;
-    private readonly ClienteService _clienteService;
-
-    public ClienteController(IUnitOfWork uow, ClienteService clienteService)
-    {
-        _uow = uow;
-        _clienteService = clienteService;
-    }
-
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var resultado = await _uow.FacClienteR.GetAllAsync();
+        var resultado = await uow.FacClienteR.GetAllAsync();
         return Ok(resultado.OrderBy(x => x.Id));
     }
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var cliente = await _uow.FacClienteR.GetByIdAsync(id);
+        var cliente = await uow.FacClienteR.GetByIdAsync(id);
         return cliente is null ? NotFound() : Ok(cliente);
     }
 
     [HttpGet("cedula/{cedulaRuc}")]
     public async Task<IActionResult> GetByCedula(string cedulaRuc)
     {
-        var cliente = await _uow.FacClienteR.GetByCedulaRucAsync(cedulaRuc);
+        var cliente = await uow.FacClienteR.GetByCedulaRucAsync(cedulaRuc);
         return cliente is null ? NotFound() : Ok(cliente);
     }
 
@@ -46,7 +37,7 @@ public class ClienteController : ControllerBase
     {
         try
         {
-            var cli = await _clienteService.AddCliente(cliente);
+            var cli = await clienteService.AddCliente(cliente);
             return CreatedAtAction(nameof(GetById), new { id = cli.Id }, cli);
         }
         catch (InvalidOperationException ex)
@@ -59,18 +50,18 @@ public class ClienteController : ControllerBase
     public async Task<IActionResult> Update(int id, [FromBody] FacCliente cliente)
     {
         if (id != cliente.Id) return BadRequest();
-        _uow.FacClienteR.Update(cliente);
-        await _uow.SaveChangesAsync();
+        uow.FacClienteR.Update(cliente);
+        await uow.SaveChangesAsync();
         return NoContent();
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var cliente = await _uow.FacClienteR.GetByIdAsync(id);
+        var cliente = await uow.FacClienteR.GetByIdAsync(id);
         if (cliente is null) return NotFound();
-        _uow.FacClienteR.Delete(cliente);
-        await _uow.SaveChangesAsync();
+        uow.FacClienteR.Delete(cliente);
+        await uow.SaveChangesAsync();
         return NoContent();
     }
 }

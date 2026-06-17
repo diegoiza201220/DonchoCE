@@ -9,10 +9,8 @@ using Microsoft.EntityFrameworkCore;
 namespace EFModel.Repositories;
 
 // ── Cliente ──────────────────────────────────────────────────────────────────
-public class FacClienteRepository : Repository<FacCliente>, IFacClienteRepository
+public class FacClienteRepository(DonchoContext context) : Repository<FacCliente>(context), IFacClienteRepository
 {
-    public FacClienteRepository(DonchoContext context) : base(context) { }
-
     public new async Task<FacCliente?> GetByIdAsync(int id)
         => await _dbSet.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
 
@@ -21,10 +19,8 @@ public class FacClienteRepository : Repository<FacCliente>, IFacClienteRepositor
 }
 
 // ── Producto ──────────────────────────────────────────────────────────────────
-public class FacProductoRepository : Repository<FacProducto>, IFacProductoRepository
+public class FacProductoRepository(DonchoContext context) : Repository<FacProducto>(context), IFacProductoRepository
 {
-    public FacProductoRepository(DonchoContext context) : base(context) { }
-
     public async Task<IEnumerable<FacProducto>> GetActivosAsync()
         => await _dbSet.AsNoTracking().Where(p => p.Activo).OrderBy(p => p.OrdenAparicion).ToListAsync();
 
@@ -57,10 +53,8 @@ public class FacProductoRepository : Repository<FacProducto>, IFacProductoReposi
 }
 
 // ── Orden ─────────────────────────────────────────────────────────────────────
-public class FacOrdenRepository : Repository<FacOrden>, IFacOrdenRepository
+public class FacOrdenRepository(DonchoContext context) : Repository<FacOrden>(context), IFacOrdenRepository
 {
-    public FacOrdenRepository(DonchoContext context) : base(context) { }
-
     public async Task<FacOrden?> GetWithDetallesAsync(int id)
         => await _dbSet.AsNoTracking()
             .Include(o => o.Cliente)
@@ -118,10 +112,8 @@ public class FacOrdenRepository : Repository<FacOrden>, IFacOrdenRepository
 }
 
 // ── DetalleOrden ──────────────────────────────────────────────────────────────
-public class FacDetalleOrdenRepository : Repository<FacDetalleOrden>, IFacDetalleOrdenRepository
+public class FacDetalleOrdenRepository(DonchoContext context) : Repository<FacDetalleOrden>(context), IFacDetalleOrdenRepository
 {
-    public FacDetalleOrdenRepository(DonchoContext context) : base(context) { }
-
     public async Task<IEnumerable<FacDetalleOrden>> GetByOrdenAsync(int ordenId)
         => await _dbSet.AsNoTracking()
             .Include(d => d.Producto)
@@ -150,29 +142,25 @@ public class FacDetalleOrdenRepository : Repository<FacDetalleOrden>, IFacDetall
 }
 
 // ── Celcertificado ────────────────────────────────────────────────────────────
-public class CelCertificadoRepository : Repository<CelCertificado>, ICelCertificadoRepository
+public class CelCertificadoRepository(DonchoContext context) : Repository<CelCertificado>(context), ICelCertificadoRepository
 {
-    public CelCertificadoRepository(DonchoContext context) : base(context) { }
 }
 
 // ── CellogDocumento ───────────────────────────────────────────────────────────
-public class CelLogDocumentoRepository : Repository<CelLogDocumento>, ICelLogDocumentoRepository
+public class CelLogDocumentoRepository(DonchoContext context) : Repository<CelLogDocumento>(context), ICelLogDocumentoRepository
 {
-    public CelLogDocumentoRepository(DonchoContext context) : base(context) { }
 }
 
 // ── CelsecuenciaSri ───────────────────────────────────────────────────────────
-public class CelSecuenciaSriRepository : Repository<CelSecuenciaSri>, ICelSecuenciaSriRepository
+public class CelSecuenciaSriRepository(DonchoContext context) : Repository<CelSecuenciaSri>(context), ICelSecuenciaSriRepository
 {
-    public CelSecuenciaSriRepository(DonchoContext context) : base(context) { }
     public CelSecuenciaSri GetByTipoDocumento(string id)
         => _dbSet.AsNoTracking().FirstOrDefault(s => s.TipoDocumento == id);
 }
 
 // ── Genparametro (PK es string, repositorio propio) ───────────────────────────
-public class GenParametroRepository : Repository<GenParametro>, IGenParametroRepository
+public class GenParametroRepository(DonchoContext context) : Repository<GenParametro>(context), IGenParametroRepository
 {
-    public GenParametroRepository(DonchoContext context) : base(context) { }
     public async Task<IEnumerable<GenParametro>> GetAllAsync()
         => await _dbSet.AsNoTracking().ToListAsync();
 
@@ -201,10 +189,8 @@ public class FacSecuenciaDiaRepository(DonchoContext context) : Repository<FacSe
 }
 
 // ── Usuario──────────────────────────────────────────────────────────────────
-public class GenUsuarioRepository : Repository<GenUsuario>, IGenUsuarioRepository
+public class GenUsuarioRepository(DonchoContext context) : Repository<GenUsuario>(context), IGenUsuarioRepository
 {
-    public GenUsuarioRepository(DonchoContext context) : base(context) { }
-
     public new async Task<GenUsuario?> GetByIdAsync(int id)
         => await _dbSet.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
 
@@ -217,48 +203,41 @@ public class GenUsuarioRepository : Repository<GenUsuario>, IGenUsuarioRepositor
 }
 
 // ── CelInfoTributaria──────────────────────────────────────────────────────────────────
-public class CelInfoTributariaRepository : Repository<CelInfoTributaria>, ICelInfoTributariaRepository
+public class CelInfoTributariaRepository(DonchoContext context) : Repository<CelInfoTributaria>(context), ICelInfoTributariaRepository
 {
-    public CelInfoTributariaRepository(DonchoContext context) : base(context) { }
-
-    public new CelInfoTributaria GetById(int id)
+    public CelInfoTributaria GetById(int id)
         => _dbSet.AsNoTracking().FirstOrDefault(c => c.Id == id);
 
 }
 
 // ── GenCatalogo ───────────────────────────────────────────────────────────
-public class GenCatalogoRepository : Repository<GenCatalogo>, IGenCatalogoRepository
+public class GenCatalogoRepository(DonchoContext context) : Repository<GenCatalogo>(context), IGenCatalogoRepository
 {
-    public GenCatalogoRepository(DonchoContext context) : base(context) { }
-
-    public new GenCatalogo GetById(int id)
-    => _dbSet.AsNoTracking().FirstOrDefault(c => c.Id == id);
+    public GenCatalogo GetById(int id)
+    {
+        return _dbSet.AsNoTracking().FirstOrDefault(c => c.Id == id);
+    }
 
     public new GenCatalogo GetByNombre(string nombre)
 => _dbSet.AsNoTracking().FirstOrDefault(c => c.Nombre == nombre);
 }
 
 // ── GenCatalogo ───────────────────────────────────────────────────────────
-public class GenCatalogoDetalleRepository : Repository<GenCatalogoDetalle>, IGenCatalogoDetalleRepository
+public class GenCatalogoDetalleRepository(DonchoContext context) : Repository<GenCatalogoDetalle>(context), IGenCatalogoDetalleRepository
 {
-    public GenCatalogoDetalleRepository(DonchoContext context) : base(context) { }
-
     public GenCatalogoDetalle GetById(int id)
     => _dbSet.AsNoTracking().FirstOrDefault(c => c.Id == id);
 
     public GenCatalogoDetalle GetByCodigo(string codigo)
         => _dbSet.AsNoTracking().FirstOrDefault(c => c.Codigo == codigo);
     public IEnumerable<GenCatalogoDetalle> GetByCatalogoNombre(string catalogonombre)
-        => _dbSet.AsNoTracking()
+        => [.. _dbSet.AsNoTracking()
         .Include(o => o.Catalogo)
-        .Where(o => o.Catalogo.Nombre == catalogonombre)
-        .ToList();
+        .Where(o => o.Catalogo.Nombre == catalogonombre)];
 }
 
-public class GenFeriadoRepository : Repository<GenFeriado>, IGenFeriadoRepository
+public class GenFeriadoRepository(DonchoContext context) : Repository<GenFeriado>(context), IGenFeriadoRepository
 {
-    public GenFeriadoRepository(DonchoContext context) : base(context) { }
-
     public bool GetByFecha(int fechainteger)
     => _dbSet.Any(c => c.Fecha == fechainteger);
 }

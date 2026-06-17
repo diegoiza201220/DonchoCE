@@ -17,20 +17,20 @@ namespace EFModel.DTO
 
         [Required]
         [StringLength(20)]
-        public string TipoPago { get; set; }
+        public string TipoPago { get; set; } = string.Empty;
 
         [Required]
         public decimal TotalOrden { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string UsuarioRegistro { get; set; }
+        public string UsuarioRegistro { get; set; } = string.Empty;
 
         public bool EsFactura { get; set; }
 
         [StringLength(50)]
-        public string NumeroFactura { get; set; }
-        public string DocumentoPago { get; set; }
+        public string NumeroFactura { get; set; } = string.Empty;
+        public string DocumentoPago { get; set; } = string.Empty;
 
         public decimal TotalSinImpuestos { get; set; }
         public decimal ImpuestoValor { get; set; }

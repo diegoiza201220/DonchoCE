@@ -7,15 +7,8 @@ using EFModel.Models;
 
 namespace WebApiDonCho.Services
 {
-    public class ClienteService
+    public class ClienteService(IUnitOfWork uow, ComprobanteService comprobanteService)
     {
-        private readonly IUnitOfWork _uow;
-        private readonly ComprobanteService _comprobanteService;
-        public ClienteService(IUnitOfWork uow, ComprobanteService comprobanteService)
-        {
-            _uow = uow;
-            _comprobanteService = comprobanteService;
-        }
         public async Task<FacCliente> AddCliente(FacClienteDTO cliente)
         {
             var faccliente = new FacCliente
@@ -31,8 +24,8 @@ namespace WebApiDonCho.Services
                 UsuarioRegistro = cliente.UsuarioRegistro
             };
 
-            await _uow.FacClienteR.AddAsync(faccliente);
-            await _uow.SaveChangesAsync();
+            await uow.FacClienteR.AddAsync(faccliente);
+            await uow.SaveChangesAsync();
             return faccliente;
         }
 
@@ -49,7 +42,7 @@ namespace WebApiDonCho.Services
 
         public async Task<IEnumerable<RptOrdenesPorFechasDTO>> GetOrdenesPorFechaAsync(RqOrdenesPorFechas rq)
         {
-            var ordenes = await _uow.FacOrdenR.GetByFechas(rq.FechaIni, rq.FechaFin);
+            var ordenes = await uow.FacOrdenR.GetByFechas(rq.FechaIni, rq.FechaFin);
 
             return ordenes.Select(o => new RptOrdenesPorFechasDTO
             {
@@ -70,7 +63,7 @@ namespace WebApiDonCho.Services
 
         public async Task<IEnumerable<RptProductosVendidosPorFechasDTO>> GetProductosVendidosPorFechaAsync(RqOrdenesPorFechas rq)
         {
-            return await _uow.FacDetalleOrdenR.GetByFechasProductosVendidos(rq.FechaIni, rq.FechaFin);
+            return await uow.FacDetalleOrdenR.GetByFechasProductosVendidos(rq.FechaIni, rq.FechaFin);
         }
     }
 }

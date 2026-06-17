@@ -9,21 +9,8 @@ using System.Text;
 
 namespace ComprobantesElectronicos.Services;
 
-public class ComprobanteService
+public class ComprobanteService(SriService sriService, InfowareFirmaService infowareFirmaService, IUnitOfWork uow, EmailService emailService, IConfiguration config)
 {
-    private readonly SriService _sriService;
-    private readonly InfowareFirmaService _infowareFirmaService;
-    private readonly IUnitOfWork _uow;
-    private readonly EmailService _emailService;
-
-
-    public ComprobanteService(SriService sriService, InfowareFirmaService infowareFirmaService, IUnitOfWork uow, EmailService emailService, IConfiguration config)
-    {
-        _sriService = sriService;
-        _infowareFirmaService = infowareFirmaService;
-        _uow = uow;
-        _emailService = emailService;
-    }
     public async Task<ResultadoEmisionDTO> EmitirFacturaAsync(FacOrdenDTO ordenDTO, CelLogDocumento celLogDocumento)
     {
         //Task.Run(async () =>
@@ -35,47 +22,47 @@ public class ComprobanteService
             var entidadSri = ConvertirAEntidadSri.ObtenerFactura(ordenDTO);
 
             // 2. Firmar el XML con XAdES-BES
-            var xmlFirmado = _infowareFirmaService.FirmarDocumento(entidadSri);
+            var xmlFirmado = infowareFirmaService.FirmarDocumento(entidadSri);
 
             // 3. Convertir a Base64 para enviar al SRI
             var xmlBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(xmlFirmado));
 
             // 4. Enviar al SRI
-            var respuestaRecepcion = await _sriService.EnviarComprobanteAsync(xmlBase64);
+            var respuestaRecepcion = await sriService.EnviarComprobanteAsync(xmlBase64);
 
             if (!respuestaRecepcion.FueRecibida)
             {
                 SetInformacionCelLogDocumento(celLogDocumento, estado: 1, string.Join("; ", respuestaRecepcion.Mensajes.Select(m => m.Mensaje)));// estado 1 error en recepción
-                await _uow.SaveChangesAsync();
+                await uow.SaveChangesAsync();
                 return new ResultadoEmisionDTO
                 {
                     Exitoso = false,
-                    Mensajes = respuestaRecepcion.Mensajes.Select(m => m.Mensaje).ToList()
+                    Mensajes = [.. respuestaRecepcion.Mensajes.Select(m => m.Mensaje)]
                 };
             }
 
             // 5. Esperar y consultar autorización (el SRI puede tardar unos segundos)
             await Task.Delay(2000);
             var claveAcceso = ordenDTO.ClaveNumeroAutorizacion;
-            var respuestaAutorizacion = await _sriService.ConsultarAutorizacionAsync(claveAcceso);
+            var respuestaAutorizacion = await sriService.ConsultarAutorizacionAsync(claveAcceso);
 
             if (!respuestaAutorizacion.FueAutorizado)
             {
                 SetInformacionCelLogDocumento(celLogDocumento, estado: 2, string.Join("; ", respuestaRecepcion.Mensajes.Select(m => m.Mensaje)));// estado 2 error en autorización
-                await _uow.SaveChangesAsync();
+                await uow.SaveChangesAsync();
                 return new ResultadoEmisionDTO
                 {
                     Exitoso = false,
-                    Mensajes = respuestaAutorizacion.Mensajes.Select(m => m.Mensaje).ToList()
+                    Mensajes = [.. respuestaAutorizacion.Mensajes.Select(m => m.Mensaje)]
                 };
             }
 
             celLogDocumento.XmlFirmado = ordenDTO.Xml = respuestaAutorizacion.XmlAutorizado;
             SetInformacionCelLogDocumento(celLogDocumento, estado: 200, mensaje: "Comprobante autorizado exitosamente");
 
-            await _uow.SaveChangesAsync();
+            await uow.SaveChangesAsync();
 
-            _ = _emailService.EnviarAsync(ordenDTO);
+            _ = emailService.EnviarAsync(ordenDTO);
 
             return new ResultadoEmisionDTO
             {
@@ -91,7 +78,7 @@ public class ComprobanteService
             return new ResultadoEmisionDTO
             {
                 Exitoso = false,
-                Mensajes = new List<string> { $"Error al emitir comprobante: {ex.Message}" }
+                Mensajes = [$"Error al emitir comprobante: {ex.Message}"]
             };
         }
     }
@@ -100,6 +87,6 @@ public class ComprobanteService
     {
         celLogDocumento.Estado = estado;
         celLogDocumento.Mensaje = mensaje;
-        _uow.CelLogDocumentoR.Update(celLogDocumento);
+        uow.CelLogDocumentoR.Update(celLogDocumento);
     }
 }

@@ -5,31 +5,20 @@ using Utils;
 
 namespace WebApiDonCho.Services
 {
-    public class DailyConfigurationValidatorService
+    public class DailyConfigurationValidatorService(IConfiguration config, ILogger<DailyConfigurationValidatorService> logger, IUnitOfWork unitOfWork, ICacheService cache)
     {
-        private readonly IConfiguration _config;
-        private readonly ILogger<DailyConfigurationValidatorService> _logger;
-        private readonly IUnitOfWork _uow;
-        private readonly ICacheService _cache;
-
-        public DailyConfigurationValidatorService(IConfiguration config, ILogger<DailyConfigurationValidatorService> logger, IUnitOfWork unitOfWork, ICacheService cache)
-        {
-            _config = config;
-            _logger = logger;
-            _uow = unitOfWork;
-            _cache = cache;
-        }
+        private readonly ILogger<DailyConfigurationValidatorService> _logger = logger;
 
         public async Task ConfigurarIVA()
         {
             try
             {
-                bool esFeriado = _uow.GenFeriadoR.GetByFecha(DateTime.Now.ToIntFecha());
-                var lproductos = _uow.FacProductoR.GetAll();
-                string parametroIvaDefault = _uow.GenParametroR.GetById(Constantes.ID_CAT_DETALLE_IVA_DEFAULT).Valor;
-                string parametroIvaFeriados = _uow.GenParametroR.GetById(Constantes.ID_CAT_DETALLE_IVA_FERIADOS).Valor;
-                GenCatalogoDetalle CdIvaDefault = _uow.GenCatalogoDetalleR.GetById(int.Parse(parametroIvaDefault));
-                GenCatalogoDetalle CdIvaFeriados = _uow.GenCatalogoDetalleR.GetById(int.Parse(parametroIvaFeriados));
+                bool esFeriado = unitOfWork.GenFeriadoR.GetByFecha(DateTime.Now.ToIntFecha());
+                var lproductos = unitOfWork.FacProductoR.GetAll();
+                string parametroIvaDefault = unitOfWork.GenParametroR.GetById(Constantes.ID_CAT_DETALLE_IVA_DEFAULT).Valor;
+                string parametroIvaFeriados = unitOfWork.GenParametroR.GetById(Constantes.ID_CAT_DETALLE_IVA_FERIADOS).Valor;
+                GenCatalogoDetalle CdIvaDefault = unitOfWork.GenCatalogoDetalleR.GetById(int.Parse(parametroIvaDefault));
+                GenCatalogoDetalle CdIvaFeriados = unitOfWork.GenCatalogoDetalleR.GetById(int.Parse(parametroIvaFeriados));
                 string porcentajeIvaDefault = CdIvaDefault.Codigo.Replace("%", "");
                 string porcentajeIvaFeriado = CdIvaFeriados.Codigo.Replace("%", "");
 
@@ -40,22 +29,22 @@ namespace WebApiDonCho.Services
                 {
                     lproducto.Valor = Math.Round(lproducto.ValorDoncho / denom, 2);
                     lproducto.CodigoIva = idCatDetalleIva;
-                    _uow.FacProductoR.Update(lproducto);
+                    unitOfWork.FacProductoR.Update(lproducto);
                 }
-                _ = _uow.SaveChangesAsync();
-                var productos = _uow.FacProductoR.GetAllDto();
-                _cache.SetPermanent(Constantes.PRODUCTOS_ALL, productos);
-                _cache.SetPermanent(Constantes.ES_FERIADO, esFeriado);
-                _cache.SetPermanent(Constantes.ID_CATDETALLE_IVA, esFeriado ? CdIvaFeriados.Id : CdIvaDefault.Id);
-                _cache.SetPermanent(Constantes.PORCENTAJE_IVA, esFeriado ? porcentajeIvaFeriado : porcentajeIvaDefault);
-                _cache.SetPermanent(Constantes.CODIGO_IVA, esFeriado ? CdIvaFeriados.Valor : CdIvaDefault.Valor);
-                _cache.GetOrCreatePermanent(Constantes.JSON_SCHEMA_FACTURA, () => _uow.GenParametroR.GetById(Constantes.JSON_SCHEMA_FACTURA));
-                _cache.GetOrCreatePermanent(Constantes.PATH_LOCAL_FACTURAS, () => _uow.GenParametroR.GetById(Constantes.PATH_LOCAL_FACTURAS));
-                _cache.GetOrCreatePermanent(Constantes.CELINFOTRIBUTARIA, () => _uow.CelInfoTributariaR.GetById(1));
+                var productos = unitOfWork.FacProductoR.GetAllDto();
+                cache.SetPermanent(Constantes.PRODUCTOS_ALL, productos);
+                cache.SetPermanent(Constantes.ES_FERIADO, esFeriado);
+                cache.SetPermanent(Constantes.ID_CATDETALLE_IVA, esFeriado ? CdIvaFeriados.Id : CdIvaDefault.Id);
+                cache.SetPermanent(Constantes.PORCENTAJE_IVA, esFeriado ? porcentajeIvaFeriado : porcentajeIvaDefault);
+                cache.SetPermanent(Constantes.CODIGO_IVA, esFeriado ? CdIvaFeriados.Valor : CdIvaDefault.Valor);
+                cache.GetOrCreatePermanent(Constantes.JSON_SCHEMA_FACTURA, () => unitOfWork.GenParametroR.GetById(Constantes.JSON_SCHEMA_FACTURA));
+                cache.GetOrCreatePermanent(Constantes.PATH_LOCAL_FACTURAS, () => unitOfWork.GenParametroR.GetById(Constantes.PATH_LOCAL_FACTURAS));
+                cache.GetOrCreatePermanent(Constantes.CELINFOTRIBUTARIA, () => unitOfWork.CelInfoTributariaR.GetById(1));
+                await unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex.Message);
                 throw; // Re-lanzar la excepción para que el servicio de validación diaria pueda manejarla.
             }
         }
@@ -82,7 +71,7 @@ namespace WebApiDonCho.Services
 
         private void Requerir(string clave, List<string> errores)
         {
-            if (string.IsNullOrWhiteSpace(_config[clave]))
+            if (string.IsNullOrWhiteSpace(config[clave]))
                 errores.Add(clave);
         }
     }

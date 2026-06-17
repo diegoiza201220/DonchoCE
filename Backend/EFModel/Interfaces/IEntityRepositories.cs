@@ -65,7 +65,7 @@ public interface IFacSecuenciaDiaRepository : IRepository<FacSecuenciaDia>
 
 public interface IGenUsuarioRepository : IRepository<GenUsuario>
 {
-    Task<GenUsuario?> GetByIdAsync(int id);
+    //Task<GenUsuario?> GetByIdAsync(int id);
     Task<GenUsuario?> ValidateLogin(string nombre, string password);
 }
 

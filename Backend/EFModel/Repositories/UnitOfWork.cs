@@ -3,43 +3,24 @@ using EFModel.Interfaces;
 
 namespace EFModel.Repositories;
 
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork(DonchoContext context) : IUnitOfWork
 {
-    private readonly DonchoContext _context;
+    private readonly DonchoContext _context = context;
 
-    public IFacClienteRepository FacClienteR { get; }
-    public IFacProductoRepository FacProductoR { get; }
-    public IFacOrdenRepository FacOrdenR { get; }
-    public IFacDetalleOrdenRepository FacDetalleOrdenR { get; }
-    public ICelCertificadoRepository CelCertificadoR { get; }
-    public ICelLogDocumentoRepository CelLogDocumentoR { get; }
-    public ICelSecuenciaSriRepository CelSecuenciasSriR { get; }
-    public IGenParametroRepository GenParametroR { get; }
-    public IFacSecuenciaDiaRepository FacSecuenciaDiaR { get; }
-    public IGenUsuarioRepository GenUsuarioR { get; }
-    public ICelInfoTributariaRepository CelInfoTributariaR { get; }
-    public IGenCatalogoRepository GenCatalogoR { get; }
-    public IGenCatalogoDetalleRepository GenCatalogoDetalleR { get; }
-    public IGenFeriadoRepository GenFeriadoR { get; }
-
-    public UnitOfWork(DonchoContext context)
-    {
-        _context = context;
-        FacClienteR = new FacClienteRepository(context);
-        FacProductoR = new FacProductoRepository(context);
-        FacOrdenR = new FacOrdenRepository(context);
-        FacDetalleOrdenR = new FacDetalleOrdenRepository(context);
-        CelCertificadoR = new CelCertificadoRepository(context);
-        CelLogDocumentoR = new CelLogDocumentoRepository(context);
-        CelSecuenciasSriR = new CelSecuenciaSriRepository(context);
-        GenParametroR = new GenParametroRepository(context);
-        FacSecuenciaDiaR = new FacSecuenciaDiaRepository(context);
-        GenUsuarioR = new GenUsuarioRepository(context);
-        CelInfoTributariaR = new CelInfoTributariaRepository(context);
-        GenCatalogoR = new GenCatalogoRepository(context);
-        GenCatalogoDetalleR = new GenCatalogoDetalleRepository(context);
-        GenFeriadoR = new GenFeriadoRepository(context);
-    }
+    public IFacClienteRepository FacClienteR { get; } = new FacClienteRepository(context);
+    public IFacProductoRepository FacProductoR { get; } = new FacProductoRepository(context);
+    public IFacOrdenRepository FacOrdenR { get; } = new FacOrdenRepository(context);
+    public IFacDetalleOrdenRepository FacDetalleOrdenR { get; } = new FacDetalleOrdenRepository(context);
+    public ICelCertificadoRepository CelCertificadoR { get; } = new CelCertificadoRepository(context);
+    public ICelLogDocumentoRepository CelLogDocumentoR { get; } = new CelLogDocumentoRepository(context);
+    public ICelSecuenciaSriRepository CelSecuenciasSriR { get; } = new CelSecuenciaSriRepository(context);
+    public IGenParametroRepository GenParametroR { get; } = new GenParametroRepository(context);
+    public IFacSecuenciaDiaRepository FacSecuenciaDiaR { get; } = new FacSecuenciaDiaRepository(context);
+    public IGenUsuarioRepository GenUsuarioR { get; } = new GenUsuarioRepository(context);
+    public ICelInfoTributariaRepository CelInfoTributariaR { get; } = new CelInfoTributariaRepository(context);
+    public IGenCatalogoRepository GenCatalogoR { get; } = new GenCatalogoRepository(context);
+    public IGenCatalogoDetalleRepository GenCatalogoDetalleR { get; } = new GenCatalogoDetalleRepository(context);
+    public IGenFeriadoRepository GenFeriadoR { get; } = new GenFeriadoRepository(context);
 
     public async Task<int> SaveChangesAsync()
         => await _context.SaveChangesAsync();

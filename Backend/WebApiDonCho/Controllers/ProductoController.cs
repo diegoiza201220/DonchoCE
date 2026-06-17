@@ -11,28 +11,19 @@ namespace WebApiDonCho.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class ProductoController : ControllerBase
+public class ProductoController(IUnitOfWork uow, ICacheService cache) : ControllerBase
 {
-    private readonly IUnitOfWork _uow;
-    private readonly ICacheService _cache;
-
-    public ProductoController(IUnitOfWork uow, ICacheService cache)
-    {
-        _uow = uow;
-        _cache = cache;
-    }
-
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        _ = _cache.TryGet<IEnumerable<FacProductoDTO>>("PRODUCTOS_ALL", out var productos);
+        _ = cache.TryGet<IEnumerable<FacProductoDTO>>("PRODUCTOS_ALL", out var productos);
         return Ok(new { productos });
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var producto = await _uow.FacProductoR.GetByIdAsync(id);
+        var producto = await uow.FacProductoR.GetByIdAsync(id);
         return producto is null ? NotFound() : Ok(producto);
     }
 
@@ -42,8 +33,8 @@ public class ProductoController : ControllerBase
         if (producto.Id <= 0) return BadRequest();
 
         FacProducto facproducto = producto.FromDTO();
-        _uow.FacProductoR.Update(facproducto);
-        await _uow.SaveChangesAsync();
+        uow.FacProductoR.Update(facproducto);
+        await uow.SaveChangesAsync();
         await CargarItemsEnCacheAsync();
         return NoContent();
     }
@@ -54,8 +45,8 @@ public class ProductoController : ControllerBase
         if (producto.Id <= 0) return BadRequest();
 
         FacProducto facproducto = producto.FromDTO();
-        _uow.FacProductoR.Delete(facproducto);
-        await _uow.SaveChangesAsync();
+        uow.FacProductoR.Delete(facproducto);
+        await uow.SaveChangesAsync();
         await CargarItemsEnCacheAsync();
         return NoContent();
     }
@@ -66,15 +57,15 @@ public class ProductoController : ControllerBase
         if (producto.Id != 0) return BadRequest();
 
         FacProducto facproducto = producto.FromDTO();
-        await _uow.FacProductoR.AddAsync(facproducto);
-        await _uow.SaveChangesAsync();
+        await uow.FacProductoR.AddAsync(facproducto);
+        await uow.SaveChangesAsync();
         await CargarItemsEnCacheAsync();
         return CreatedAtAction(nameof(GetById), new { id = facproducto.Id }, facproducto);
     }
 
     private async Task CargarItemsEnCacheAsync()
     {
-        var productos = await _uow.FacProductoR.GetAllDtoAsync();
-        _cache.SetPermanent("PRODUCTOS_ALL", productos);
+        var productos = await uow.FacProductoR.GetAllDtoAsync();
+        cache.SetPermanent("PRODUCTOS_ALL", productos);
     }
 }

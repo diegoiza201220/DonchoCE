@@ -39,5 +39,5 @@ public partial class FacOrden
     public DateTime NotaCreditoFecha { get; set; }
     public virtual FacCliente Cliente { get; set; } = null!;
 
-    public virtual ICollection<FacDetalleOrden> FacDetalleOrdens { get; set; } = new List<FacDetalleOrden>();
+    public virtual ICollection<FacDetalleOrden> FacDetalleOrdens { get; set; } = [];
 }

@@ -55,7 +55,7 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
             //3 - digito verificador (calculado con módulo 11 sobre los 48 dígitos anteriores)
 
             string codigoNumerico = new Random().Next(10000000, 99999999).ToString(); // Generar un código numérico aleatorio de 8 dígitos
-            string clave_acceso_sin_digito_verificador = $"{fecha.ToString("ddMMyyyy")}{tipocomprobante}{ruc}{tipoAmbiente}{establecimiento_ptoemi}{secuencial}{codigoNumerico}{tipoEmision}";
+            string clave_acceso_sin_digito_verificador = $"{fecha:ddMMyyyy}{tipocomprobante}{ruc}{tipoAmbiente}{establecimiento_ptoemi}{secuencial}{codigoNumerico}{tipoEmision}";
             return $"{clave_acceso_sin_digito_verificador}{CalcularDigitoVerificador(clave_acceso_sin_digito_verificador)}";
         }
 
@@ -66,8 +66,8 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
 
             foreach (var item in clave1)
             {
-                suma = suma + Convert.ToInt32(item.ToString()) * factor;
-                factor = factor - 1;
+                suma += Convert.ToInt32(item.ToString()) * factor;
+                factor--;
                 if (factor == 1)
                     factor = 7;
             }
