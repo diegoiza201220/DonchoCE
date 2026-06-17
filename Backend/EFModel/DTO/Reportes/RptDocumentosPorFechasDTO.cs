@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace EFModel.DTO.Reportes
+﻿namespace EFModel.DTO.Reportes
 {
     public class RptDocumentosPorFechasDTO
     {

@@ -7,7 +7,7 @@ namespace WebApiDonCho.Services
         private readonly IMemoryCache _cache;
         private readonly ILogger<CacheWarmupService> _logger;
 
-        public CacheWarmupService(IMemoryCache cache,  ILogger<CacheWarmupService> logger)
+        public CacheWarmupService(IMemoryCache cache, ILogger<CacheWarmupService> logger)
         {
             _cache = cache;
             _logger = logger;

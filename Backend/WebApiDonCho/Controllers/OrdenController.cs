@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using EFModel.DTO;
 using EFModel.DTO.Request;
 using EFModel.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebApiDonCho.Services;
 namespace WebApiDonCho.Controllers;
 
@@ -30,7 +30,7 @@ public class OrdenController(IUnitOfWork uow, OrdenService ordenService, ICacheS
     public async Task<IActionResult> GetDatosPedido()
     {
         _cache.TryGet("PORCENTAJE_IVA", out string porcentajeIva);
-        _cache.TryGet("CODIGO_IVA", out string codigoIva);  
+        _cache.TryGet("CODIGO_IVA", out string codigoIva);
         _cache.TryGet("ID_CATDETALLE_IVA", out int idCatDetalleIva);
 
         DatosPedidoDTO datosPedidoDTO = new()

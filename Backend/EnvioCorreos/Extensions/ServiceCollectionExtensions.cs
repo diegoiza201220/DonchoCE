@@ -3,7 +3,6 @@ using EnvioCorreos.Interfaces;
 using EnvioCorreos.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace EnvioCorreos.Extensions
 {

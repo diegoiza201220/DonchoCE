@@ -1,7 +1,8 @@
 ﻿
 namespace ComprobantesElectronicos.Enums
 {
-    public enum CodigoDocumento {
+    public enum CodigoDocumento
+    {
         Factura = 01,
         NotaCredito = 03
     }

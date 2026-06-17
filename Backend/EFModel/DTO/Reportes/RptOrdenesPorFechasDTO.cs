@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace EFModel.DTO.Reportes
+﻿namespace EFModel.DTO.Reportes
 {
     public class RptOrdenesPorFechasDTO
     {
@@ -27,7 +25,7 @@ namespace EFModel.DTO.Reportes
         public bool EsFactura { get; set; }
 
         public string NumeroFactura { get; set; }
-        public string DocumentoPago { get; set; } 
+        public string DocumentoPago { get; set; }
 
     }
 }

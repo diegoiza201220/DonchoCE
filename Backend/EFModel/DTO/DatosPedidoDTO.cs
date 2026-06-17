@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace EFModel.DTO
+﻿namespace EFModel.DTO
 {
     public class DatosPedidoDTO
     {

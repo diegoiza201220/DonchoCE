@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using EFModel.DTO;
 using EFModel.Interfaces;
 using EFModel.Models;
-using EFModel.DTO;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebApiDonCho.Services;
 
 namespace WebApiDonCho.Controllers;

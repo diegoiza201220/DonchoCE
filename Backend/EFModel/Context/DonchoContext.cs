@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using EFModel.Models;
+﻿using EFModel.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EFModel.Context;
 

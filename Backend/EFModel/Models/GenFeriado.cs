@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace EFModel.Models;
+﻿namespace EFModel.Models;
 
 public partial class GenFeriado
 {

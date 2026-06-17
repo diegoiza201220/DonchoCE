@@ -1,6 +1,5 @@
 ﻿using EFModel.DTO;
 using EFModel.Models;
-using Infoware.SRI.Core.Enumerados;
 
 namespace WebApiDonCho.Helpers.ComprobantesElectronicos
 {
@@ -13,7 +12,7 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
                 TipoDocumento = ordenDTO.EsNotaCredito ? 3 : int.Parse(ordenDTO.CodDoc),
                 Estado = 0,
                 Mensaje = string.Empty,
-                Autorizacion = ordenDTO.EsNotaCredito? ordenDTO.NotaCreditoClaveNumeroAutorizacion : ordenDTO.ClaveNumeroAutorizacion,
+                Autorizacion = ordenDTO.EsNotaCredito ? ordenDTO.NotaCreditoClaveNumeroAutorizacion : ordenDTO.ClaveNumeroAutorizacion,
                 XmlFirmado = string.Empty,
                 Ambiente = 0,
                 TipoEmision = 0

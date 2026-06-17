@@ -1,13 +1,9 @@
-﻿using ComprobantesElectronicos.DTO.Sri;
-using ComprobantesElectronicos.Services;
+﻿using ComprobantesElectronicos.Services;
 using EFModel.DTO;
 using EFModel.DTO.Reportes;
 using EFModel.DTO.Request;
 using EFModel.Interfaces;
 using EFModel.Models;
-using EFModel.Repositories;
-using System.Runtime.ConstrainedExecution;
-using WebApiDonCho.Helpers.ComprobantesElectronicos;
 
 namespace WebApiDonCho.Services
 {

@@ -1,11 +1,5 @@
 ﻿using EFModel.DTO;
-using EFModel.Interfaces;
 using EFModel.Models;
-using EFModel.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebApiDonCho.Helpers.ComprobantesElectronicos
 {
@@ -42,7 +36,7 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
             ordenDTO.RucDonCho = celInfoTributaria.Ruc;
             ordenDTO.Direccionmatriz = celInfoTributaria.DireccionMatriz;
             ordenDTO.ContibuyenteRimpe = celInfoTributaria.ContribuyenteRimpe;
-            ordenDTO.DireccionEstablecimiento = celInfoTributaria.DireccionMatriz; 
+            ordenDTO.DireccionEstablecimiento = celInfoTributaria.DireccionMatriz;
             ordenDTO.ObligadoContabilidad = celInfoTributaria.ObligadoContabilidad ? "SI" : "NO";
         }
 
@@ -85,7 +79,7 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
             else if (digitoverificador == 10)
                 digitoverificador = 1;
 
-            return digitoverificador ;
+            return digitoverificador;
         }
     }
 }

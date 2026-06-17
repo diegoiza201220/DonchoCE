@@ -116,7 +116,7 @@ public class SriService
                 Informacion = m.Element("informacionAdicional")?.Value ?? ""
             }).ToList();
 
-        DateTimeOffset.TryParse(autorizacion.Element("fechaAutorizacion")?.Value,out var fechaAutorizacion);
+        DateTimeOffset.TryParse(autorizacion.Element("fechaAutorizacion")?.Value, out var fechaAutorizacion);
 
         return new RespuestaAutorizacionSri
         {

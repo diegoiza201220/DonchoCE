@@ -22,7 +22,7 @@ namespace EFModel.DTO
         public string? Email { get; set; }
 
         public int FechaCumpleanios { get; set; }
-        
+
         [StringLength(200)]
         public string? Direccion { get; set; }
 

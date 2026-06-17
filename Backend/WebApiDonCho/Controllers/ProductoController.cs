@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using EFModel.DTO;
 using EFModel.Interfaces;
-using EFModel.Models;
 using EFModel.Mappers;
+using EFModel.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 //using AutoMapper;
 
 namespace WebApiDonCho.Controllers;
@@ -40,7 +40,7 @@ public class ProductoController : ControllerBase
     public async Task<IActionResult> Update([FromBody] FacProductoDTO producto)
     {
         if (producto.Id <= 0) return BadRequest();
-        
+
         FacProducto facproducto = producto.FromDTO();
         _uow.FacProductoR.Update(facproducto);
         await _uow.SaveChangesAsync();

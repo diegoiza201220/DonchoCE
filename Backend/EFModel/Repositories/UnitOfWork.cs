@@ -1,6 +1,5 @@
-using EFModel.Interfaces;
 using EFModel.Context;
-using EFModel.Models;
+using EFModel.Interfaces;
 
 namespace EFModel.Repositories;
 

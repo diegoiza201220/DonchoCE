@@ -3,10 +3,8 @@ using ComprobantesElectronicos.Utils;
 using EFModel.DTO;
 using EFModel.Interfaces;
 using EFModel.Models;
-using EnvioCorreos.Models;
 using EnvioCorreos.Services;
 using Microsoft.Extensions.Configuration;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace ComprobantesElectronicos.Services;
@@ -47,7 +45,7 @@ public class ComprobanteService
 
             if (!respuestaRecepcion.FueRecibida)
             {
-                SetInformacionCelLogDocumento(celLogDocumento,estado: 1, string.Join("; ", respuestaRecepcion.Mensajes.Select(m => m.Mensaje)));// estado 1 error en recepción
+                SetInformacionCelLogDocumento(celLogDocumento, estado: 1, string.Join("; ", respuestaRecepcion.Mensajes.Select(m => m.Mensaje)));// estado 1 error en recepción
                 await _uow.SaveChangesAsync();
                 return new ResultadoEmisionDTO
                 {

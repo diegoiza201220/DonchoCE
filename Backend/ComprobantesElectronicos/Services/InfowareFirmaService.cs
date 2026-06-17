@@ -8,7 +8,7 @@ namespace ComprobantesElectronicos.Services
         private readonly ICertificadoService _certificadoService;
         private readonly IConfiguration _config;
 
-        public InfowareFirmaService(ICertificadoService certificadoService, IConfiguration configuration )
+        public InfowareFirmaService(ICertificadoService certificadoService, IConfiguration configuration)
         {
             _certificadoService = certificadoService;
             _config = configuration;

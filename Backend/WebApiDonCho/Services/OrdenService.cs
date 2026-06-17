@@ -1,12 +1,10 @@
-﻿using ComprobantesElectronicos.DTO.Sri;
-using ComprobantesElectronicos.Services;
+﻿using ComprobantesElectronicos.Services;
 using EFModel.DTO;
 using EFModel.DTO.Reportes;
 using EFModel.DTO.Request;
 using EFModel.Interfaces;
 using EFModel.Mappers;
 using EFModel.Models;
-using System.Reflection.Metadata;
 using Utils;
 using WebApiDonCho.Helpers.ComprobantesElectronicos;
 

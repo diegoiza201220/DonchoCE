@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using EFModel.Interfaces;
 using EFModel.Models;
+using Microsoft.AspNetCore.Mvc;
 using WebApiDonCho.Services;
 
 namespace WebApiDonCho.Controllers;
@@ -16,7 +16,7 @@ public class LoginController : ControllerBase
     {
         _uow = uow;
         _auth = auth;
-    } 
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()

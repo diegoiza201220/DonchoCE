@@ -1,8 +1,8 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using EFModel.Models;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using EFModel.Models;
 
 namespace WebApiDonCho.Services
 {

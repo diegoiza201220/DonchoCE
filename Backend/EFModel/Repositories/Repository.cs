@@ -1,6 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using EFModel.Context;
 using EFModel.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EFModel.Repositories;
 

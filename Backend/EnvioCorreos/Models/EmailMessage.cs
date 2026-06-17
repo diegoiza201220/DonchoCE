@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EnvioCorreos.Models
+﻿namespace EnvioCorreos.Models
 {
     public class EmailMessage
     {

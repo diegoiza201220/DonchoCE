@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EnvioCorreos.Configuration
+﻿namespace EnvioCorreos.Configuration
 {
     public class EmailOptions
     {

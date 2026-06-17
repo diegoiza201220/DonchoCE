@@ -5,27 +5,16 @@ using EnvioCorreos.Configuration;
 using EnvioCorreos.Interfaces;
 using EnvioCorreos.Models;
 using FastReport;
-using FastReport.Data;
 using FastReport.Data.JsonConnection;
 using FastReport.Export.PdfSimple;
-using FastReport.Utils;
 using MailKit.Net.Smtp;
 using MailKit.Security;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Text;
-using System.Text.Json;
 using Utils;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
-using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace EnvioCorreos.Services
 {
@@ -82,6 +71,7 @@ namespace EnvioCorreos.Services
                 using (MemoryStream ms = new())
                 {
                     PDFSimpleExport pdfExport = new();
+
                     report.Export(pdfExport, ms);
                     //File.WriteAllBytes(filename, ms.ToArray());
                     return ms;

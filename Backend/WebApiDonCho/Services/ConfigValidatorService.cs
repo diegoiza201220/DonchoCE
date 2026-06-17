@@ -46,7 +46,7 @@ namespace WebApiDonCho.Services
                 var productos = _uow.FacProductoR.GetAllDto();
                 _cache.SetPermanent(Constantes.PRODUCTOS_ALL, productos);
                 _cache.SetPermanent(Constantes.ES_FERIADO, esFeriado);
-                _cache.SetPermanent(Constantes.ID_CATDETALLE_IVA, esFeriado ? CdIvaFeriados.Id: CdIvaDefault.Id);
+                _cache.SetPermanent(Constantes.ID_CATDETALLE_IVA, esFeriado ? CdIvaFeriados.Id : CdIvaDefault.Id);
                 _cache.SetPermanent(Constantes.PORCENTAJE_IVA, esFeriado ? porcentajeIvaFeriado : porcentajeIvaDefault);
                 _cache.SetPermanent(Constantes.CODIGO_IVA, esFeriado ? CdIvaFeriados.Valor : CdIvaDefault.Valor);
                 _cache.GetOrCreatePermanent(Constantes.JSON_SCHEMA_FACTURA, () => _uow.GenParametroR.GetById(Constantes.JSON_SCHEMA_FACTURA));

@@ -1,8 +1,4 @@
 ﻿using EFModel.DTO;
-using EnvioCorreos.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EnvioCorreos.Interfaces
 {

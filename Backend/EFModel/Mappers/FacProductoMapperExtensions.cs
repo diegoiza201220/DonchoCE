@@ -1,7 +1,4 @@
 ﻿using EFModel.DTO;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using EFModel.Models;
 
 namespace EFModel.Mappers
@@ -22,6 +19,6 @@ namespace EFModel.Mappers
                 Valor = producto.Valor,
                 ValorDoncho = producto.ValorDoncho
             };
+        }
     }
-}
 }
