@@ -12,5 +12,7 @@
         public const string PORCENTAJE_IVA = "PORCENTAJE_IVA";
         public const string CODIGO_IVA = "CODIGO_IVA";
         public const string CELINFOTRIBUTARIA = "CELINFOTRIBUTARIA";
+        public const string PATH_CERTIFICADO = "PATH_CERTIFICADO";
+        public const string PWD_CERTIFICADO = "PWD_CERTIFICADO";
     }
 }

@@ -40,6 +40,8 @@ namespace WebApiDonCho.Services
                 cache.GetOrCreatePermanent(Constantes.JSON_SCHEMA_FACTURA, () => unitOfWork.GenParametroR.GetById(Constantes.JSON_SCHEMA_FACTURA));
                 cache.GetOrCreatePermanent(Constantes.PATH_LOCAL_FACTURAS, () => unitOfWork.GenParametroR.GetById(Constantes.PATH_LOCAL_FACTURAS));
                 cache.GetOrCreatePermanent(Constantes.CELINFOTRIBUTARIA, () => unitOfWork.CelInfoTributariaR.GetById(1));
+                cache.GetOrCreatePermanent(Constantes.PATH_CERTIFICADO, () => unitOfWork.GenParametroR.GetById(Constantes.PATH_CERTIFICADO));
+                cache.GetOrCreatePermanent(Constantes.PWD_CERTIFICADO, () => unitOfWork.GenParametroR.GetById(Constantes.PWD_CERTIFICADO));
                 await unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)
