@@ -10,6 +10,7 @@ namespace EFModel.Mappers
             return new FacOrden
             {
                 Clienteid = orden.Clienteid,
+                Sucursalid = orden.Sucursalid,
                 FechaInteger = orden.FechaInteger,
                 Secuencial = orden.Secuencial,
                 Fecha = DateTime.Now.ToUniversalTime(),

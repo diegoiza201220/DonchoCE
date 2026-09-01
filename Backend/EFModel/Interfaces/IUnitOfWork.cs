@@ -16,6 +16,8 @@ public interface IUnitOfWork : IDisposable
     IGenCatalogoRepository GenCatalogoR { get; }
     IGenCatalogoDetalleRepository GenCatalogoDetalleR { get; }
     IGenFeriadoRepository GenFeriadoR { get; }
+    IGenSucursalRepository GenSucursalR { get; }
+    IGenUsuarioSucursalRepository GenUsuarioSucursalR { get; }
 
     Task<int> SaveChangesAsync();
 }

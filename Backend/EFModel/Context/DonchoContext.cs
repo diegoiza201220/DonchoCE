@@ -40,7 +40,11 @@ public partial class DonchoContext : DbContext
 
     public virtual DbSet<GenCatalogoDetalle> GenCatalogoDetalle { get; set; }
     public virtual DbSet<GenFeriado> GenFeriado { get; set; }
-
+    public virtual DbSet<GenSucursal> GenSucursal { get; set; }
+    public virtual DbSet<GenRol> GenRol { get; set; }
+    public virtual DbSet<GenMenuPermiso> GenMenuPermiso { get; set; }
+    public virtual DbSet<GenUsuarioRol> GenUsuarioRol { get; set; }
+    public virtual DbSet<GenUsuarioSucursal> GenUsuarioSucursal { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=20.122.134.200;Database=postgres;Username=postgres;Password=postgres1234");
@@ -86,6 +90,9 @@ public partial class DonchoContext : DbContext
             entity.Property(e => e.TipoDocumento).HasColumnName("tipo_documento");
             entity.Property(e => e.TipoEmision).HasColumnName("tipo_emision");
             entity.Property(e => e.XmlFirmado).HasColumnName("xml_firmado");
+            entity.Property(e => e.FechaHora)
+    .HasDefaultValueSql("now()")
+    .HasColumnName("fecha_hora");
         });
 
         modelBuilder.Entity<CelSecuenciaSri>(entity =>
@@ -106,6 +113,12 @@ public partial class DonchoContext : DbContext
                 .HasColumnName("punto_de_emision");
             entity.Property(e => e.SecuenciaActual).HasColumnName("secuencia_actual");
             entity.Property(e => e.TipoDocumento).HasColumnName("tipo_documento");
+            entity.Property(e => e.Sucursalid).HasColumnName("sucursalid");
+            entity.HasOne(d => d.Sucursal)
+                .WithMany(p => p.CelSecuenciasSri)
+                .HasForeignKey(d => d.Sucursalid)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("cel_secuencia_sri_gen_sucursal_fk");
         });
 
         modelBuilder.Entity<FacCliente>(entity =>
@@ -226,10 +239,17 @@ public partial class DonchoContext : DbContext
                 .HasColumnName("nota_credito_motivo");
             entity.Property(e => e.NotaCreditoFecha)
                 .HasColumnName("nota_credito_fecha");
-            entity.HasOne(d => d.Cliente).WithMany(p => p.FacOrdens)
+            entity.HasOne(d => d.Cliente)
+                .WithMany(p => p.FacOrdens)
                 .HasForeignKey(d => d.Clienteid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("orden_cliente_fk");
+            entity.Property(e => e.Sucursalid).HasColumnName("sucursalid");
+            entity.HasOne(d => d.Sucursal)
+                .WithMany(p => p.FacOrdens)
+                .HasForeignKey(d => d.Sucursalid)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("fac_orden_gen_sucursal_fk");
         });
 
         modelBuilder.Entity<FacSecuenciaDia>(entity =>
@@ -243,6 +263,12 @@ public partial class DonchoContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.Fecha).HasColumnName("fecha");
             entity.Property(e => e.Secuencia).HasColumnName("secuencia");
+            entity.Property(e => e.Sucursalid).HasColumnName("sucursalid");
+            entity.HasOne(d => d.Sucursal)
+                .WithMany(p => p.FacSecuenciasDia)
+                .HasForeignKey(d => d.Sucursalid)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("fac_secuencia_dia_gen_sucursal_fk");
         });
 
         modelBuilder.Entity<GenParametro>(entity =>
@@ -383,6 +409,128 @@ public partial class DonchoContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.Fecha).HasColumnName("fecha");
         });
+
+        modelBuilder.Entity<GenSucursal>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("gen_sucursal_pk");
+
+            entity.ToTable("gen_sucursal");
+
+            entity.Property(e => e.Id)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id");
+            entity.Property(e => e.Nombre)
+                .HasColumnType("character varying")
+                .HasColumnName("nombre");
+            entity.Property(e => e.Direccion)
+                .HasColumnType("character varying")
+                .HasColumnName("direccion");
+            entity.Property(e => e.EsMatriz)
+                .HasDefaultValue(false)
+                .HasColumnName("es_matriz");
+            entity.Property(e => e.Activo)
+                .HasDefaultValue(true)
+                .HasColumnName("activo");
+        });
+
+        modelBuilder.Entity<GenRol>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("gen_rol_pk");
+
+            entity.ToTable("gen_rol");
+
+            entity.Property(e => e.Id)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id");
+            entity.Property(e => e.Nombre)
+                .HasColumnType("character varying")
+                .HasColumnName("nombre");
+        });
+
+        modelBuilder.Entity<GenMenuPermiso>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("gen_menu_permiso_pk");
+
+            entity.ToTable("gen_menu_permiso");
+
+            entity.Property(e => e.Id)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("id");
+            entity.Property(e => e.Padreid)
+                .HasColumnName("padreid");
+            entity.Property(e => e.Nombre)
+                .HasColumnType("character varying")
+                .HasColumnName("nombre");
+            entity.Property(e => e.UrlRuta)
+                .HasColumnType("character varying")
+                .HasColumnName("url_ruta");
+            entity.Property(e => e.Tipo)
+                .HasColumnType("character varying")
+                .HasColumnName("tipo");
+            entity.Property(e => e.Orden)
+                .HasColumnName("orden");
+
+            // Autoreferencia padre-hijo
+            entity.HasOne(d => d.Padre)
+                .WithMany(p => p.Hijos)
+                .HasForeignKey(d => d.Padreid)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("gen_menu_permiso_gen_menu_permiso_fk");
+        });
+
+        modelBuilder.Entity<GenUsuarioRol>(entity =>
+        {
+            entity.HasNoKey();   // DDL no define PK; ajustar si se agrega una en el futuro
+
+            entity.ToTable("gen_usuario_rol");
+
+            entity.Property(e => e.Usuarioid).HasColumnName("usuarioid");
+            entity.Property(e => e.Rolid).HasColumnName("rolid");
+
+            //entity.HasOne(d => d.Usuario)
+            //    .WithMany(p => p.UsuarioRoles)
+            //    .HasForeignKey(d => d.Usuarioid)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("gen_usuario_rol_gen_usuario_fk");
+
+            //entity.HasOne(d => d.Rol)
+            //    .WithMany(p => p.UsuarioRoles)
+            //    .HasForeignKey(d => d.Rolid)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("gen_usuario_rol_gen_rol_fk");
+        });
+
+        modelBuilder.Entity<GenUsuarioSucursal>(entity =>
+        {
+
+            entity.HasKey(e => e.Id) .HasName("gen_usuario_sucursal_pk");
+
+            entity.ToTable("gen_usuario_sucursal");
+            entity.Property(e => e.Id).UseIdentityAlwaysColumn().HasColumnName("id");
+            entity.Property(e => e.Usuarioid).HasColumnName("usuarioid");
+            entity.Property(e => e.Sucursalid).HasColumnName("sucursalid");
+            entity.HasOne(d => d.Sucursal)
+    .WithMany(p => p.UsuarioSucursales)
+    .HasForeignKey(d => d.Sucursalid)
+    .OnDelete(DeleteBehavior.ClientSetNull)
+    .HasConstraintName("gen_usuario_sucursal_gen_sucursal_fk");
+
+            entity.HasOne(d => d.Usuario)
+.WithMany(p => p.UsuarioSucursales)
+.HasForeignKey(d => d.Usuarioid)
+.OnDelete(DeleteBehavior.ClientSetNull)
+.HasConstraintName("gen_usuario_sucursal_gen_usuario_fk");
+
+            //entity.HasOne(d => d.Usuario).WithMany(p => p.UsuarioSucursales)
+            //    .HasForeignKey(d => d.Usuarioid).OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("gen_usuario_sucursal_gen_usuario_fk");
+
+            //entity.HasOne(d => d.Sucursal).WithMany(p => p.UsuarioSucursales)
+            //    .HasForeignKey(d => d.Sucursalid).OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("gen_usuario_sucursal_gen_sucursal_fk");
+        });
+
+
 
         OnModelCreatingPartial(modelBuilder);
     }

@@ -65,5 +65,8 @@ namespace EFModel.DTO
         [Required]
         public List<FacDetalleOrdenDTO> FacDetalleOrdens { get; set; } = new();
         public FacClienteDTO Cliente { get; set; } = new();
+
+        public int Sucursalid { get; set; }
+        public GenSucursalDTO Sucursal { get; set; } = new();
     }
 }

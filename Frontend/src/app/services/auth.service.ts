@@ -8,36 +8,50 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class AuthService {
-  public userData: any;
+  public user: any;
+  public token: string | null = null;
+  public lSucursales: any;
+  public sucursalIdSeleccionada: number = 0;
+  public sucursalNombreSeleccionada: string = '';
   private readonly apiUrl = environment.apiUrl;
 
   constructor(
     private readonly http: HttpClient,
     private readonly router: Router,
     private readonly ngZone: NgZone
-  ) {}
+  ) { }
 
   // log-in con email y contraseña contra la API REST
-  logInWithEmailAndPassword(nombre: string, password: string): Promise<void> {
+  logIn(nombre: string, password: string): Promise<void> {
     return firstValueFrom(
-      this.http.post<{ token: string; user: any }>(
+      this.http.post<{ token: string; user: any; sucursales: any }>(
         `${this.apiUrl}/login/validatelogin`,
         { nombre, password }
-      )
-    )
+      ))
       .then((response) => {
-        this.userData = response.user;
-        localStorage.setItem('user', JSON.stringify(this.userData));
-        localStorage.setItem('token', response.token);
-        this.ngZone.run(() => this.router.navigate(['main']));
+        this.user = response.user;
+        this.token = response.token;
+        this.lSucursales = response.sucursales;
       })
       .catch((error) => {
         alert(error?.error?.message ?? 'Error al iniciar sesión');
       });
   }
 
+  routerNavigateMain(): void {
+    this.ngZone.run(() => this.router.navigate(['main']));
+  }
+
+  setUserInLocalStorage(): void {
+    localStorage.setItem('user', this.user);
+  }
+
   // return true when user is logged in
   get isLoggedIn(): boolean {
+    if (this.router.url === '/' || this.router.url === '/login' || this.router.url === undefined) {
+      localStorage.removeItem('user');
+      return false;
+    }
     const user = JSON.parse(localStorage.getItem('user')!);
     return user !== null;
   }

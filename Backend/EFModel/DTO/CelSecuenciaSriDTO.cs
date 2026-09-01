@@ -21,5 +21,7 @@ namespace EFModel.DTO
 
         [Required]
         public bool Estado { get; set; }
+        public int Sucursalid { get; set; }
+        public GenSucursalDTO Sucursal { get; set; } = new();
     }
 }

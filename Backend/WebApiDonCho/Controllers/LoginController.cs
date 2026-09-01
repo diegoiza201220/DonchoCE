@@ -36,7 +36,8 @@ public class LoginController : ControllerBase
         var uv = await _uow.GenUsuarioR.ValidateLogin(usuario.Nombre, usuario.Password);
         if (uv is null) return Unauthorized();
         var token = _auth.GenerarJwt(uv);
-        return Ok(new { token, user = uv.Nombre });
+        var sucursales = _uow.GenUsuarioSucursalR.GetByUsuarioId(uv.Id);
+        return Ok(new { token, user = uv.Nombre, sucursales = sucursales });
     }
 
 }

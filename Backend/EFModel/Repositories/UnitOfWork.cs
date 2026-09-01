@@ -1,5 +1,6 @@
 using EFModel.Context;
 using EFModel.Interfaces;
+using EFModel.Models;
 
 namespace EFModel.Repositories;
 
@@ -21,6 +22,8 @@ public class UnitOfWork(DonchoContext context) : IUnitOfWork
     public IGenCatalogoRepository GenCatalogoR { get; } = new GenCatalogoRepository(context);
     public IGenCatalogoDetalleRepository GenCatalogoDetalleR { get; } = new GenCatalogoDetalleRepository(context);
     public IGenFeriadoRepository GenFeriadoR { get; } = new GenFeriadoRepository(context);
+    public IGenSucursalRepository GenSucursalR { get; } = new GenSucursalRepository (context);
+    public IGenUsuarioSucursalRepository GenUsuarioSucursalR { get; } = new GenUsuarioSucursalRepository(context);
 
     public async Task<int> SaveChangesAsync()
         => await _context.SaveChangesAsync();

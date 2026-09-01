@@ -13,4 +13,7 @@ public partial class CelSecuenciaSri
     public int SecuenciaActual { get; set; }
 
     public bool Estado { get; set; }
+    public int Sucursalid { get; set; }
+
+    public virtual GenSucursal Sucursal { get; set; } = null!;
 }

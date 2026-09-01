@@ -40,4 +40,8 @@ public partial class FacOrden
     public virtual FacCliente Cliente { get; set; } = null!;
 
     public virtual ICollection<FacDetalleOrden> FacDetalleOrdens { get; set; } = [];
+
+    public int Sucursalid { get; set; }
+
+    public virtual GenSucursal Sucursal { get; set; } = null!;
 }

@@ -17,4 +17,6 @@ public partial class CelLogDocumento
     public int Ambiente { get; set; }
 
     public int TipoEmision { get; set; }
+
+    public DateOnly FechaHora { get; set; }
 }

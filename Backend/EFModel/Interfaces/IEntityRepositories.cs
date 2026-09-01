@@ -93,3 +93,15 @@ public interface IGenFeriadoRepository : IRepository<GenFeriado>
 {
     bool GetByFecha(int fechainteger);
 }
+
+public interface IGenSucursalRepository : IRepository<GenSucursal>
+{
+    GenSucursal GetById(int id);
+    IEnumerable<GenSucursal> GetAll();
+}
+
+public interface IGenUsuarioSucursalRepository : IRepository<GenUsuarioSucursal>
+{
+    IEnumerable<GenUsuarioSucursal> GetByUsuarioId(int usuarioId);
+    Task<IEnumerable<GenUsuarioSucursal>> GetBySucursalId(int sucursalId);
+}

@@ -241,3 +241,33 @@ public class GenFeriadoRepository(DonchoContext context) : Repository<GenFeriado
     public bool GetByFecha(int fechainteger)
     => _dbSet.Any(c => c.Fecha == fechainteger);
 }
+
+public class GenSucursalRepository(DonchoContext context) : Repository<GenSucursal>(context), IGenSucursalRepository
+{
+    public GenSucursal GetById(int id)
+    {
+        return _dbSet.AsNoTracking().FirstOrDefault(g => g.Id == id);
+    }
+
+    public IEnumerable<GenSucursal> GetAll()
+    => [.. _dbSet.AsNoTracking()];
+}
+
+public class GenUsuarioSucursalRepository(DonchoContext context) : Repository<GenUsuarioSucursal>(context), IGenUsuarioSucursalRepository
+{
+    public IEnumerable<GenUsuarioSucursal> GetByUsuarioId(int id)
+    {
+            //public async Task<IEnumerable<FacDetalleOrden>> GetByOrdenAsync(int ordenId)
+       // => await
+       //
+       var l = _dbSet.AsNoTracking()
+            .Include(d => d.Sucursal)
+            .Where(d => d.Usuarioid == id)
+            .ToList();
+        return l;
+//        return [.. _dbSet.AsNoTracking().Where(x => x.Usuarioid == id)];
+    }
+
+    public async Task<IEnumerable<GenUsuarioSucursal>> GetBySucursalId(int id)
+    => await _dbSet.AsNoTracking().Where(x=> x.Sucursalid == id).ToListAsync();
+}

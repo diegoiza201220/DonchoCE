@@ -12,6 +12,7 @@ namespace EFModel.DTO
 
         [Required]
         public int secuencia { get; set; }
-
+        public int Sucursalid { get; set; }
+        public GenSucursalDTO Sucursal { get; set; } = new();
     }
 }
