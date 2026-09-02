@@ -14,9 +14,10 @@ namespace WebApiDonCho.Services
     {
         public async Task<FacOrden> GenerarFacturaAsync(FacOrdenDTO orden)
         {
-            var secuencia = await uow.FacSecuenciaDiaR.GetSecuenciaAsync() ?? throw new InvalidOperationException("No existe registro de secuencia del día.");
+
 
             var facOrden = orden.FromDTO();
+            var secuencia = await uow.FacSecuenciaDiaR.GetBySucursalIdAsync(facOrden.Sucursalid) ?? throw new InvalidOperationException("No existe registro de secuencia del día.");
 
             ActualizarSecuenciaOrdenesDiaria(secuencia, orden.FechaInteger);
 

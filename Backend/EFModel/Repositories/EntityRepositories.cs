@@ -176,6 +176,9 @@ public class GenParametroRepository(DonchoContext context) : Repository<GenParam
 // ── Secuencium ────────────────────────────────────────────────────────────────
 public class FacSecuenciaDiaRepository(DonchoContext context) : Repository<FacSecuenciaDia>(context), IFacSecuenciaDiaRepository
 {
+    public async Task<FacSecuenciaDia?> GetBySucursalIdAsync(int sucursalid)
+    => await _dbSet.AsNoTracking().FirstOrDefaultAsync(s => s.Sucursalid == sucursalid);
+
     public async Task<FacSecuenciaDia?> GetByCodigoAsync(int fecha)
         => await _dbSet.AsNoTracking().FirstOrDefaultAsync(s => s.Fecha == fecha);
 

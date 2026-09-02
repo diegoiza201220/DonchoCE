@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams  } from '@angular/common/http';
 import { Observable, firstValueFrom } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import Secuencia from '../interfaces/secuencia.interface';
@@ -26,8 +26,9 @@ export class SecuenciaService {
     return this.http.put<Secuencia>(`${this.apiUrl}/${secuencia.id}`, secuencia);
   }
 
-  getSecuenciaPromise(): Promise<any> {
-    return firstValueFrom(this.http.get<any>(this.apiUrl)
+  getSecuenciaPromise(id: string): Promise<any> {
+    //const params = new HttpParams().set('id', id);
+    return firstValueFrom(this.http.get<any>(`${this.apiUrl}/${id}`)
       .pipe(tap(data => this.logger.log(data))));
   }
 }

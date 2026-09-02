@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 })
 export class AuthService {
   public user: any;
-  public token: string | null = null;
+  public token: string = '';
   public lSucursales: any;
   public sucursalIdSeleccionada: number = 0;
   public sucursalNombreSeleccionada: string = '';
@@ -21,6 +21,7 @@ export class AuthService {
     private readonly ngZone: NgZone
   ) { }
 
+
   // log-in con email y contraseña contra la API REST
   logIn(nombre: string, password: string): Promise<void> {
     return firstValueFrom(
@@ -29,7 +30,7 @@ export class AuthService {
         { nombre, password }
       ))
       .then((response) => {
-        this.user = response.user;
+        this.user = JSON.stringify(response.user);
         this.token = response.token;
         this.lSucursales = response.sucursales;
       })
@@ -42,16 +43,20 @@ export class AuthService {
     this.ngZone.run(() => this.router.navigate(['main']));
   }
 
-  setUserInLocalStorage(): void {
+  setUserDataInLocalStorage(): void {
     localStorage.setItem('user', this.user);
+    localStorage.setItem('token', this.token);
+    localStorage.setItem('sucursalId', this.sucursalIdSeleccionada.toString());
+    localStorage.setItem('sucursalNombre', this.sucursalNombreSeleccionada);
   }
 
   // return true when user is logged in
   get isLoggedIn(): boolean {
-    if (this.router.url === '/' || this.router.url === '/login' || this.router.url === undefined) {
-      localStorage.removeItem('user');
-      return false;
-    }
+    // if (this.router.url === '/' || this.router.url === '/login' || this.router.url === undefined) {
+    //   localStorage.removeItem('user');
+    //   return false;
+    // }
+    //localStorage.removeItem('user');
     const user = JSON.parse(localStorage.getItem('user')!);
     return user !== null;
   }
@@ -61,6 +66,9 @@ export class AuthService {
     return user ?? '';
   }
 
+  getLocalStorageDataByKey(key: string): string | null {
+    return localStorage.getItem(key);
+  }
   // logOut
   logOut(): Promise<void> {
     return firstValueFrom(this.http.post<void>(`${this.apiUrl}/auth/logout`, {}))

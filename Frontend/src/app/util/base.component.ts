@@ -11,7 +11,7 @@ export abstract class BaseComponent {
         this.actualizarTotalesPedidos();
     }
 
-    emailsPermitidos = ['gerencia@doncho.com', 'diza@doncho.com'];
+    emailsPermitidos = ['gerencia', 'diza'];
     totalPedidosFacturados: number = 0;
     totalPedidosNotaventa: number = 0;
 

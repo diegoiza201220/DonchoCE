@@ -106,8 +106,8 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   }
 
   getSecuenciaPromise(): void {
-    this.secuenciaService.getSecuenciaPromise().then(data => {
-      this.lsecuencia = data.facsecuenciadia[0];
+    this.secuenciaService.getSecuenciaPromise(this.authService.getLocalStorageDataByKey('sucursalId')!).then(data => {
+      this.lsecuencia = data.facsecuenciadia;
       let d = new Date();
       this.fechainteger = this.fechaToInteger(d);
       if (this.lsecuencia.fecha !== this.fechainteger) {
@@ -284,6 +284,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.pedido.ImpuestoCodigoPorcentaje = this.codigoIva;
     this.pedido.Cliente = this.cliente;
     this.pedido.ImpuestoPorcentaje = this.impuestoPorcentaje;
+    this.pedido.SucursalId = this.authService.getLocalStorageDataByKey('sucursalId');
     this.logger.log(this.pedido);
     this.loading = true;
     this.ordenesService.addOrden(this.pedido).then((data) => {

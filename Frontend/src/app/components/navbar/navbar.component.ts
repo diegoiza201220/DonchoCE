@@ -11,6 +11,7 @@ export class NavbarComponent extends BaseComponent implements OnInit {
 
   mostrarItems: boolean = false;
   mostrarReportes: boolean = false;
+  sucursalNombre: string = '';
  
   constructor(public override authService: AuthService, 
     public override logger: LoggerService
@@ -20,6 +21,7 @@ export class NavbarComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
    this.configureMenu();
+   this.mostrarSucursalNombre();
   }
 
   logOut(){
@@ -28,6 +30,10 @@ export class NavbarComponent extends BaseComponent implements OnInit {
 
   configureMenu(){
     this.mostrarItems = this.mostrarReportes = this.emailsPermitidos.indexOf(this.authService.userEmail) !== -1;
+  }
 
+  mostrarSucursalNombre(): string {
+    this.sucursalNombre = this.authService.getLocalStorageDataByKey('sucursalNombre')?.replaceAll(' ', '<br>') ?? '';
+    return this.sucursalNombre;
   }
 }

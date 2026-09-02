@@ -32,8 +32,13 @@
       <div class="col-md-12 textoLogin">
         <h1 class="h3 mb-3 fw-normal">Bienvenido a DonCho</h1>
         <h1 class="h5 mb-3 fw-normal">Selecciona tu sucursal de trabajo</h1>
+        <p-dropdown 
+        [options]="sucursales" 
+        (onChange)="onSucursalSelect($event)"
+        optionLabel="nombre"
+        placeholder="Seleccionar Sucursal" />
       </div>
     </div>
-
+    <h1 class="h5 mb-3 fw-normal" *ngIf="mostrarMensajeErrorSucursal" >No tienes SUCURSAL asignada, comunícate con el Administrador</h1>
   </form>
 </div>

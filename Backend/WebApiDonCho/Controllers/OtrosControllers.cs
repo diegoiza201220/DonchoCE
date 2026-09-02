@@ -204,29 +204,26 @@ public class FacSecuenciaDiaController : ControllerBase
     private readonly IUnitOfWork _uow;
     public FacSecuenciaDiaController(IUnitOfWork uow) => _uow = uow;
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        var facsecuenciadia = await _uow.FacSecuenciaDiaR.GetAllAsync();
-        //elapsedMs = watch.ElapsedMilliseconds;
-        //Console.WriteLine($" tiempo CON ALL 02: {elapsedMs}");
-        return Ok(new { facsecuenciadia });
-        //Ok(await _uow.FacSecuenciaDiaR.GetAllAsync());
-    }
-
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var item = await _uow.FacSecuenciaDiaR.GetByIdAsync(id);
-        return item is null ? NotFound() : Ok(item);
+        var facsecuenciadia = await _uow.FacSecuenciaDiaR.GetBySucursalIdAsync(id);
+        return Ok(new { facsecuenciadia });
     }
+
+    //[HttpGet("{id:int}")]
+    //public async Task<IActionResult> GetById(int id)
+    //{
+    //    var item = await _uow.FacSecuenciaDiaR.GetByIdAsync(id);
+    //    return item is null ? NotFound() : Ok(item);
+    //}
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] FacSecuenciaDia item)
     {
         await _uow.FacSecuenciaDiaR.AddAsync(item);
         await _uow.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetById), new { id = item.Id }, item);
+        return CreatedAtAction("GetById", new { id = item.Id }, item);
     }
 }
 
