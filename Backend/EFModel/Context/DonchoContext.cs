@@ -79,6 +79,8 @@ public partial class DonchoContext : DbContext
             entity.Property(e => e.Id)
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
+            entity.Property(e => e.SucursalId).HasColumnName("sucursalid");
+            entity.Property(e => e.DocumentoId).HasColumnName("documentoid");
             entity.Property(e => e.Ambiente).HasColumnName("ambiente");
             entity.Property(e => e.Autorizacion)
                 .HasColumnType("character varying")
@@ -176,6 +178,7 @@ public partial class DonchoContext : DbContext
             entity.Property(e => e.ImpuestoTarifa).HasColumnName("impuesto_tarifa");
             entity.Property(e => e.ImpuestoCodigoPorcentaje).HasColumnName("impuesto_codigo_porcentaje");
             entity.Property(e => e.ImpuestoCodigo).HasColumnName("impuesto_codigo");
+            entity.Property(e => e.SucursalId).HasColumnName("sucursalid");
 
             entity.HasOne(d => d.Orden).WithMany(p => p.FacDetalleOrdens)
                 .HasForeignKey(d => d.Ordenid)

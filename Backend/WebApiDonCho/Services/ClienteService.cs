@@ -42,7 +42,7 @@ namespace WebApiDonCho.Services
 
         public async Task<IEnumerable<RptOrdenesPorFechasDTO>> GetOrdenesPorFechaAsync(RqOrdenesPorFechas rq)
         {
-            var ordenes = await uow.FacOrdenR.GetByFechas(rq.FechaIni, rq.FechaFin);
+            var ordenes = await uow.FacOrdenR.GetByFechas(rq.FechaIni, rq.FechaFin, rq.SucursalId);
 
             return ordenes.Select(o => new RptOrdenesPorFechasDTO
             {
@@ -63,7 +63,7 @@ namespace WebApiDonCho.Services
 
         public async Task<IEnumerable<RptProductosVendidosPorFechasDTO>> GetProductosVendidosPorFechaAsync(RqOrdenesPorFechas rq)
         {
-            return await uow.FacDetalleOrdenR.GetByFechasProductosVendidos(rq.FechaIni, rq.FechaFin);
+            return await uow.FacDetalleOrdenR.GetByFechasProductosVendidos(rq.FechaIni, rq.FechaFin, rq.SucursalId);
         }
     }
 }

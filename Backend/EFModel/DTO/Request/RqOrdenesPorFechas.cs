@@ -10,6 +10,9 @@ namespace EFModel.DTO.Request
         [Required]
         public int FechaFin { get; set; }
 
+        [Required]
+        public int SucursalId { get; set; }
+
     }
 
     public class RqConsultas

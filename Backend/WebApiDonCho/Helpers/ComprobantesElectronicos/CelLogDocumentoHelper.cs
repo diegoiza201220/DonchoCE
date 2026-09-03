@@ -15,7 +15,9 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
                 Autorizacion = ordenDTO.EsNotaCredito ? ordenDTO.NotaCreditoClaveNumeroAutorizacion : ordenDTO.ClaveNumeroAutorizacion,
                 XmlFirmado = string.Empty,
                 Ambiente = 0,
-                TipoEmision = 0
+                TipoEmision = 0,
+                SucursalId = ordenDTO.Sucursalid,
+                DocumentoId = ordenDTO.Id
             };
             return documento;
         }

@@ -3,6 +3,8 @@
 public partial class CelLogDocumento
 {
     public int Id { get; set; }
+    public int SucursalId { get; set; }
+    public int DocumentoId { get; set; }
 
     public int TipoDocumento { get; set; }
 

@@ -24,15 +24,15 @@ public interface IFacOrdenRepository : IRepository<FacOrden>
 {
     Task<FacOrden?> GetWithDetallesAsync(int id);
     Task<IEnumerable<FacOrden>> GetByClienteAsync(int clienteId);
-    Task<IEnumerable<FacOrden>> GetByFechas(int fechaini, int fechafin);
-    Task<IEnumerable<RptFacturasPorFechasDTO>> GetFacturasPorFecha(int fechaini, int fechafin);
-    Task<IEnumerable<RptDocumentosPorFechasDTO>> GetDocumentosPorFecha(int fechaini, int fechafin);
+    Task<IEnumerable<FacOrden>> GetByFechas(int fechaini, int fechafin, int sucursalid);
+    Task<IEnumerable<RptFacturasPorFechasDTO>> GetFacturasPorFecha(int fechaini, int fechafin, int sucursalid);
+    Task<IEnumerable<RptDocumentosPorFechasDTO>> GetDocumentosPorFecha(int fechaini, int fechafin, int sucursalid);
 }
 
 public interface IFacDetalleOrdenRepository : IRepository<FacDetalleOrden>
 {
     Task<IEnumerable<FacDetalleOrden>> GetByOrdenAsync(int ordenId);
-    Task<IEnumerable<RptProductosVendidosPorFechasDTO>> GetByFechasProductosVendidos(int fechaini, int fechafin);
+    Task<IEnumerable<RptProductosVendidosPorFechasDTO>> GetByFechasProductosVendidos(int fechaini, int fechafin, int sucursalid);
 }
 
 //public interface IProductoRepository2 : IRepository<FacProducto> { }
@@ -43,7 +43,7 @@ public interface ICelLogDocumentoRepository : IRepository<CelLogDocumento> { }
 
 public interface ICelSecuenciaSriRepository : IRepository<CelSecuenciaSri>
 {
-    CelSecuenciaSri GetByTipoDocumento(string id);
+    CelSecuenciaSri? GetByTipoDocumento(string id, int sucursalId);
 }
 
 public interface IGenParametroRepository

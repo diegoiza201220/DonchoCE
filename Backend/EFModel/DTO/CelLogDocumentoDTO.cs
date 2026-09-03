@@ -9,6 +9,12 @@ namespace EFModel.DTO
         public int Id { get; set; }
 
         [Required]
+        public int SucursalId { get; set; }
+
+        [Required]
+        public int DocumentoId { get; set; }
+
+        [Required]
         public int TipoDocumento { get; set; }
 
         [Required]

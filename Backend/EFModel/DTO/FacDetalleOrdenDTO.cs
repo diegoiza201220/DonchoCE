@@ -26,5 +26,6 @@ namespace EFModel.DTO
 
         public bool PedidoACocina { get; set; }
         public string Nombre { get; set; } = string.Empty;
+        public int SucursalId { get; set; }
     }
 }

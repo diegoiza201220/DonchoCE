@@ -31,7 +31,8 @@ namespace WebApiDonCho.Services
             }
 
             orden.CodDoc = "01";
-            CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("01");
+            orden.Id = facOrden.Id;
+            CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("01", facOrden.Sucursalid) ?? throw new InvalidOperationException($"Secuencia SRI no encontrada para la sucursal con id: {facOrden.Sucursalid}");
             _ = cache.TryGet(Constantes.CELINFOTRIBUTARIA, out CelInfoTributaria celInfoTributaria);
             InfoTributariaHelper.SetInformacion(orden, facOrden, celInfoTributaria, celSecuenciaSri, esProduccion: false, (int)ComprobantesElectronicos.Enums.CodigoDocumento.Factura);
             CelLogDocumento celLogDocumento = CelLogDocumentoHelper.CrearLogInicial(orden);
@@ -71,7 +72,7 @@ namespace WebApiDonCho.Services
             //}
 
             //orden.CodDoc = "01";
-            CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("03");
+            CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("03",orden.Sucursalid) ?? throw new InvalidOperationException($"Secuencia SRI no encontrada para la sucursal con id: {facOrden.Sucursalid}");
             CelInfoTributaria celInfoTributaria = cache.GetOrCreatePermanent("CELINFOTRIBUTARIA", () => uow.CelInfoTributariaR.GetById(1));
             InfoTributariaHelper.SetInformacion(orden, facOrden, celInfoTributaria, celSecuenciaSri, esProduccion: false, (int)ComprobantesElectronicos.Enums.CodigoDocumento.NotaCredito);
             CelLogDocumento celLogDocumento = CelLogDocumentoHelper.CrearLogInicial(orden);
@@ -95,7 +96,7 @@ namespace WebApiDonCho.Services
 
         public async Task<IEnumerable<RptOrdenesPorFechasDTO>> GetOrdenesPorFechaAsync(RqOrdenesPorFechas rq)
         {
-            var ordenes = await uow.FacOrdenR.GetByFechas(rq.FechaIni, rq.FechaFin);
+            var ordenes = await uow.FacOrdenR.GetByFechas(rq.FechaIni, rq.FechaFin, rq.SucursalId);
             return ordenes.Select(o => new RptOrdenesPorFechasDTO
             {
                 ClienteId = o.Clienteid,
@@ -115,17 +116,17 @@ namespace WebApiDonCho.Services
 
         public async Task<IEnumerable<RptProductosVendidosPorFechasDTO>> GetProductosVendidosPorFechaAsync(RqOrdenesPorFechas rq)
         {
-            return await uow.FacDetalleOrdenR.GetByFechasProductosVendidos(rq.FechaIni, rq.FechaFin);
+            return await uow.FacDetalleOrdenR.GetByFechasProductosVendidos(rq.FechaIni, rq.FechaFin, rq.SucursalId);
         }
 
         public async Task<IEnumerable<RptFacturasPorFechasDTO>> GetFacturasPorFechaAsync(RqOrdenesPorFechas rq)
         {
-            return await uow.FacOrdenR.GetFacturasPorFecha(rq.FechaIni, rq.FechaFin);
+            return await uow.FacOrdenR.GetFacturasPorFecha(rq.FechaIni, rq.FechaFin, rq.SucursalId);
         }
 
         public async Task<IEnumerable<RptDocumentosPorFechasDTO>> GetDocumentosPorFechaAsync(RqOrdenesPorFechas rq)
         {
-            return await uow.FacOrdenR.GetDocumentosPorFecha(rq.FechaIni, rq.FechaFin);
+            return await uow.FacOrdenR.GetDocumentosPorFecha(rq.FechaIni, rq.FechaFin, rq.SucursalId);
         }
     }
 }

@@ -66,21 +66,21 @@ public class FacOrdenRepository(DonchoContext context) : Repository<FacOrden>(co
             .Include(o => o.FacDetalleOrdens)
             .Where(o => o.Clienteid == clienteId)
             .ToListAsync();
-    public async Task<IEnumerable<FacOrden>> GetByFechas(int fechaini, int fechafin)
+    public async Task<IEnumerable<FacOrden>> GetByFechas(int fechaini, int fechafin, int sucursalid)
     => await _dbSet.AsNoTracking()
         .Include(o => o.Cliente)
-        .Where(o => o.FechaInteger >= fechaini && o.FechaInteger <= fechafin)
+        .Where(o => o.FechaInteger >= fechaini && o.FechaInteger <= fechafin && o.Sucursalid == sucursalid)
         .OrderByDescending(o => o.Fecha)
         .ToListAsync();
 
-    public async Task<IEnumerable<RptFacturasPorFechasDTO>> GetFacturasPorFecha(int fechaini, int fechafin)
+    public async Task<IEnumerable<RptFacturasPorFechasDTO>> GetFacturasPorFecha(int fechaini, int fechafin, int sucursalid)
     {
         var resultado = (from o in _context.FacOrden
                          join c in _context.FacCliente
                          on o.Clienteid equals c.Id
                          join l in _context.CelLogDocumento
-                         on o.ClaveNumeroAutorizacion equals l.Autorizacion
-                         where o.FechaInteger >= fechaini && o.FechaInteger <= fechafin
+                         on o.Id equals l.DocumentoId
+                         where o.FechaInteger >= fechaini && o.FechaInteger <= fechafin && o.Sucursalid == sucursalid && l.SucursalId == sucursalid
                          select new RptFacturasPorFechasDTO()
                          {
                              Cliente = $"{c.Nombre} {c.Apellido}",
@@ -102,8 +102,8 @@ public class FacOrdenRepository(DonchoContext context) : Repository<FacOrden>(co
         return resultado;
     }
 
-    public async Task<IEnumerable<RptDocumentosPorFechasDTO>> GetDocumentosPorFecha(int fechaini, int fechafin)
-        => _dbSet.AsNoTracking().Where(x => x.FechaInteger >= fechaini && x.FechaInteger <= fechafin).GroupBy(x => x.EsFactura)
+    public async Task<IEnumerable<RptDocumentosPorFechasDTO>> GetDocumentosPorFecha(int fechaini, int fechafin, int sucursalid)
+        => _dbSet.AsNoTracking().Where(x => x.FechaInteger >= fechaini && x.FechaInteger <= fechafin && x.Sucursalid == sucursalid).GroupBy(x => x.EsFactura)
             .Select(g => new RptDocumentosPorFechasDTO
             {
                 Documento = g.Key ? "Factura" : "Orden",
@@ -120,11 +120,11 @@ public class FacDetalleOrdenRepository(DonchoContext context) : Repository<FacDe
             .Where(d => d.Ordenid == ordenId)
             .ToListAsync();
 
-    public async Task<IEnumerable<RptProductosVendidosPorFechasDTO>> GetByFechasProductosVendidos(int fechaini, int fechafin)
+    public async Task<IEnumerable<RptProductosVendidosPorFechasDTO>> GetByFechasProductosVendidos(int fechaini, int fechafin, int sucursalid)
     {
         var detalles = _dbSet.AsNoTracking()
             .Include(p => p.Producto)
-            .Where(o => o.Orden.FechaInteger >= fechaini && o.Orden.FechaInteger <= fechafin)
+            .Where(o => o.Orden.FechaInteger >= fechaini && o.Orden.FechaInteger <= fechafin && o.SucursalId == sucursalid && o.Orden.Sucursalid == sucursalid)
             .Select(g => new { g.Producto.Nombre, g.Cantidad });
 
         return detalles.GroupBy(c => c.Nombre)
@@ -154,8 +154,8 @@ public class CelLogDocumentoRepository(DonchoContext context) : Repository<CelLo
 // ── CelsecuenciaSri ───────────────────────────────────────────────────────────
 public class CelSecuenciaSriRepository(DonchoContext context) : Repository<CelSecuenciaSri>(context), ICelSecuenciaSriRepository
 {
-    public CelSecuenciaSri GetByTipoDocumento(string id)
-        => _dbSet.AsNoTracking().FirstOrDefault(s => s.TipoDocumento == id);
+    public CelSecuenciaSri? GetByTipoDocumento(string id, int sucursalId)
+        => _dbSet.AsNoTracking().FirstOrDefault(s => s.TipoDocumento == id && s.Sucursalid == sucursalId);
 }
 
 // ── Genparametro (PK es string, repositorio propio) ───────────────────────────

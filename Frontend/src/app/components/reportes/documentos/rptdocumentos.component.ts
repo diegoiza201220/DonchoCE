@@ -43,7 +43,8 @@ export class RptDocumentosComponent extends BaseComponent implements OnInit {
     this.lregistros = [];
     let rqOrdenesPorFechas = {
       FechaIni: this.fechaToInteger(this.d1),
-      FechaFin: this.fechaToInteger(this.d2)
+      FechaFin: this.fechaToInteger(this.d2),
+      SucursalId: this.authService.getLocalStorageDataByKey('sucursalId')
     }
     this.ordenesService.queryDocumentosPorFecha(rqOrdenesPorFechas).then(resp => {
       this.ldata = resp;

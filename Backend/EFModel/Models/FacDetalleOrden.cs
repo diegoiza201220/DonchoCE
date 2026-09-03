@@ -18,6 +18,8 @@ public partial class FacDetalleOrden
     public decimal PrecioTotal { get; set; }
     public bool PedidoACocina { get; set; }
 
+    public int SucursalId { get; set; }
+
     public virtual FacOrden Orden { get; set; } = null!;
 
     public virtual FacProducto Producto { get; set; } = null!;

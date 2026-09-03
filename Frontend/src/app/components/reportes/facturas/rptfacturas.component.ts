@@ -39,7 +39,8 @@ export class RptFacturasComponent extends BaseComponent {
   Buscar() {
     let rqFacturasPorFechas = {
       FechaIni: this.fechaToInteger(this.d1),
-      FechaFin: this.fechaToInteger(this.d2)
+      FechaFin: this.fechaToInteger(this.d2),
+      SucursalId: this.authService.getLocalStorageDataByKey('sucursalId')
     }
     this.ordenesService.queryFacturasPorFecha(rqFacturasPorFechas).then(resp => {
       this.lregistros = resp;

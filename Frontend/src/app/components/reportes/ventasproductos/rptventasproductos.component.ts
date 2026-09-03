@@ -44,7 +44,8 @@ export class RptVentasproductosComponent extends BaseComponent implements OnInit
     this.lregistros = [];
     let rqOrdenesPorFechas = {
       FechaIni: this.fechaToInteger(this.d1),
-      FechaFin: this.fechaToInteger(this.d2)
+      FechaFin: this.fechaToInteger(this.d2),
+      SucursalId: this.authService.getLocalStorageDataByKey('sucursalId')
     }
     this.ordenesService.queryProductosVendidosPorFecha(rqOrdenesPorFechas).then(resp => {
       this.ldata = resp;
