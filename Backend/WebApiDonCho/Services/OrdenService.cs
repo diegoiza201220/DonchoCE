@@ -12,7 +12,7 @@ namespace WebApiDonCho.Services
 {
     public class OrdenService(IUnitOfWork uow, ComprobanteService comprobanteService, ICacheService cache)
     {
-        public async Task<FacOrden> GenerarFacturaAsync(FacOrdenDTO orden)
+        public async Task<FacOrdenDTO> GenerarFacturaAsync(FacOrdenDTO orden)
         {
 
 
@@ -27,7 +27,7 @@ namespace WebApiDonCho.Services
 
             if (!orden.EsFactura) //retornamos desde aquí si no es factura, para evitar el proceso de emisión electrónica y envío de correo
             {
-                return facOrden;
+                return facOrden.ToDTO();
             }
 
             orden.CodDoc = "01";
@@ -41,7 +41,7 @@ namespace WebApiDonCho.Services
             uow.CelSecuenciasSriR.Update(celSecuenciaSri);
             await uow.SaveChangesAsync();
             _ = await comprobanteService.EmitirFacturaAsync(orden, celLogDocumento);
-            return facOrden;
+            return facOrden.ToDTO();
         }
 
         public async Task<FacOrden> GenerarNotaCreditoAsync(FacOrdenDTO orden)

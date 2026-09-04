@@ -8,6 +8,8 @@ namespace EFModel.DTO
 
         [Required]
         public int Clienteid { get; set; }
+        public string clienteNombre { get; set; } = string.Empty;
+        public string clienteRuc { get; set; } = string.Empty;
 
         public int FechaInteger { get; set; }
 
@@ -47,7 +49,8 @@ namespace EFModel.DTO
         public string NombreComercial { get; set; } = string.Empty;
         public string RucDonCho { get; set; } = string.Empty;
         public string Direccionmatriz { get; set; } = string.Empty;
-        public string ContibuyenteRimpe { get; set; } = string.Empty;
+        public string ContribuyenteRimpe { get; set; } = string.Empty;
+        public string ContribuyenteEspecial { get; set; } = string.Empty;
         public string DireccionEstablecimiento { get; set; } = string.Empty;
         public string ObligadoContabilidad { get; set; } = string.Empty;
         public string CodDoc { get; set; } = string.Empty;
@@ -67,6 +70,7 @@ namespace EFModel.DTO
         public FacClienteDTO Cliente { get; set; } = new();
 
         public int Sucursalid { get; set; }
+        public string SucursalNombre { get; set; } = string.Empty;
         public GenSucursalDTO Sucursal { get; set; } = new();
     }
 }

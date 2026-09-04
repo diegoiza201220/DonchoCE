@@ -10,6 +10,7 @@ import { BaseComponent } from 'src/app/util/base.component';
 import { DatePipe } from '@angular/common';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoggerService } from 'src/app/services/logger.service';
+import { PdfPrintService } from 'src/app/services/pdf-print.service';
 
 @Component({
   selector: 'app-pedidos',
@@ -27,8 +28,10 @@ export class PedidosComponent extends BaseComponent implements OnInit {
 
   lsecuencia: Secuencia = { secuencia: 0, id: '', fecha: 0 };
   pedido: any = {};
+  pedidoImpresion: any = {};
   lordencocina: any[] = [];
   mostrarCargar: boolean = true;
+  mostrarImprimir: boolean = false;
   selectedFP: string = "EF";
 
   impuestoPorcentaje = 0;
@@ -56,6 +59,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     private readonly secuenciaService: SecuenciaService,
     private readonly ordenesService: OrdenesService,
     private readonly clientesService: ClientesService,
+    private readonly pdfPrintService: PdfPrintService,
     public override authService: AuthService,
     public override logger: LoggerService
   ) {
@@ -288,9 +292,11 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.logger.log(this.pedido);
     this.loading = true;
     this.ordenesService.addOrden(this.pedido).then((data) => {
-      this.cleanPedidos();
-      this.backToSeleccion();
+      //this.cleanPedidos();
+      //this.backToSeleccion();
+      this.pedidoImpresion = data;
       this.loading = false;
+      this.mostrarImprimir = true;
       this.messageService.add({
         severity: 'success',
         summary: '¡Éxito!',
@@ -301,7 +307,15 @@ export class PedidosComponent extends BaseComponent implements OnInit {
       this.messageService.add({ severity: 'error', summary: 'Ops!! ', detail: 'Error al crear el pedido' });
       this.loading = false;
     });
-    super.actualizarTotalesPedidos();
+    //super.actualizarTotalesPedidos();
+  }
+
+  imprimir(){
+    this.pdfPrintService.imprimirTicket(this.pedidoImpresion).then(() => {
+      //this.mostrarImprimir = false;
+    }).catch((error) => {
+      this.messageService.add({ severity: 'error', summary: 'Ops!! ', detail: 'Error al imprimir el pedido' });
+    });
   }
 
   cleanPedidos() {

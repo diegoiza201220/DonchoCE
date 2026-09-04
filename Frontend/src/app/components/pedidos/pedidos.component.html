@@ -200,6 +200,11 @@
                     Datos Cliente
                 </button>
             </p>
+            <div class="divFlotanteImprimir" *ngIf="mostrarImprimir">
+                <div class="">
+                    <p-button label="Imprimir" [loading]="loading" (onClick)="imprimir()"></p-button>
+                </div>
+            </div>
             <div class="divFlotanteRegresar">
                 <div class="">
                     <p-button label="Regresar" [loading]="loading" (onClick)="activeIndex = 0"></p-button>

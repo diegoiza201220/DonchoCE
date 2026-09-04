@@ -1,6 +1,7 @@
 using EFModel.DTO;
 using EFModel.DTO.Request;
 using EFModel.Interfaces;
+using EFModel.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApiDonCho.Services;
@@ -49,8 +50,8 @@ public class OrdenController(IUnitOfWork uow, OrdenService ordenService, ICacheS
     {
         try
         {
-            var facOrden = await _ordenService.GenerarFacturaAsync(orden);
-            return CreatedAtAction(nameof(GetById), new { id = facOrden.Id }, facOrden);
+            var facOrdenDTO = await _ordenService.GenerarFacturaAsync(orden);
+            return CreatedAtAction(nameof(GetById), new { id = facOrdenDTO.Id }, facOrdenDTO);
         }
         catch (InvalidOperationException ex)
         {

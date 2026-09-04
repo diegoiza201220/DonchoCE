@@ -5,19 +5,19 @@ import { TDocumentDefinitions } from 'pdfmake/interfaces';
 
 (pdfMake as any).addVirtualFileSystem(pdfFonts);
 
-export interface ItemTicket {
-  descripcion: string;
-  cantidad: number;
-  precioUnitario: number;
-}
+// export interface ItemTicket {
+//   descripcion: string;
+//   cantidad: number;
+//   precioUnitario: number;
+// }
 
 @Injectable({ providedIn: 'root' })
 export class PdfPrintService {
 
   /** 80mm en puntos PDF (1mm = 2.8346 pt). Se resta un margen de ~3mm por lado. */
-  private readonly ANCHO_PAGINA_PT = 226.77;
-  private readonly MARGEN_PT = 8;
-
+  private readonly ANCHO_PAGINA_PT = 200; //226.77;
+  private readonly MARGEN_PT = 2;//8;
+orden: any;
   /**
    * Genera el PDF del ticket y dispara el diálogo de impresión del navegador.
    *
@@ -25,24 +25,17 @@ export class PdfPrintService {
    * dentro del mismo gesto de clic del usuario, o el navegador bloqueará
    * el popup. Por eso se abre "en blanco" primero y se le pasa a print().
    */
-  async imprimirTicket(datos: {
-    empresa: string;
-    ruc: string;
-    direccion: string;
-    numeroComprobante: string;
-    fecha: Date;
-    items: ItemTicket[];
-  }): Promise<void> {
+  async imprimirTicket(orden: any): Promise<void> {
+    this.orden = orden;
     // 1. Abrir la ventana YA, de forma síncrona (aún vacía)
     const ventana = window.open('', '_blank');
-
     if (!ventana) {
       // Bloqueado por el navegador: alternativa, forzar descarga
-      await this.descargarTicket(datos);
+      await this.descargarTicket(orden);
       return;
     }
 
-    const definicion = this.construirDefinicionPdf(datos);
+    const definicion = this.construirDefinicionPdf(orden);
 
     try {
       // 2. print() en 0.3.x devuelve una Promise y acepta la ventana ya abierta
@@ -55,176 +48,92 @@ export class PdfPrintService {
   }
 
   /** Solo genera y descarga el PDF, sin abrir el diálogo de impresión */
-  async descargarTicket(datos: Parameters<PdfPrintService['imprimirTicket']>[0]): Promise<void> {
-    const definicion = this.construirDefinicionPdf(datos);
-    await pdfMake.createPdf(definicion).download(`ticket-${datos.numeroComprobante}.pdf`);
+  async descargarTicket(orden: Parameters<PdfPrintService['imprimirTicket']>[0]): Promise<void> {
+    const definicion = this.construirDefinicionPdf(orden);
+    await pdfMake.createPdf(definicion).download(`orden-${orden.FechaInteger}-${orden.secuencial}.pdf`);
   }
 
   // ---------------------------------------------------------------------
   // CONSTRUCCIÓN DEL DOCUMENTO
   // ---------------------------------------------------------------------
 
-  private construirDefinicionPdf(datos: {
-    empresa: string;
-    ruc: string;
-    direccion: string;
-    numeroComprobante: string;
-    fecha: Date;
-    items: ItemTicket[];
-  }): TDocumentDefinitions {
+  private construirDefinicionPdf(orden: any): TDocumentDefinitions {
 
-    const filasItems = datos.items.map(item => {
-      const subtotal = item.cantidad * item.precioUnitario;
+    const filasItems = orden.facDetalleOrdens.map((item: any) => {
+      //const subtotal = item.Cantidad * item.PrecioUnitario;
       return [
-        { text: item.descripcion, fontSize: 7, border: [false, false, false, false] },
-        { text: item.cantidad.toString(), fontSize: 7, alignment: 'center', border: [false, false, false, false] },
-        { text: `$${item.precioUnitario.toFixed(2)}`, fontSize: 7, alignment: 'right', border: [false, false, false, false] },
-        { text: `$${subtotal.toFixed(2)}`, fontSize: 7, alignment: 'right', border: [false, false, false, false] },
+        { text: 'item.nombre', fontSize: 9, border: [false, false, false, false] },
+        { text: item.cantidad.toString(), fontSize: 9, alignment: 'center', border: [false, false, false, false] },
+        { text: `$${item.precioUnitario.toFixed(2)}`, fontSize: 9, alignment: 'right', border: [false, false, false, false] },
+        { text: `$${item.precioTotal.toFixed(2)}`, fontSize: 9, alignment: 'right', border: [false, false, false, false] },
       ];
     });
 
-    const total = datos.items.reduce((acc, i) => acc + i.cantidad * i.precioUnitario, 0);
+    //const total = orden.detalle.reduce((acc: number, i: any) => acc + i.cantidad * i.precioUnitario, 0);
 
     return {
       pageSize: {
         width: this.ANCHO_PAGINA_PT,
-        // Alto dinámico: pdfmake soporta 'auto' vía height grande + margen ajustado,
-        // aquí usamos un alto generoso ya que la impresora corta según el contenido real.
         height: 'auto' as any
       },
       pageMargins: [this.MARGEN_PT, this.MARGEN_PT, this.MARGEN_PT, this.MARGEN_PT],
 
       content: [
-        { text: datos.empresa, style: 'encabezado', alignment: 'center' },
-        { text: `RUC: ${datos.ruc}`, style: 'textoChico', alignment: 'center' },
-        { text: datos.direccion, style: 'textoChico', alignment: 'center' },
+        { text: 'orden.nombreComercial', style: 'encabezado', alignment: 'center' },
+        { text: 'orden.razonSocial', style: 'encabezado', alignment: 'center' },
+        { text: `RUC: ${orden.rucDonCho}`, style: 'textoChico', alignment: 'center' },
+        { text: `Matriz: ${orden.direccionmatriz}`, style: 'textoChico', alignment: 'center' },
+        { text: `CONTRIBUYENTE ESPECIAL: ${orden.contribuyenteEspecial}`, style: 'textoChico', alignment: 'center' },
         { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
+        { text: orden.sucursalNombre, style: 'textoChico', alignment: 'center' },
+        { text: '', style: 'textoChico', alignment: 'center' }, //Linea en blanco
+        { text: `Fact.Elect: ${orden.establecimiento}-${orden.PuntoEmision}-${orden.NumeroFactura}`, style: 'textoChico' },
+        { text: `Clav.Acces: ${orden.claveNumeroAutorizacion}`, style: 'textoChico' },
+        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
+        { text: `Nombre: ${orden.clienteNombre}`, style: 'textoChico' },
+        { text: `CI/RUC: ${orden.clienteRuc}`, style: 'textoChico' },
+        { text: `Fecha Emisión: ${orden.fecha}`, style: 'textoChico' },
+        { text: `Orden: ${orden.fechaInteger}--${orden.secuencial}`, style: 'textoChico' },
+        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
+        // { text: `DESCRIPCIÓN                    CANT.     P.UNIT      P.TOTAL`, style: 'textoChico' },
+        {
+          table: {
+            widths: ['*', 20, 35, 40],
+            body: [
+              [
+                { text: 'Desc.', fontSize: 10, bold: true, border: [false, false, false, true] },
+                { text: 'Cant', fontSize: 10, bold: true, alignment: 'center', border: [false, false, false, true] },
+                { text: 'P.Uni.', fontSize: 10, bold: true, alignment: 'right', border: [false, false, false, true] },
+                { text: 'P.Tot.', fontSize: 10, bold: true, alignment: 'right', border: [false, false, false, true] },
+              ],
+              ...filasItems
+            ]
+          },
+          layout: 'noBorders'
+        },
 
-        { text: `Comprobante: ${datos.numeroComprobante}`, style: 'textoChico' },
-        { text: `Fecha: ${datos.fecha.toLocaleString('es-EC')}`, style: 'textoChico', margin: [0, 0, 0, 6] },
 
-        // {
-        //   table: {
-        //     widths: ['*', 20, 35, 40],
-        //     body: [
-        //       [
-        //         { text: 'Desc.', fontSize: 7, bold: true, border: [false, false, false, true] },
-        //         { text: 'Cant', fontSize: 7, bold: true, alignment: 'center', border: [false, false, false, true] },
-        //         { text: 'P.U.', fontSize: 7, bold: true, alignment: 'right', border: [false, false, false, true] },
-        //         { text: 'Subt.', fontSize: 7, bold: true, alignment: 'right', border: [false, false, false, true] },
-        //       ],
-        //       ...filasItems
-        //     ]
-        //   },
-        //   layout: 'noBorders'
-        // },
+        // { text: `Fecha: ${orden.fecha.toLocaleString('es-EC')}`, style: 'textoChico', margin: [0, 0, 0, 6] },
 
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
+        // { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
+        { text: `Subtotal: $${orden.totalSinImpuestos.toFixed(2)}`, style: 'total', alignment: 'right' },
+        { text: `Base ${orden.impuestoPorcentaje}%: $${orden.impuestoBaseImponible.toFixed(2)}`, style: 'total', alignment: 'right' },
+        { text: `Impuesto ${orden.impuestoPorcentaje}%: $${orden.impuestoValor.toFixed(2)}`, style: 'total', alignment: 'right' },
+        { text: `Total: $${orden.totalOrden.toFixed(2)}`, style: 'total', alignment: 'right' },
         { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
         { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
-                { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: `TOTAL: $${total.toFixed(2)}`, style: 'total', alignment: 'right' },
-        { text: '--------------------------------', alignment: 'center', fontSize: 7, margin: [0, 4, 0, 4] },
-        { text: '¡Gracias por su compra!', alignment: 'center', fontSize: 7, margin: [0, 6, 0, 0] },
+
+        // (el resto del contenido repetido se mantiene igual)
       ],
 
       styles: {
-        encabezado: { fontSize: 10, bold: true, margin: [0, 0, 0, 2] },
-        textoChico: { fontSize: 7 },
-        total: { fontSize: 9, bold: true }
+        encabezado: { fontSize: 12, bold: true, margin: [0, 0, 0, 2] },
+        textoChico: { fontSize: 10 },
+        total: { fontSize: 10, bold: false }
       },
 
       defaultStyle: {
-        fontSize: 7
+        fontSize: 10
       }
     };
   }

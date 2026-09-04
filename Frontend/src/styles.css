@@ -145,6 +145,12 @@ button {
     bottom: 140px;
 }
 
+.divFlotanteImprimir{
+    position: fixed;
+    right: 50px;
+    bottom: 230px;
+}
+
 .divLogin{
     display: flex;
     width: 100vw;
