@@ -36,6 +36,7 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
             ordenDTO.RucDonCho = celInfoTributaria.Ruc;
             ordenDTO.Direccionmatriz = celInfoTributaria.DireccionMatriz;
             ordenDTO.ContribuyenteRimpe = celInfoTributaria.ContribuyenteRimpe;
+            ordenDTO.ContribuyenteEspecial = celInfoTributaria.ContribuyenteEspecial;
             ordenDTO.DireccionEstablecimiento = celInfoTributaria.DireccionMatriz;
             ordenDTO.ObligadoContabilidad = celInfoTributaria.ObligadoContabilidad ? "SI" : "NO";
         }

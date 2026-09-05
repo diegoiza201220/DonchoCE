@@ -12,42 +12,44 @@ namespace WebApiDonCho.Services
 {
     public class OrdenService(IUnitOfWork uow, ComprobanteService comprobanteService, ICacheService cache)
     {
-        public async Task<FacOrdenDTO> GenerarFacturaAsync(FacOrdenDTO orden)
+        public async Task<FacOrdenDTO> GenerarFacturaAsync(FacOrdenDTO facOrdenDTO)
         {
 
 
-            var facOrden = orden.FromDTO();
+            var facOrden = facOrdenDTO.FromDTO();
             var secuencia = await uow.FacSecuenciaDiaR.GetBySucursalIdAsync(facOrden.Sucursalid) ?? throw new InvalidOperationException("No existe registro de secuencia del día.");
 
-            ActualizarSecuenciaOrdenesDiaria(secuencia, orden.FechaInteger);
+            ActualizarSecuenciaOrdenesDiaria(secuencia, facOrdenDTO.FechaInteger);
 
             uow.FacSecuenciaDiaR.Update(secuencia);
             await uow.FacOrdenR.AddAsync(facOrden);
             await uow.SaveChangesAsync();
-            
-            if (!orden.EsFactura) //retornamos desde aquí si no es factura, para evitar el proceso de emisión electrónica y envío de correo
-            {
-                _ = cache.TryGet(Constantes.CELINFOTRIBUTARIA, out CelInfoTributaria celInfoTributariaNotaVenta);
-                FacOrdenDTO facOrdenDTO = facOrden.ToDTO();
-                CompletarInformacionDetalleOrden(facOrdenDTO);
-                facOrdenDTO.NombreComercial = celInfoTributariaNotaVenta.NombreComercial;
-                facOrdenDTO.SucursalNombre = uow.GenSucursalR.GetById(facOrdenDTO.Sucursalid).Nombre;
 
+            facOrdenDTO = facOrden.ToDTO();
+            CompletarInformacionDetalleOrden(facOrdenDTO);
+            CompletarInformaciónCliente(facOrdenDTO);
+            CompletarInformacionTributaria(facOrdenDTO);
+
+            if (!facOrdenDTO.EsFactura) //retornamos desde aquí si no es factura, para evitar el proceso de emisión electrónica y envío de correo
+            {
                 return facOrdenDTO;
             }
 
-            orden.CodDoc = "01";
-            orden.Id = facOrden.Id;
+            facOrdenDTO.CodDoc = "01";
             CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("01", facOrden.Sucursalid) ?? throw new InvalidOperationException($"Secuencia SRI no encontrada para la sucursal con id: {facOrden.Sucursalid}");
             _ = cache.TryGet(Constantes.CELINFOTRIBUTARIA, out CelInfoTributaria celInfoTributaria);
-            InfoTributariaHelper.SetInformacion(orden, facOrden, celInfoTributaria, celSecuenciaSri, esProduccion: false, (int)ComprobantesElectronicos.Enums.CodigoDocumento.Factura);
-            CelLogDocumento celLogDocumento = CelLogDocumentoHelper.CrearLogInicial(orden);
+            InfoTributariaHelper.SetInformacion(facOrdenDTO, facOrden, celInfoTributaria, celSecuenciaSri, esProduccion: false, (int)ComprobantesElectronicos.Enums.CodigoDocumento.Factura);
+            CelLogDocumento celLogDocumento = CelLogDocumentoHelper.CrearLogInicial(facOrdenDTO);
             await uow.CelLogDocumentoR.AddAsync(celLogDocumento);
             celSecuenciaSri.SecuenciaActual++;
             uow.CelSecuenciasSriR.Update(celSecuenciaSri);
             await uow.SaveChangesAsync();
-            _ = await comprobanteService.EmitirFacturaAsync(orden, celLogDocumento);
-            return facOrden.ToDTO();
+
+            _ = await comprobanteService.EmitirFacturaAsync(facOrdenDTO, celLogDocumento);
+            //CompletarInformacionDetalleOrden(facOrdenDTO);
+            //CompletarInformaciónCliente(facOrdenDTO);
+            //CompletarInformacionTributaria(facOrdenDTO);
+            return facOrdenDTO;
         }
 
         private void CompletarInformacionDetalleOrden(FacOrdenDTO facOrdenDTO)
@@ -61,16 +63,25 @@ namespace WebApiDonCho.Services
                     detalle.Nombre = producto.Producto.Nombre;
                 }
             }
+        }
 
+        private void CompletarInformaciónCliente(FacOrdenDTO facOrdenDTO)
+        {
             var cliente = uow.FacClienteR.GetByIdAsync(facOrdenDTO.Clienteid).Result;
             if (cliente != null)
             {
+                facOrdenDTO.Cliente = cliente.ToDTO();
                 facOrdenDTO.clienteNombre = $"{cliente.Nombre} {cliente.Apellido}";
                 facOrdenDTO.clienteRuc = cliente.CedulaRuc;
             }
-
         }
 
+        private void CompletarInformacionTributaria(FacOrdenDTO facOrdenDTO)
+        {
+            _ = cache.TryGet(Constantes.CELINFOTRIBUTARIA, out CelInfoTributaria celInfoTributariaNotaVenta);
+            facOrdenDTO.NombreComercial = celInfoTributariaNotaVenta.NombreComercial;
+            facOrdenDTO.SucursalNombre = uow.GenSucursalR.GetById(facOrdenDTO.Sucursalid).Nombre;
+        }
         public async Task<FacOrden> GenerarNotaCreditoAsync(FacOrdenDTO orden)
         {
             if (!orden.EsFactura) //retornamos desde aquí si no es factura, para evitar el proceso de emisión electrónica y envío de correo

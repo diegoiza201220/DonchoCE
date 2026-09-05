@@ -168,7 +168,7 @@ namespace ComprobantesElectronicos.Utils
                                 codigoPorcentaje = item.ImpuestoCodigoPorcentaje ,   // IVA 15% Ecuador
                                 tarifa           = item.ImpuestoTarifa,
                                 baseImponible    = item.PrecioTotal, //item.PrecioTotal,
-                                valor            = item.ImpuestoValorTotal //item.ImpuestoValorTotal
+                                valor            = item.ImpuestoValorUnitario //item.ImpuestoValorTotal
                             }
                     ]
                 });

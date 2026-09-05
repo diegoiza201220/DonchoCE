@@ -32,6 +32,7 @@ public class ComprobanteService(SriService sriService, InfowareFirmaService info
 
             if (!respuestaRecepcion.FueRecibida)
             {
+                celLogDocumento.XmlFirmado = xmlFirmado;
                 SetInformacionCelLogDocumento(celLogDocumento, estado: 1, string.Join("; ", respuestaRecepcion.Mensajes.Select(m => m.Mensaje)));// estado 1 error en recepción
                 await uow.SaveChangesAsync();
                 return new ResultadoEmisionDTO
@@ -48,6 +49,7 @@ public class ComprobanteService(SriService sriService, InfowareFirmaService info
 
             if (!respuestaAutorizacion.FueAutorizado)
             {
+                celLogDocumento.XmlFirmado = xmlFirmado;
                 SetInformacionCelLogDocumento(celLogDocumento, estado: 2, string.Join("; ", respuestaRecepcion.Mensajes.Select(m => m.Mensaje)));// estado 2 error en autorización
                 await uow.SaveChangesAsync();
                 return new ResultadoEmisionDTO
