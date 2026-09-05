@@ -24,10 +24,16 @@ namespace WebApiDonCho.Services
             uow.FacSecuenciaDiaR.Update(secuencia);
             await uow.FacOrdenR.AddAsync(facOrden);
             await uow.SaveChangesAsync();
-
+            
             if (!orden.EsFactura) //retornamos desde aquí si no es factura, para evitar el proceso de emisión electrónica y envío de correo
             {
-                return facOrden.ToDTO();
+                _ = cache.TryGet(Constantes.CELINFOTRIBUTARIA, out CelInfoTributaria celInfoTributariaNotaVenta);
+                FacOrdenDTO facOrdenDTO = facOrden.ToDTO();
+                CompletarInformacionDetalleOrden(facOrdenDTO);
+                facOrdenDTO.NombreComercial = celInfoTributariaNotaVenta.NombreComercial;
+                facOrdenDTO.SucursalNombre = uow.GenSucursalR.GetById(facOrdenDTO.Sucursalid).Nombre;
+
+                return facOrdenDTO;
             }
 
             orden.CodDoc = "01";
@@ -42,6 +48,27 @@ namespace WebApiDonCho.Services
             await uow.SaveChangesAsync();
             _ = await comprobanteService.EmitirFacturaAsync(orden, celLogDocumento);
             return facOrden.ToDTO();
+        }
+
+        private void CompletarInformacionDetalleOrden(FacOrdenDTO facOrdenDTO)
+        {
+            var productos = uow.FacDetalleOrdenR.GetByOrdenAsync(facOrdenDTO.Id).Result;
+            foreach (var detalle in facOrdenDTO.FacDetalleOrdens)
+            {
+                var producto = productos.FirstOrDefault(p => p.Productoid == detalle.ProductoId);
+                if (producto != null)
+                {
+                    detalle.Nombre = producto.Producto.Nombre;
+                }
+            }
+
+            var cliente = uow.FacClienteR.GetByIdAsync(facOrdenDTO.Clienteid).Result;
+            if (cliente != null)
+            {
+                facOrdenDTO.clienteNombre = $"{cliente.Nombre} {cliente.Apellido}";
+                facOrdenDTO.clienteRuc = cliente.CedulaRuc;
+            }
+
         }
 
         public async Task<FacOrden> GenerarNotaCreditoAsync(FacOrdenDTO orden)

@@ -32,6 +32,9 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   lordencocina: any[] = [];
   mostrarCargar: boolean = true;
   mostrarImprimir: boolean = false;
+  mostrarRegresar: boolean = true;
+  mostrarGrabar: boolean = true;
+  mostrarNuevaOrden: boolean = false
   selectedFP: string = "EF";
 
   impuestoPorcentaje = 0;
@@ -226,7 +229,8 @@ export class PedidosComponent extends BaseComponent implements OnInit {
           ImpuestoCodigo: 2,
           ImpuestoCodigoPorcentaje: this.codigoIva,
           ImpuestoTarifa: this.impuestoPorcentaje,
-          ImpuestoValor: this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2),
+          ImpuestoValorUnitario: this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2),
+          ImpuestoValorTotal: this.redondear(element.badge * this.redondear(element.valorsiniva * this.impuestoPorcentaje /100, 2), 2),
           PrecioTotal: element.badge * element.valorsiniva,
           PedidoACocina: element.pedidoacocina,
           ValorIva: this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2),
@@ -246,6 +250,15 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.cambio = this.pago - this.pedido.TotalOrden;
   }
 
+  nuevaOrden() {
+    this.cleanPedidos();
+    this.backToSeleccion();
+    this.mostrarImprimir = false;
+    this.mostrarGrabar = true;
+    this.mostrarNuevaOrden = false;
+    this.mostrarRegresar = true;
+  }
+
   grabarOrden() {
     if (this.activeIndex != 1) return;
 
@@ -259,7 +272,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
       return;
     }
 
-    if (!this.pedido.esFactura) {
+    if (!this.pedido.esFactura && (this.cliente.id === null || this.cliente.id === undefined)) {
       this.cliente.id = 1;
       this.cliente.nombre = 'Consumidor final';
       this.cliente.apellido = '';
@@ -297,6 +310,9 @@ export class PedidosComponent extends BaseComponent implements OnInit {
       this.pedidoImpresion = data;
       this.loading = false;
       this.mostrarImprimir = true;
+      this.mostrarGrabar = false;
+      this.mostrarNuevaOrden = true;
+      this.mostrarRegresar = false;
       this.messageService.add({
         severity: 'success',
         summary: '¡Éxito!',

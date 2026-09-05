@@ -174,7 +174,8 @@ public partial class DonchoContext : DbContext
             entity.Property(e => e.PrecioTotal).HasColumnName("precio_total");
             entity.Property(e => e.PrecioUnitario).HasColumnName("precio_unitario");
             entity.Property(e => e.Productoid).HasColumnName("productoid");
-            entity.Property(e => e.ImpuestoValor).HasColumnName("impuesto_valor");
+            entity.Property(e => e.ImpuestoValorUnitario).HasColumnName("impuesto_valor_unitario");
+            entity.Property(e => e.ImpuestoValorTotal).HasColumnName("impuesto_valor_total");
             entity.Property(e => e.ImpuestoTarifa).HasColumnName("impuesto_tarifa");
             entity.Property(e => e.ImpuestoCodigoPorcentaje).HasColumnName("impuesto_codigo_porcentaje");
             entity.Property(e => e.ImpuestoCodigo).HasColumnName("impuesto_codigo");

@@ -11,7 +11,8 @@ public partial class FacDetalleOrden
     public short Cantidad { get; set; }
 
     public decimal PrecioUnitario { get; set; }
-    public decimal ImpuestoValor { get; set; }
+    public decimal ImpuestoValorUnitario { get; set; }
+    public decimal ImpuestoValorTotal { get; set; }
     public decimal ImpuestoTarifa { get; set; }
     public short ImpuestoCodigo { get; set; }
     public short ImpuestoCodigoPorcentaje { get; set; }

@@ -205,14 +205,17 @@
                     <p-button label="Imprimir" [loading]="loading" (onClick)="imprimir()"></p-button>
                 </div>
             </div>
-            <div class="divFlotanteRegresar">
+            <div class="divFlotanteRegresar" *ngIf="mostrarRegresar">
                 <div class="">
                     <p-button label="Regresar" [loading]="loading" (onClick)="activeIndex = 0"></p-button>
                 </div>
             </div>
             <div class="divFlotanteGrabarContinuar">
-                <div class="">
+                <div class="" *ngIf="mostrarGrabar">
                     <p-button label="Grabar" [loading]="loading" (onClick)="grabarOrden()"></p-button>
+                </div>
+                <div class="" *ngIf="mostrarNuevaOrden">
+                    <p-button label="Nueva Orden" [loading]="loading" (onClick)="nuevaOrden()"></p-button>
                 </div>
             </div>
         </p-tabPanel>

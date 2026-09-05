@@ -41,7 +41,8 @@ namespace EFModel.Mappers
                     Productoid = d.ProductoId,
                     ImpuestoCodigoPorcentaje = d.ImpuestoCodigoPorcentaje,
                     ImpuestoTarifa = d.ImpuestoTarifa,
-                    ImpuestoValor = d.ImpuestoValor
+                    ImpuestoValorUnitario = d.ImpuestoValorUnitario,
+                    ImpuestoValorTotal = d.ImpuestoValorTotal
                 })]
             };
         }
@@ -50,6 +51,7 @@ namespace EFModel.Mappers
         {
             return new FacOrdenDTO
             {
+                Id = orden.Id,
                 Clienteid = orden.Clienteid,
                 Sucursalid = orden.Sucursalid,
                 FechaInteger = orden.FechaInteger,
@@ -82,7 +84,8 @@ namespace EFModel.Mappers
                     ProductoId = d.Productoid,
                     ImpuestoCodigoPorcentaje = d.ImpuestoCodigoPorcentaje,
                     ImpuestoTarifa = d.ImpuestoTarifa,
-                    ImpuestoValor = d.ImpuestoValor,
+                    ImpuestoValorUnitario = d.ImpuestoValorUnitario,
+                    ImpuestoValorTotal = d.ImpuestoValorTotal,
                     Nombre = d.Producto?.Nombre ?? ""
                 })]
             };
