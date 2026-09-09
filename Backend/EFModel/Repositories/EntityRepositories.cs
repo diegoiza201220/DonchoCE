@@ -39,15 +39,17 @@ public class FacProductoRepository(DonchoContext context) : Repository<FacProduc
 
     public async new Task<IEnumerable<FacProducto>> GetAllAsync() => await _dbSet.ToListAsync();
 
-    public IEnumerable<FacProducto> GetAll() => [.. _dbSet];
-
+    public IEnumerable<FacProducto> GetAll()
+    {   //[.. _dbSet];
+        return _dbSet.OrderBy(p => p.Grupo).ThenBy(p => p.OrdenAparicion);
+    }
     public IEnumerable<FacProductoDTO> GetAllDto()
     {
         var resultado = (from p in _context.FacProducto
                          join d in _context.GenCatalogoDetalle
                          on p.CodigoIva equals d.Id
-                         select new FacProductoDTO() { Activo = p.Activo, CodigoIva = p.CodigoIva, Grupo = p.Grupo, Id = p.Id, IvaTarifa = d.Codigo, IvaValor = p.Valor * Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100, Nombre = p.Nombre, OrdenAparicion = p.OrdenAparicion, PedidoACocina = p.PedidoACocina, Valor = p.Valor, ValorDoncho = p.ValorDoncho, ValorTotal = p.Valor + p.Valor * Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100 }
-                             ).ToList().OrderByDescending(o => o.Nombre);
+                         select new FacProductoDTO() { Activo = p.Activo, CodigoIva = p.CodigoIva, Grupo = p.Grupo, Id = p.Id, IvaTarifa = d.Codigo, IvaValor = Math.Round(p.Valor * Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100, 2), Nombre = p.Nombre, OrdenAparicion = p.OrdenAparicion, PedidoACocina = p.PedidoACocina, Valor = p.Valor, ValorDoncho = p.ValorDoncho, ValorTotal = Math.Round( p.Valor + Math.Round(p.Valor * Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100, 2),2) }
+                             ).ToList().OrderBy(o => o.Grupo).ThenBy(o => o.OrdenAparicion);
         return resultado;
     }
 }

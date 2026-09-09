@@ -14,7 +14,7 @@ namespace WebApiDonCho.Services
             try
             {
                 bool esFeriado = unitOfWork.GenFeriadoR.GetByFecha(DateTime.Now.ToIntFecha());
-                var lproductos = unitOfWork.FacProductoR.GetAll();
+                //var lproductos = unitOfWork.FacProductoR.GetAll();
                 string parametroIvaDefault = unitOfWork.GenParametroR.GetById(Constantes.ID_CAT_DETALLE_IVA_DEFAULT).Valor;
                 string parametroIvaFeriados = unitOfWork.GenParametroR.GetById(Constantes.ID_CAT_DETALLE_IVA_FERIADOS).Valor;
                 GenCatalogoDetalle CdIvaDefault = unitOfWork.GenCatalogoDetalleR.GetById(int.Parse(parametroIvaDefault));
@@ -25,12 +25,12 @@ namespace WebApiDonCho.Services
                 decimal denom = esFeriado ? 1 + (decimal.Parse(porcentajeIvaFeriado) / 100) : 1 + (decimal.Parse(porcentajeIvaDefault) / 100);
                 int idCatDetalleIva = esFeriado ? int.Parse(parametroIvaFeriados) : int.Parse(parametroIvaDefault);
 
-                foreach (FacProducto lproducto in lproductos)
-                {
-                    lproducto.Valor = Math.Round(lproducto.ValorDoncho / denom, 2);
-                    lproducto.CodigoIva = idCatDetalleIva;
-                    unitOfWork.FacProductoR.Update(lproducto);
-                }
+                //foreach (FacProducto lproducto in lproductos)
+                //{
+                //    lproducto.Valor = Math.Round(lproducto.ValorDoncho / denom, 2);
+                //    lproducto.CodigoIva = idCatDetalleIva;
+                //    unitOfWork.FacProductoR.Update(lproducto);
+                //}
                 var productos = unitOfWork.FacProductoR.GetAllDto();
                 cache.SetPermanent(Constantes.PRODUCTOS_ALL, productos);
                 cache.SetPermanent(Constantes.ES_FERIADO, esFeriado);

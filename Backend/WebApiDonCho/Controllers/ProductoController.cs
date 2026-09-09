@@ -17,6 +17,7 @@ public class ProductoController(IUnitOfWork uow, ICacheService cache) : Controll
     public async Task<IActionResult> GetAll()
     {
         _ = cache.TryGet<IEnumerable<FacProductoDTO>>("PRODUCTOS_ALL", out var productos);
+        //productos = productos.OrderBy(p => p.Grupo).ThenBy(p => p.OrdenAparicion);
         return Ok(new { productos });
     }
 
@@ -65,7 +66,7 @@ public class ProductoController(IUnitOfWork uow, ICacheService cache) : Controll
 
     private async Task CargarItemsEnCacheAsync()
     {
-        var productos = await uow.FacProductoR.GetAllDtoAsync();
+        var productos = uow.FacProductoR.GetAllDto();
         cache.SetPermanent("PRODUCTOS_ALL", productos);
     }
 }

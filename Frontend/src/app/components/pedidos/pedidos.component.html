@@ -122,7 +122,7 @@
                     <tr>
                         <td>{{ producto.Cantidad }}</td>
                         <td>{{ producto.Nombre }}</td>
-                        <td>{{ producto.PrecioUnitario | currency:'USD':'symbol'}}</td>
+                        <td>{{ producto.PrecioUnitario }}</td>
                         <td>{{ producto.PrecioTotal | currency:'USD':'symbol'}}</td>
                         <td>{{ producto.PrecioUnitarioDoncho | currency:'USD':'symbol'}}</td>
                         <td>{{ producto.PrecioTotalDoncho | currency:'USD':'symbol'}}</td>
@@ -195,11 +195,18 @@
                         aria-label="Username" aria-describedby="basic-addon1">
                 </div>
             </div>
-            <p>
-                <button class="btn btn-primary" type="button" (click)="openClienteDialog()">
-                    Datos Cliente
-                </button>
-            </p>
+            <div class="form-group row">
+                <div *ngIf="mostrarInfoCliente">
+                    <h4>Cliente: {{ cliente.nombre }} {{ cliente.apellido }} &nbsp;--&nbsp; CI/Ruc : {{
+                        cliente.cedulaRuc }} </h4>
+                </div>
+                <p>
+                    <button class="btn btn-primary" type="button" (click)="openClienteDialog()">
+                        Datos Cliente
+                    </button>
+                </p>
+
+            </div>
             <div class="divFlotanteImprimir" *ngIf="mostrarImprimir">
                 <div class="">
                     <p-button label="Imprimir" [loading]="loading" (onClick)="imprimir()"></p-button>
@@ -223,58 +230,44 @@
 
 </div>
 
-<p-dialog [(visible)]="clienteDialog" [style]="{width: '450px'}" header="Detalles del cliente" [modal]="true"
-    styleClass="p-fluid">
+<p-dialog [(visible)]="clienteDialog" [style]="{width: '450px'}" header="Datos del cliente" [modal]="true"
+    styleClass="p-fluid" [closable]="false" [resizable]="false">
     <ng-template pTemplate="content">
-        <div class="p-field">
-            <label for="cedula_ruc" class="col-sm-2 col-form-label">Ruc/Cédula</label>
+        <div class="p-field col-sm-12">
+            <label for="cedula_ruc" class="col-sm-6 col-form-label">Ruc/Cédula</label>
             <div class="col-sm-6">
                 <input type="text" id="cedula_ruc" class="form-control" [(ngModel)]="cliente.cedulaRuc"
-                    aria-describedby="basic-addon1">
-                <p-button label="Search" icon="pi pi-check" *ngIf="!clienteEncontrado" [loading]="searchingCliente"
-                    (onClick)="searchCliente()" />
+                    aria-describedby="basic-addon1" autocomplete="off">
+                <p-button label="Buscar cliente" *ngIf="!clienteEncontrado" [loading]="searchingCliente"
+                    (onClick)="searchCliente()" [rounded]="true" />
             </div>
         </div>
-        <div class="p-field">
-            <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
-            <div class="col-sm-6">
+        <div class="p-field col-sm-40">
+            <label for="nombre" class="col-sm-12 col-form-label">Nombre</label>
+            <div class="col-sm-28">
                 <input type="text" id="nombre" class="form-control" [(ngModel)]="cliente.nombre"
-                    aria-describedby="basic-addon1">
+                    aria-describedby="basic-addon1" autocomplete="off">
             </div>
         </div>
-        <div class="p-field">
-            <label for="apellido" class="col-sm-2 col-form-label">Apellido</label>
-            <div class="col-sm-6">
+        <div class="p-field col-sm-40">
+            <label for="apellido" class="col-sm-12 col-form-label">Apellido</label>
+            <div class="col-sm-28">
                 <input type="text" id="apellido" class="form-control" [(ngModel)]="cliente.apellido"
-                    aria-describedby="basic-addon1">
+                    aria-describedby="basic-addon1" autocomplete="off">
             </div>
         </div>
-        <div class="p-field">
-            <label for="telefono_celular" class="col-sm-2 col-form-label">Teléfono Celular</label>
-            <div class="col-sm-6">
-                <input type="text" id="telefono_celular" class="form-control" [(ngModel)]="cliente.telefono_celular"
-                    aria-describedby="basic-addon1">
+        <div class="p-field col-sm-40">
+            <label for="telefonoCelular" class="col-sm-12 col-form-label">Teléfono</label>
+            <div class="col-sm-28">
+                <input type="text" id="telefonoCelular" class="form-control" [(ngModel)]="cliente.telefonoCelular"
+                    aria-describedby="basic-addon1" autocomplete="off">
             </div>
         </div>
-        <div class="p-field">
-            <label for="email" class="col-sm-2 col-form-label">Email</label>
-            <div class="col-sm-6">
+        <div class="p-field col-sm-40">
+            <label for="email" class="col-sm-12 col-form-label">Email</label>
+            <div class="col-sm-28">
                 <input type="text" id="email" class="form-control" [(ngModel)]="cliente.email"
-                    aria-describedby="basic-addon1">
-            </div>
-        </div>
-        <div class="p-field">
-            <label for="direccion" class="col-sm-2 col-form-label">Dirección</label>
-            <div class="col-sm-6">
-                <input type="text" id="direccion" class="form-control" [(ngModel)]="cliente.direccion"
-                    aria-describedby="basic-addon1">
-            </div>
-        </div>
-        <div class="p-field">
-            <label for="fecha_cumpleanios" class="col-sm-2 col-form-label">Fecha de Cumpleaños</label>
-            <div class="col-sm-6">
-                <input type="text" id="fecha_cumpleanios" class="form-control" [(ngModel)]="cliente.fecha_cumpleanios"
-                    aria-describedby="basic-addon1">
+                    aria-describedby="basic-addon1" autocomplete="off">
             </div>
         </div>
     </ng-template>

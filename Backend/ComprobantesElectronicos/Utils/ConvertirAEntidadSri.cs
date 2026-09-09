@@ -31,7 +31,7 @@ namespace ComprobantesElectronicos.Utils
                     fechaEmision = orden.Fecha.ToLocalTime().ToString("dd/MM/yyyy"),
                     dirEstablecimiento = orden.DireccionEstablecimiento,
                     obligadoContabilidad = orden.ObligadoContabilidad,
-                    tipoIdentificacionComprador = "05",
+                    tipoIdentificacionComprador = orden.Cliente.CedulaRuc.Length == 13 ? "04" : "05",
                     razonSocialComprador = $"{orden.Cliente.Apellido} {orden.Cliente.Nombre}",
                     identificacionComprador = orden.Cliente.CedulaRuc,
                     direccionComprador = orden.Cliente.Direccion ?? "SIN DIRECCION",

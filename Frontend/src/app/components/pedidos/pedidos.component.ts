@@ -35,6 +35,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   mostrarRegresar: boolean = true;
   mostrarGrabar: boolean = true;
   mostrarNuevaOrden: boolean = false
+  mostrarInfoCliente: boolean = false;
   selectedFP: string = "EF";
 
   impuestoPorcentaje = 0;
@@ -230,12 +231,12 @@ export class PedidosComponent extends BaseComponent implements OnInit {
           ImpuestoCodigoPorcentaje: this.codigoIva,
           ImpuestoTarifa: this.impuestoPorcentaje,
           ImpuestoValorUnitario: this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2),
-          ImpuestoValorTotal: this.redondear(element.badge * this.redondear(element.valorsiniva * this.impuestoPorcentaje /100, 2), 2),
-          PrecioTotal: element.badge * element.valorsiniva,
+          ImpuestoValorTotal: this.redondear(element.badge * this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2), 2),
+          PrecioTotal: this.redondear(element.badge * element.valorsiniva, 2),
           PedidoACocina: element.pedidoacocina,
           ValorIva: this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2),
-          PrecioUnitarioDoncho: this.redondear(element.valorsiniva + this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2), 2),
-          PrecioTotalDoncho: this.redondear(element.badge * (element.valorsiniva + this.redondear(element.valorsiniva * this.impuestoPorcentaje / 100, 2)), 2)
+          PrecioUnitarioDoncho: this.redondear(element.valorsiniva + (element.valorsiniva * this.impuestoPorcentaje / 100), 2),
+          PrecioTotalDoncho: this.redondear(element.badge * (element.valorsiniva + (element.valorsiniva * this.impuestoPorcentaje / 100)), 2)
         });
     });
   }
@@ -257,6 +258,8 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.mostrarGrabar = true;
     this.mostrarNuevaOrden = false;
     this.mostrarRegresar = true;
+    this.clienteEncontrado = false;
+    this.cambio = 0;
   }
 
   grabarOrden() {
@@ -326,7 +329,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     //super.actualizarTotalesPedidos();
   }
 
-  imprimir(){
+  imprimir() {
     this.pdfPrintService.imprimirTicket(this.pedidoImpresion).then(() => {
       //this.mostrarImprimir = false;
     }).catch((error) => {
@@ -357,7 +360,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   }
 
   openClienteDialog() {
-    this.clienteEncontrado = false;
+    //this.clienteEncontrado = false;
     this.clienteDialog = true;
   }
 
@@ -365,42 +368,80 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.clienteDialog = false;
     this.cliente = {};
     this.clienteEncontrado = false;
+    this.mostrarInfoCliente = false;
   }
 
-  saveCliente() {
-    if (this.clienteEncontrado) {
-      this.clienteDialog = false;
-      return;
+  validarCliente(): string {
+
+    let mensaje: string = '';
+    if (!this.cliente.nombre) {
+      mensaje = '- Ingrese el nombre del cliente \n';
     }
-    this.cliente.usuarioRegistro = this.authService.userEmail;
-    this.clientesService.addItem(this.cliente).then(data => {
-      this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Cliente creado' });
-      this.clienteDialog = false;
-      this.cliente.id = data.id;
-      this.pedido.Clienteid = this.cliente.id;
-    }).catch((error) => {
-      this.messageService.add({ severity: 'error', summary: 'Ops!! ', detail: 'Error al crear el cliente' });
-    });
+    if (!this.cliente.apellido) {
+      mensaje += '- Ingrese el apellido del cliente \n';
+    }
+    if (!this.cliente.cedulaRuc) {
+      mensaje += '- Ingrese la cédula o RUC del cliente \n';
+    }
+    if (!this.cliente.telefonoCelular) {
+      mensaje += '- Ingrese el teléfono del cliente \n';
+    }
+    if (!this.cliente.email) {
+      mensaje += '- Ingrese el email del cliente \n';
+    }
+    if (this.cliente.cedulaRuc && (this.cliente.cedulaRuc.trim().length != 10 && this.cliente.cedulaRuc.trim().length != 13)) {
+      mensaje += '- La cédula o RUC debe tener 10 o 13 caracteres \n';
+    }
+    return mensaje;
   }
 
-  searchCliente() {
-    this.searchingCliente = true;
-    this.clientesService.getClientePromiseByCedulaRuc(this.cliente.cedulaRuc).then(data => {
-      this.cliente.nombre = data.nombre;
-      this.cliente.apellido = data.apellido;
-      this.cliente.direccion = data.direccion;
-      this.cliente.telefono_celular = data.telefonoCelular;
-      this.cliente.email = data.email;
-      this.cliente.fecha_cumpleanios = data.fechaCumpleanios;
-      this.cliente.id = data.id;
-      this.searchingCliente = false;
-      this.clienteEncontrado = true;
-      this.cliente.usuarioRegistro = this.authService.userEmail;
-      this.messageService.add({ severity: 'success', summary: '¡Muy bien!', detail: '¡El cliente fue encontrado!' });
-    }).catch(error => {
-      error.status === 404 ? this.messageService.add({ severity: 'warn', summary: 'Ops!!', detail: '¡El cliente no fue encontrado!' }) : this.messageService.add({ severity: 'error', summary: 'Ops!!', detail: 'Error al buscar el cliente!' });
-      this.searchingCliente = false;
-    });
+
+saveCliente() {
+  this.mostrarInfoCliente = true;
+  if (this.clienteEncontrado) {
+    this.clienteDialog = false;
+    return;
   }
+
+  const mensajeValidaCliente = this.validarCliente();
+  if (mensajeValidaCliente !== '') {
+    this.messageService.add({ severity: 'warn', summary: 'Ops!!', detail: mensajeValidaCliente });
+    this.mostrarInfoCliente = false;
+    return;
+  }
+
+  this.cliente.email = this.cliente.email.trim() == '' ? 'doncho@gmail.com' : this.cliente.email.trim();
+  this.cliente.usuarioRegistro = this.authService.userEmail;
+  this.cliente.direccion = this.authService.getLocalStorageDataByKey('sucursalNombre');
+  this.clientesService.addItem(this.cliente).then(data => {
+    this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Cliente creado' });
+    this.clienteDialog = false;
+    this.cliente.id = data.id;
+    this.pedido.Clienteid = this.cliente.id;
+  }).catch((error) => {
+    this.messageService.add({ severity: 'error', summary: 'Ops!! ', detail: 'Error al crear el cliente' });
+  });
+}
+
+searchCliente() {
+  this.searchingCliente = true;
+  this.clientesService.getClientePromiseByCedulaRuc(this.cliente.cedulaRuc).then(data => {
+    this.cliente.nombre = data.nombre;
+    this.cliente.apellido = data.apellido;
+    this.cliente.direccion = data.direccion;
+    this.cliente.telefono_celular = data.telefonoCelular;
+    this.cliente.email = data.email;
+    this.cliente.fecha_cumpleanios = data.fechaCumpleanios;
+    this.cliente.id = data.id;
+    this.searchingCliente = false;
+    this.clienteEncontrado = true;
+    this.cliente.usuarioRegistro = this.authService.userEmail;
+    this.messageService.add({ severity: 'success', summary: '¡Muy bien!', detail: '¡El cliente fue encontrado!' });
+    this.saveCliente();
+  }).catch(error => {
+    error.status === 404 ? this.messageService.add({ severity: 'warn', summary: 'Ops!!', detail: '¡El cliente no fue encontrado!' }) : this.messageService.add({ severity: 'error', summary: 'Ops!!', detail: 'Error al buscar el cliente!' });
+    this.searchingCliente = false;
+  });
+}
 }
 
