@@ -73,6 +73,7 @@ namespace WebApiDonCho.Services
                 facOrdenDTO.Cliente = cliente.ToDTO();
                 facOrdenDTO.clienteNombre = $"{cliente.Nombre} {cliente.Apellido}";
                 facOrdenDTO.clienteRuc = cliente.CedulaRuc;
+                facOrdenDTO.clienteDireccion = cliente.Direccion??"";
             }
         }
 
@@ -148,7 +149,8 @@ namespace WebApiDonCho.Services
                 UsuarioRegistro = o.UsuarioRegistro,
                 EsFactura = o.EsFactura,
                 NumeroFactura = o.NumeroFactura,
-                DocumentoPago = o.DocumentoPago ?? ""
+                DocumentoPago = o.DocumentoPago ?? "",
+                Id = o.Id
             });
         }
 
@@ -165,6 +167,33 @@ namespace WebApiDonCho.Services
         public async Task<IEnumerable<RptDocumentosPorFechasDTO>> GetDocumentosPorFechaAsync(RqOrdenesPorFechas rq)
         {
             return await uow.FacOrdenR.GetDocumentosPorFecha(rq.FechaIni, rq.FechaFin, rq.SucursalId);
+        }
+
+        public async Task<bool> EliminarOrden(int ordenid)
+        {
+            try
+            {
+                var logDocumentos = await uow.CelLogDocumentoR.GetByOrdenid(ordenid);
+                foreach (var log in logDocumentos)
+                {
+                    uow.CelLogDocumentoR.Delete(log);
+                }
+
+                var detalles = await uow.FacDetalleOrdenR.GetByOrdenAsync(ordenid);
+                foreach (var detalle in detalles)
+                {
+                    uow.FacDetalleOrdenR.Delete(detalle);
+                }
+                var orden = await uow.FacOrdenR.GetByIdAsync(ordenid);
+                uow.FacOrdenR.Delete(orden);
+                _ = await uow.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                // Manejar la excepción según sea necesario
+                return false;
+            }
+            return true;
         }
     }
 }

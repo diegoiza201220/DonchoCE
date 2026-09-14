@@ -175,6 +175,7 @@ export class PdfPrintService {
           { text: '-'.repeat(78), alignment: 'center', fontSize: 9, margin: [0, 4, 0, 4] },
           { text: `Nombre: ${orden.clienteNombre}`, style: 'textoChico' },
           { text: `CI/RUC: ${orden.clienteRuc}`, style: 'textoChico' },
+          { text: `Dirección: ${orden.clienteDireccion}`, style: 'textoChico' },
           { text: `Fecha Emisión: ${localFormattedDate}`, style: 'textoChico' },
           { text: `Orden: ${orden.fechaInteger} -- ${orden.secuencial}`, style: 'textoChico' },
           { text: '-'.repeat(78), alignment: 'center', fontSize: 9, margin: [0, 4, 0, 4] },

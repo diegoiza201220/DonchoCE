@@ -109,7 +109,8 @@ public class FacOrdenRepository(DonchoContext context) : Repository<FacOrden>(co
             .Select(g => new RptDocumentosPorFechasDTO
             {
                 Documento = g.Key ? "Factura" : "Orden",
-                Cantidad = g.Count()
+                Cantidad = g.Count(),
+                Valor = g.Sum(x=> x.TotalOrden)
             });
 }
 
@@ -151,6 +152,8 @@ public class CelCertificadoRepository(DonchoContext context) : Repository<CelCer
 // ── CellogDocumento ───────────────────────────────────────────────────────────
 public class CelLogDocumentoRepository(DonchoContext context) : Repository<CelLogDocumento>(context), ICelLogDocumentoRepository
 {
+    public async Task<IEnumerable<CelLogDocumento>> GetByOrdenid(int ordenid)
+    => _dbSet.AsNoTracking().Where(s => s.DocumentoId == ordenid);
 }
 
 // ── CelsecuenciaSri ───────────────────────────────────────────────────────────

@@ -11,7 +11,7 @@
     [tableStyle]="{'min-width': '50rem'}"
     selectionMode="single" [(selection)]="selectedOrden" dataKey="secuencial"
     (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)"
-    [globalFilterFields]="['cliente', 'secuencial']"
+    [globalFilterFields]="['nombre', 'apellido', 'secuencial']"
     >
     <ng-template pTemplate="caption">
         <div class="flex">
@@ -62,8 +62,8 @@
             <ng-template pTemplate="body" let-producto>
                 <tr>
                     <td>{{ producto.cantidad }}</td>
-                    <td>{{ producto.plato }}</td>
-                    <td>{{ producto.preciounitario | currency:'USD' }}</td>
+                    <td>{{ producto.producto.nombre }}</td>
+                    <td>{{ producto.producto.valorDoncho | currency:'USD' }}</td> 
                     <td>{{ producto.preciototal | currency:'USD' }}</td>
                 </tr>
             </ng-template>
@@ -72,6 +72,7 @@
     </ng-template>
     <ng-template pTemplate="footer">
         <button *ngIf="mostrarEliminar" pButton pRipple label="Eliminar" icon="pi pi-trash" class="p-button-danger" (click)="deleteOrden()"></button>
+        <button pButton pRipple label="Imprimir" icon="pi pi-print" class="p-button-success" (click)="imprimirOrden()"></button>
         <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
     </ng-template>
 </p-dialog>

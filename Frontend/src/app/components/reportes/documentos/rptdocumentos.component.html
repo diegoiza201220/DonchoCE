@@ -20,13 +20,15 @@
         <ng-template pTemplate="header" let-registro>
             <tr>
                 <th  scope="col" pSortableColumn="documento">Documento<p-sortIcon field="documento"></p-sortIcon></th>
-                <th scope="col" pSortableColumn="cantidad">Total<p-sortIcon field="cantidad"></p-sortIcon></th>
+                <th scope="col" pSortableColumn="cantidad">Cantidad<p-sortIcon field="cantidad"></p-sortIcon></th>
+                <th scope="col" pSortableColumn="valor">Valor<p-sortIcon field="valor"></p-sortIcon></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-registro>
             <tr>
                 <td>{{ registro.documento }}</td>
                 <td>{{ registro.cantidad }}</td>
+                <td>{{ registro.valor }}</td>
             </tr>
         </ng-template>
     </p-table>

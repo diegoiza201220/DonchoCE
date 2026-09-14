@@ -74,7 +74,7 @@
             <input pInputText type="text" [(ngModel)]="producto.valor" (ngModelChange)="calcularIVA(producto)">
           </ng-template>
           <ng-template pTemplate="output">
-            {{producto.valor | currency: 'USD'}}
+            {{producto.valor}}
           </ng-template>
         </p-cellEditor>
       </td>
@@ -171,7 +171,7 @@
     </div>
     <div class="p-field">
       <label for="valor">Precio sin IVA</label>
-      <p-inputNumber id="valor" [(ngModel)]="producto.valor" mode="currency" currency="USD" locale="en-US"
+      <p-inputNumber id="valor" [(ngModel)]="producto.valor" 
         (ngModelChange)="calcularIVA(producto)"></p-inputNumber>
     </div>
     <div class="p-field">

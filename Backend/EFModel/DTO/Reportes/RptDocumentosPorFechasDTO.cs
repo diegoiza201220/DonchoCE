@@ -4,5 +4,6 @@
     {
         public string Documento { get; set; } = string.Empty;
         public int Cantidad { get; set; }
+        public decimal Valor { get; set; }
     }
 }

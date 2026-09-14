@@ -16,10 +16,6 @@ export class OrdenesService {
     return firstValueFrom(this.http.post<any>(this.apiUrl + "/facturar", orden));
   }
 
-  async deleteOrden(orden: Orden): Promise<any> {
-    return firstValueFrom(this.http.delete<any>(`${this.apiUrl}/${orden.id}`));
-  }
-
   async queryOrdenesPorFecha(rqOrdenesPorFechas: any): Promise<any> {
     const post$ = this.http.post<any>(`${this.apiUrl}/ordenesporFecha`, rqOrdenesPorFechas);
     const result = await firstValueFrom(post$);
@@ -32,7 +28,7 @@ export class OrdenesService {
     return result;
   }
 
-  async getDatosPedido (): Promise<any> {
+  async getDatosPedido(): Promise<any> {
     const post$ = this.http.get<any>(`${this.apiUrl}/datospedido`);
     const result = await firstValueFrom(post$);
     return result;
@@ -46,6 +42,18 @@ export class OrdenesService {
 
   async queryDocumentosPorFecha(rqDocumentosPorFechas: any): Promise<any> {
     const post$ = this.http.post<any>(`${this.apiUrl}/documentosporfecha`, rqDocumentosPorFechas);
+    const result = await firstValueFrom(post$);
+    return result;
+  }
+
+  async getOrdenDetalle(ordenid: any): Promise<any> {
+    const post$ = this.http.post<any>(`${this.apiUrl}/detallebyordenid`, ordenid );
+    const result = await firstValueFrom(post$);
+    return result;
+  }
+
+  async deleteOrden(ordenid: any): Promise<any> {
+    const post$ = this.http.post<any>(`${this.apiUrl}/eliminar`, ordenid );
     const result = await firstValueFrom(post$);
     return result;
   }

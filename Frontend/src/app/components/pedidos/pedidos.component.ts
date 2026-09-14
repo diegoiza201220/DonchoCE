@@ -260,6 +260,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.mostrarRegresar = true;
     this.clienteEncontrado = false;
     this.cambio = 0;
+    this.pago = 0;
   }
 
   grabarOrden() {
@@ -389,6 +390,9 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     if (!this.cliente.email) {
       mensaje += '- Ingrese el email del cliente \n';
     }
+    if (!this.cliente.direccion) {
+      mensaje += '- Ingrese la dirección del cliente \n';
+    }
     if (this.cliente.cedulaRuc && (this.cliente.cedulaRuc.trim().length != 10 && this.cliente.cedulaRuc.trim().length != 13)) {
       mensaje += '- La cédula o RUC debe tener 10 o 13 caracteres \n';
     }
@@ -412,7 +416,7 @@ saveCliente() {
 
   this.cliente.email = this.cliente.email.trim() == '' ? 'doncho@gmail.com' : this.cliente.email.trim();
   this.cliente.usuarioRegistro = this.authService.userEmail;
-  this.cliente.direccion = this.authService.getLocalStorageDataByKey('sucursalNombre');
+  //this.cliente.direccion = this.authService.getLocalStorageDataByKey('sucursalNombre');
   this.clientesService.addItem(this.cliente).then(data => {
     this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Cliente creado' });
     this.clienteDialog = false;

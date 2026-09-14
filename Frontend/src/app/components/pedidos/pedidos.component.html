@@ -176,10 +176,10 @@
                     </tr>
                 </div>
 
-                <label for="cambio" class="col-sm-4 col-form-label">Vuelto a entregar:</label>
-                <div class="col-sm-1" style="padding-left: 1rem;">
-                    <tr>
-                        <td>
+                <label for="cambio" class="col-sm-2 col-form-label">Vuelto a entregar:</label>
+                <div class="col-sm-1" style="padding-left: 1rem; text-align: left;">
+                    <tr text-align="left">
+                        <td text-align="left">
                             <div class="text-cambio blink_me" style="padding-left: 1rem;">
                                 {{cambio | currency:'USD':'symbol'}}
                             </div>
@@ -234,7 +234,7 @@
     styleClass="p-fluid" [closable]="false" [resizable]="false">
     <ng-template pTemplate="content">
         <div class="p-field col-sm-12">
-            <label for="cedula_ruc" class="col-sm-6 col-form-label">Ruc/Cédula</label>
+            <label for="cedula_ruc" class="col-sm-1">Ruc/Cédula</label>
             <div class="col-sm-6">
                 <input type="text" id="cedula_ruc" class="form-control" [(ngModel)]="cliente.cedulaRuc"
                     aria-describedby="basic-addon1" autocomplete="off">
@@ -243,33 +243,40 @@
             </div>
         </div>
         <div class="p-field col-sm-40">
-            <label for="nombre" class="col-sm-12 col-form-label">Nombre</label>
+            <label for="nombre" class="col-sm-1">Nombre</label>
             <div class="col-sm-28">
                 <input type="text" id="nombre" class="form-control" [(ngModel)]="cliente.nombre"
                     aria-describedby="basic-addon1" autocomplete="off">
             </div>
         </div>
         <div class="p-field col-sm-40">
-            <label for="apellido" class="col-sm-12 col-form-label">Apellido</label>
+            <label for="apellido" class="col-sm-1">Apellido</label>
             <div class="col-sm-28">
                 <input type="text" id="apellido" class="form-control" [(ngModel)]="cliente.apellido"
                     aria-describedby="basic-addon1" autocomplete="off">
             </div>
         </div>
         <div class="p-field col-sm-40">
-            <label for="telefonoCelular" class="col-sm-12 col-form-label">Teléfono</label>
+            <label for="telefonoCelular" class="col-sm-1">Teléfono</label>
             <div class="col-sm-28">
                 <input type="text" id="telefonoCelular" class="form-control" [(ngModel)]="cliente.telefonoCelular"
                     aria-describedby="basic-addon1" autocomplete="off">
             </div>
         </div>
         <div class="p-field col-sm-40">
-            <label for="email" class="col-sm-12 col-form-label">Email</label>
+            <label for="email" class="col-sm-1">Email</label>
             <div class="col-sm-28">
                 <input type="text" id="email" class="form-control" [(ngModel)]="cliente.email"
                     aria-describedby="basic-addon1" autocomplete="off">
             </div>
         </div>
+        <div class="p-field col-sm-40">
+            <label for="direccion" class="col-sm-1">Dirección</label>
+            <div class="col-sm-28">
+                <input type="text" id="direccion" class="form-control" [(ngModel)]="cliente.direccion"
+                    aria-describedby="basic-addon1" autocomplete="off">
+            </div>
+        </div>        
     </ng-template>
 
     <ng-template pTemplate="footer">

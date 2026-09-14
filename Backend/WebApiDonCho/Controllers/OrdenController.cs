@@ -2,6 +2,7 @@ using EFModel.DTO;
 using EFModel.DTO.Request;
 using EFModel.Interfaces;
 using EFModel.Mappers;
+using EFModel.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApiDonCho.Services;
@@ -88,4 +89,16 @@ public class OrdenController(IUnitOfWork uow, OrdenService ordenService, ICacheS
     [HttpPost("documentosporfecha")]
     public async Task<IActionResult> DocumentosPorFecha([FromBody] RqOrdenesPorFechas detalle)
     => Ok(await _ordenService.GetDocumentosPorFechaAsync(detalle));
+
+    [HttpPost("detallebyordenid")]
+    public async Task<IActionResult> GetDetalleById([FromBody] int ordenid)
+    => Ok(await _uow.FacDetalleOrdenR.GetByOrdenAsync(ordenid));
+
+    [HttpPost("eliminar")]
+    public async Task<IActionResult> Eliminar([FromBody] int ordenid)
+    {
+        if (ordenid <= 0) return BadRequest();
+        _ = await _ordenService.EliminarOrden(ordenid);
+        return NoContent();
+    }
 }

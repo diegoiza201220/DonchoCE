@@ -39,7 +39,10 @@ public interface IFacDetalleOrdenRepository : IRepository<FacDetalleOrden>
 
 public interface ICelCertificadoRepository : IRepository<CelCertificado> { }
 
-public interface ICelLogDocumentoRepository : IRepository<CelLogDocumento> { }
+public interface ICelLogDocumentoRepository : IRepository<CelLogDocumento> 
+{
+    Task<IEnumerable<CelLogDocumento>> GetByOrdenid(int ordenid);
+}
 
 public interface ICelSecuenciaSriRepository : IRepository<CelSecuenciaSri>
 {

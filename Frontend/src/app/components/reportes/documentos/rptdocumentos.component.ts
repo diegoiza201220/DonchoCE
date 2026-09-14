@@ -68,7 +68,7 @@ export class RptDocumentosComponent extends BaseComponent implements OnInit {
 
     ldataPie.forEach(element => {
       label.push(element.documento);
-      data.push(element.cantidad);
+      data.push(element.valor);
     });
 
     this.basicDataPie = {

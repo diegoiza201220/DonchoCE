@@ -10,6 +10,7 @@ namespace EFModel.DTO
         public int Clienteid { get; set; }
         public string clienteNombre { get; set; } = string.Empty;
         public string clienteRuc { get; set; } = string.Empty;
+        public string clienteDireccion { get; set; } = string.Empty;
 
         public int FechaInteger { get; set; }
 

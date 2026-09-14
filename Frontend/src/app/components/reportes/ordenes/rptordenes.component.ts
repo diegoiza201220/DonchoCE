@@ -47,16 +47,17 @@ export class RptOrdenesComponent extends BaseComponent {
 
   hideDialog() {
     this.ordenDialogo = false;
-    //this.selectedOrden = undefined;
   }
 
   onRowSelect(event: any) {
-    //this.messageService.add({ severity: 'info', summary: 'Product Selected', detail: event.data.name });
     this.lregistrosorden = [];
-    const lista = this.lregistros;
-    const orden = lista.filter(x => x.secuencial == event.data.secuencial);
-    this.lregistrosorden = orden[0].productos;
-    this.ordenDialogo = true;
+    this.ordenesService.getOrdenDetalle(event.data.id).then(resp => {
+      resp.forEach((item: any) => {
+        item.preciototal = this.redondear(item.producto.valorDoncho * item.cantidad, 2);
+      });
+      this.lregistrosorden = resp;
+      this.ordenDialogo = true;
+    });
   }
 
   onRowUnselect(event: any) {
@@ -66,20 +67,23 @@ export class RptOrdenesComponent extends BaseComponent {
     dt.filterGlobal(($event.target as HTMLInputElement).value, 'contains');
   }
 
-  deleteOrden(){
+  deleteOrden() {
     this.confirmationService.confirm({
       message: '¿Estás seguro de eliminar la orden seleccionada?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.ordenesService.deleteOrden(this.selectedOrden);
-        this.Buscar();
-        this.hideDialog();
-        this.messageService.add({ severity: 'success', summary: '¡Muy bien!', detail: 'La orden ha sido eliminada', life: 3000 });
+        this.ordenesService.deleteOrden(this.selectedOrden.id).then(resp => {
+          this.Buscar();
+          this.hideDialog();
+          this.messageService.add({ severity: 'success', summary: '¡Muy bien!', detail: 'La orden ha sido eliminada', life: 3000 });
+        });
       }
     });
+  }
 
-
+  imprimirOrden() {
+    const printContents = document.getElementById('ordenDetalle')?.innerHTML;
 
   }
 
