@@ -23,7 +23,7 @@ export class ProductosComponent extends BaseComponent implements OnInit {
 
   clonedProductos: { [s: string]: Producto } = {};
 
-  selectedProductos!: Producto[];
+  selectedProductos!: Producto;
 
   submitted!: boolean;
 
@@ -56,9 +56,11 @@ export class ProductosComponent extends BaseComponent implements OnInit {
   }
 
   openNew() {
-    this.producto = { nombre: '', valor: 0, grupo: '', activo: true, ordenaparicion: 0, 
-      pedidoacocina: false , ivaValor: 0, 
-      valorTotal: 0, codigoIva: this.idCatDetalleIva, valorDoncho: 0 };
+    this.producto = {
+      nombre: '', valor: 0, grupo: '', activo: true, ordenaparicion: 0,
+      pedidoacocina: false, ivaValor: 0,
+      valorTotal: 0, codigoIva: this.idCatDetalleIva, valorDoncho: 0
+    };
     this.submitted = false;
     this.productoDialogo = true;
   }
@@ -71,7 +73,6 @@ export class ProductosComponent extends BaseComponent implements OnInit {
   saveProduct() {
     this.submitted = true;
     this.addProducto();
-    this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Producto creado' });
     this.productoDialogo = false;
   }
 
@@ -103,29 +104,29 @@ export class ProductosComponent extends BaseComponent implements OnInit {
 
   async addProducto() {
     this.lproductos = [];
-    this.productosService.addProducto(this.producto)
-      .subscribe(response => {
-        this.logger.log(response);
-        this.getProductosPromise();
-      })
+    this.productosService.addProducto(this.producto).then(resp => {
+      this.lproductos = resp.result;
+      this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Producto creado' });
+    }).catch(err => {
+      this.messageService.add({ severity: 'warn', summary: 'Ops!!', detail: 'Producto no fue creado!' });
+    });
   }
 
   async deleteProducto(producto: Producto) {
     this.lproductos = [];
-    this.productosService.deleteProducto(producto)
-      .subscribe(response => {
-        this.logger.log(response);
-        this.getProductosPromise();
-      })
+    this.productosService.deleteProducto(producto).then(resp => {
+      this.lproductos = resp.result;
+      this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Producto eliminado' });
+    }).catch(err => {
+      this.messageService.add({ severity: 'warn', summary: 'Ops!!', detail: 'Producto no fue eliminado!' });
+    });
   }
 
   async updateProducto(producto: Producto) {
     this.lproductos = [];
-    this.productosService.updateProducto(producto)
-      .subscribe(response => {
-        this.logger.log(response);
-        this.getProductosPromise();
-      });
+    this.productosService.updateProducto(producto).then(resp => {
+      this.lproductos = resp.result;
+    })
   }
 
   onRowEditInit(producto: Producto) {
@@ -149,11 +150,7 @@ export class ProductosComponent extends BaseComponent implements OnInit {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.selectedProductos.forEach(element => {
-          this.deleteProducto(element);
-        });
-        this.messageService.add({ severity: 'success', summary: '¡Muy bien!', detail: 'Productos han sido eliminados', life: 3000 });
-        this.getProductosPromise();
+        this.deleteProducto(this.selectedProductos);
       }
     });
   }

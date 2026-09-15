@@ -15,10 +15,12 @@ export class ProductosService {
   constructor(
     private readonly http: HttpClient,
     private readonly logger: LoggerService
-  ) {  }
+  ) { }
 
-  addProducto(producto: Producto): Observable<any> {
-    return this.http.post<any>(this.apiUrl + "/crear", producto);
+  async addProducto(producto: Producto): Promise<any> {
+    const post$ = this.http.post<any>(`${this.apiUrl}/crear`, producto);
+    const result = await firstValueFrom(post$);
+    return result;
   }
 
   getProductosPromise(): Promise<any> {
@@ -31,11 +33,19 @@ export class ProductosService {
       .pipe(tap(data => this.logger.log(data)));
   }
 
-  deleteProducto(producto: Producto): Observable<any> {
-    return this.http.delete(this.apiUrl + "/eliminar", { body: producto });
+  // deleteProducto(producto: Producto): Observable<any> {
+  //   return this.http.delete(this.apiUrl + "/eliminar", { body: producto });
+  // }
+
+  async deleteProducto(producto: Producto): Promise<any> {
+    const post$ = this.http.post<any>(`${this.apiUrl}/eliminar`, producto);
+    const result = await firstValueFrom(post$);
+    return result;
   }
 
-  updateProducto(producto: Producto): Observable<any> {
-    return this.http.put(this.apiUrl + "/actualizar", producto);
+  async updateProducto(producto: Producto): Promise<any> {
+    const post$ = this.http.post<any>(`${this.apiUrl}/actualizar`, producto);
+    const result = await firstValueFrom(post$);
+    return result;
   }
 }

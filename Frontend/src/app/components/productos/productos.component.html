@@ -3,7 +3,7 @@
   <ng-template pTemplate="left">
     <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
     <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedProducts()"
-      [disabled]="!selectedProductos || !selectedProductos.length"></button>
+      [disabled]="!selectedProductos"></button>
   </ng-template>
 
   <ng-template pTemplate="right">
@@ -13,12 +13,13 @@
 
 
 <p-table #dt [value]="lproductos" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}"
-  [globalFilterFields]="['producto.grupo','producto.nombre']" [(selection)]="selectedProductos" [rowHover]="true">
+  [globalFilterFields]="['producto.grupo','producto.nombre']" [(selection)]="selectedProductos" [rowHover]="true"
+  selectionMode="single" se >
   <ng-template pTemplate="header" class=".bg-productos-row">
     <tr>
-      <th style="width: 3rem">
-        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-      </th>
+      <!-- <th style="width: 3rem">
+         <p-tableHeaderCheckbox></p-tableHeaderCheckbox> 
+      </th> -->
       <th pSortableColumn="grupo" style="width:15%">Grupo <p-sortIcon field="grupo"></p-sortIcon></th>
       <th pSortableColumn="nombre" style="width:40%">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
       <th pSortableColumn="valorDoncho" style="width:15%">Precio Doncho<p-sortIcon field="valorDoncho"></p-sortIcon>
@@ -33,10 +34,10 @@
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-producto let-editing="editing" let-ri="rowIndex">
-    <tr [pEditableRow]="producto">
-      <td>
+    <tr [pEditableRow]="producto" [pSelectableRow]="producto">
+      <!-- <td>
         <p-tableCheckbox [value]="producto"></p-tableCheckbox>
-      </td>
+      </td> -->
       <td>
         <p-cellEditor>
           <ng-template pTemplate="input">
@@ -64,7 +65,9 @@
             <input pInputText type="text" [(ngModel)]="producto.valorDoncho">
           </ng-template>
           <ng-template pTemplate="output">
-            {{producto.valorDoncho | currency: 'USD'}}
+            <div style="text-align: right; width: 100%;">
+              {{producto.valorDoncho | currency: 'USD'}}
+            </div>
           </ng-template>
         </p-cellEditor>
       </td>
@@ -74,7 +77,9 @@
             <input pInputText type="text" [(ngModel)]="producto.valor" (ngModelChange)="calcularIVA(producto)">
           </ng-template>
           <ng-template pTemplate="output">
-            {{producto.valor}}
+            <div style="text-align: right; width: 100%;">
+              {{producto.valor}}
+            </div>
           </ng-template>
         </p-cellEditor>
       </td>
@@ -83,16 +88,20 @@
           <ng-template pTemplate="input">{{producto.ivaTarifa}}
           </ng-template>
           <ng-template pTemplate="output">
-            {{producto.ivaTarifa}}
+            <div style="text-align: right; width: 100%;">
+              {{producto.ivaTarifa}}
+            </div>
           </ng-template>
         </p-cellEditor>
       </td>
       <td>
         <p-cellEditor>
-          <ng-template pTemplate="input">{{producto.ivaValor | currency: 'USD'}}
+          <ng-template pTemplate="input">{{producto.ivaValor}}
           </ng-template>
           <ng-template pTemplate="output">
-            {{producto.ivaValor | currency: 'USD'}}
+            <div style="text-align: right; width: 100%;">
+              {{producto.ivaValor | number: '1.2-2'}}
+            </div>
           </ng-template>
         </p-cellEditor>
       </td>
@@ -101,7 +110,9 @@
           <ng-template pTemplate="input">{{producto.valorTotal | currency: 'USD'}}
           </ng-template>
           <ng-template pTemplate="output">
-            {{producto.valorTotal | currency: 'USD'}}
+            <div style="text-align: right; width: 100%;">
+              {{producto.valorTotal | number: '1.2-2'}}
+            </div>
           </ng-template>
         </p-cellEditor>
       </td>
@@ -111,7 +122,9 @@
             <input pInputText type="text" [(ngModel)]="producto.ordenAparicion" required>
           </ng-template>
           <ng-template pTemplate="output">
-            {{producto.ordenAparicion}}
+            <div style="text-align: right; width: 100%;">
+              {{producto.ordenAparicion}}
+            </div>
           </ng-template>
         </p-cellEditor>
       </td>
@@ -171,13 +184,14 @@
     </div>
     <div class="p-field">
       <label for="valor">Precio sin IVA</label>
-      <p-inputNumber id="valor" [(ngModel)]="producto.valor" 
-        (ngModelChange)="calcularIVA(producto)"></p-inputNumber>
+      <p-inputNumber id="valor" mode="decimal" locale="en-US" 
+    [minFractionDigits]="0" [maxFractionDigits]="6"
+       [(ngModel)]="producto.valor" (ngModelChange)="calcularIVA(producto)"></p-inputNumber>
     </div>
     <div class="p-field">
       <label for="impuestoPorcentaje">IVA Tarifa</label>
-      <input type="text" pInputText id="impuestoPorcentaje" disabled="true" mode="currency" currency="USD" locale="en-US"
-        [(ngModel)]="impuestoPorcentaje" />
+      <input type="text" pInputText id="impuestoPorcentaje" disabled="true" mode="currency" currency="USD"
+        locale="en-US" [(ngModel)]="impuestoPorcentaje" />
     </div>
     <div class="p-field">
       <label for="ivaValor">IVA Valor</label>

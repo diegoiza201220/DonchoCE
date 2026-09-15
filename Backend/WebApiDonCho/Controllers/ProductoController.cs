@@ -28,7 +28,7 @@ public class ProductoController(IUnitOfWork uow, ICacheService cache) : Controll
         return producto is null ? NotFound() : Ok(producto);
     }
 
-    [HttpPut("actualizar")]
+    [HttpPost("actualizar")]
     public async Task<IActionResult> Update([FromBody] FacProductoDTO producto)
     {
         if (producto.Id <= 0) return BadRequest();
@@ -36,20 +36,27 @@ public class ProductoController(IUnitOfWork uow, ICacheService cache) : Controll
         FacProducto facproducto = producto.FromDTO();
         uow.FacProductoR.Update(facproducto);
         await uow.SaveChangesAsync();
-        await CargarItemsEnCacheAsync();
-        return NoContent();
+        return Ok(CargarItemsEnCacheAsync());
     }
 
-    [HttpDelete("eliminar")]
+    [HttpPost("eliminar")]
     public async Task<IActionResult> Delete([FromBody] FacProductoDTO producto)
     {
         if (producto.Id <= 0) return BadRequest();
-
         FacProducto facproducto = producto.FromDTO();
         uow.FacProductoR.Delete(facproducto);
-        await uow.SaveChangesAsync();
-        await CargarItemsEnCacheAsync();
-        return NoContent();
+        try
+        {
+            await uow.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            return BadRequest("Error: No se puede eliminar el producto");
+            throw;
+        }
+        
+        return Ok(CargarItemsEnCacheAsync());
+
     }
 
     [HttpPost("crear")]
@@ -60,13 +67,14 @@ public class ProductoController(IUnitOfWork uow, ICacheService cache) : Controll
         FacProducto facproducto = producto.FromDTO();
         await uow.FacProductoR.AddAsync(facproducto);
         await uow.SaveChangesAsync();
-        await CargarItemsEnCacheAsync();
-        return CreatedAtAction(nameof(GetById), new { id = facproducto.Id }, facproducto);
+        return Ok(CargarItemsEnCacheAsync());
     }
 
-    private async Task CargarItemsEnCacheAsync()
+    private async Task<IEnumerable<FacProductoDTO>> CargarItemsEnCacheAsync()
     {
         var productos = uow.FacProductoR.GetAllDto();
         cache.SetPermanent("PRODUCTOS_ALL", productos);
+        return productos;
     }
+
 }

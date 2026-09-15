@@ -47,7 +47,7 @@ export class RptDocumentosComponent extends BaseComponent implements OnInit {
       SucursalId: this.authService.getLocalStorageDataByKey('sucursalId')
     }
     this.ordenesService.queryDocumentosPorFecha(rqOrdenesPorFechas).then(resp => {
-      this.ldata = resp;
+      this.ldata = resp.sort((a: any, b: any) => b.valor - a.valor);
       this.ready = true;
     });
   }
