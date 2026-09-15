@@ -50,7 +50,7 @@ export class PdfPrintService {
   /** Solo genera y descarga el PDF, sin abrir el diálogo de impresión */
   async descargarTicket(orden: Parameters<PdfPrintService['imprimirTicket']>[0]): Promise<void> {
     const definicion = this.construirDefinicionPdf(orden);
-    await pdfMake.createPdf(definicion).download(`orden-${orden.FechaInteger}-${orden.secuencial}.pdf`);
+    await pdfMake.createPdf(definicion).download(`orden-${orden.fechaInteger}-${orden.secuencial}.pdf`);
   }
 
   // ---------------------------------------------------------------------
@@ -164,7 +164,7 @@ export class PdfPrintService {
           //   alignment: 'center',
           //   margin: [0, 0, 0, 8]
           // },
-          { text: orden.razonSocial, style: 'textoChico', alignment: 'center' },
+          { text: orden.nombreComercial, style: 'textoChico', alignment: 'center' },
           { text: `RUC: ${orden.rucDonCho}`, style: 'textoChico', alignment: 'center' },
           // { text: `Matriz: ${orden.direccionmatriz}`, style: 'textoChico', alignment: 'center' },
           { text: orden.contribuyenteRimpe, style: 'textoChico', alignment: 'center' },

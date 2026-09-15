@@ -38,7 +38,7 @@ namespace WebApiDonCho.Services
             facOrdenDTO.CodDoc = "01";
             CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("01", facOrden.Sucursalid) ?? throw new InvalidOperationException($"Secuencia SRI no encontrada para la sucursal con id: {facOrden.Sucursalid}");
             _ = cache.TryGet(Constantes.CELINFOTRIBUTARIA, out CelInfoTributaria celInfoTributaria);
-            InfoTributariaHelper.SetInformacion(facOrdenDTO, facOrden, celInfoTributaria, celSecuenciaSri, esProduccion: false, (int)ComprobantesElectronicos.Enums.CodigoDocumento.Factura);
+            InfoTributariaHelper.CalcularInfoTributaria(facOrdenDTO, facOrden, celInfoTributaria, celSecuenciaSri, esProduccion: false, (int)ComprobantesElectronicos.Enums.CodigoDocumento.Factura);
             CelLogDocumento celLogDocumento = CelLogDocumentoHelper.CrearLogInicial(facOrdenDTO);
             await uow.CelLogDocumentoR.AddAsync(celLogDocumento);
             celSecuenciaSri.SecuenciaActual++;
@@ -79,9 +79,17 @@ namespace WebApiDonCho.Services
 
         private void CompletarInformacionTributaria(FacOrdenDTO facOrdenDTO)
         {
-            _ = cache.TryGet(Constantes.CELINFOTRIBUTARIA, out CelInfoTributaria celInfoTributariaNotaVenta);
-            facOrdenDTO.NombreComercial = celInfoTributariaNotaVenta.NombreComercial;
+            _ = cache.TryGet(Constantes.CELINFOTRIBUTARIA, out CelInfoTributaria celInfoTributaria);
+            facOrdenDTO.NombreComercial = celInfoTributaria.NombreComercial;
             facOrdenDTO.SucursalNombre = uow.GenSucursalR.GetById(facOrdenDTO.Sucursalid).Nombre;
+            facOrdenDTO.RazonSocial = celInfoTributaria.RazonSocial;
+            facOrdenDTO.NombreComercial = celInfoTributaria.NombreComercial;
+            facOrdenDTO.RucDonCho = celInfoTributaria.Ruc;
+            facOrdenDTO.Direccionmatriz = celInfoTributaria.DireccionMatriz;
+            facOrdenDTO.ContribuyenteRimpe = celInfoTributaria.ContribuyenteRimpe;
+            facOrdenDTO.ContribuyenteEspecial = celInfoTributaria.ContribuyenteEspecial;
+            facOrdenDTO.DireccionEstablecimiento = celInfoTributaria.DireccionMatriz;
+            facOrdenDTO.ObligadoContabilidad = celInfoTributaria.ObligadoContabilidad ? "SI" : "NO";
         }
         public async Task<FacOrden> GenerarNotaCreditoAsync(FacOrdenDTO orden)
         {
@@ -113,7 +121,7 @@ namespace WebApiDonCho.Services
             //orden.CodDoc = "01";
             CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("03",orden.Sucursalid) ?? throw new InvalidOperationException($"Secuencia SRI no encontrada para la sucursal con id: {facOrden.Sucursalid}");
             CelInfoTributaria celInfoTributaria = cache.GetOrCreatePermanent("CELINFOTRIBUTARIA", () => uow.CelInfoTributariaR.GetById(1));
-            InfoTributariaHelper.SetInformacion(orden, facOrden, celInfoTributaria, celSecuenciaSri, esProduccion: false, (int)ComprobantesElectronicos.Enums.CodigoDocumento.NotaCredito);
+            InfoTributariaHelper.CalcularInfoTributaria(orden, facOrden, celInfoTributaria, celSecuenciaSri, esProduccion: false, (int)ComprobantesElectronicos.Enums.CodigoDocumento.NotaCredito);
             CelLogDocumento celLogDocumento = CelLogDocumentoHelper.CrearLogInicial(orden);
             await uow.CelLogDocumentoR.AddAsync(celLogDocumento);
             celSecuenciaSri.SecuenciaActual++;
@@ -194,6 +202,20 @@ namespace WebApiDonCho.Services
                 return false;
             }
             return true;
+        }
+
+        public async Task<FacOrdenDTO> GetFacOrdenDtoByIdAsync(int ordenid)
+        {
+            var facOrden = uow.FacOrdenR.GetByIdAsync(ordenid).Result;
+            var detalle = uow.FacDetalleOrdenR.GetByOrdenAsync(ordenid).Result;
+            if (facOrden == null || detalle == null) return null;
+            facOrden.FacDetalleOrdens = detalle.ToList();
+            FacOrdenDTO facOrdenDto = facOrden.ToDTO();
+
+            CompletarInformacionDetalleOrden(facOrdenDto);
+            CompletarInformaciónCliente(facOrdenDto);
+            CompletarInformacionTributaria(facOrdenDto);
+            return facOrdenDto;
         }
     }
 }

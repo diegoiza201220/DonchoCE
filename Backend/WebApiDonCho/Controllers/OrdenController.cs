@@ -101,4 +101,12 @@ public class OrdenController(IUnitOfWork uow, OrdenService ordenService, ICacheS
         _ = await _ordenService.EliminarOrden(ordenid);
         return NoContent();
     }
+
+    [HttpPost("getfacordendto")]
+    public async Task<IActionResult> GetFacOrdenDtoById([FromBody] int ordenid)
+    {
+        if (ordenid <= 0) return BadRequest();
+        var facOrdenDto = await _ordenService.GetFacOrdenDtoByIdAsync(ordenid);
+        return facOrdenDto == null ? NotFound() : Ok(facOrdenDto);
+    }
 }

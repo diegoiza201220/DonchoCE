@@ -56,7 +56,7 @@ namespace EFModel.Mappers
                 Sucursalid = orden.Sucursalid,
                 FechaInteger = orden.FechaInteger,
                 Secuencial = orden.Secuencial,
-                Fecha = DateTime.Now.ToUniversalTime(),
+                Fecha = orden.Fecha,
                 TipoPago = orden.TipoPago,
                 TotalOrden = orden.TotalOrden,
                 ImpuestoCodigo = orden.ImpuestoCodigo,
@@ -73,6 +73,10 @@ namespace EFModel.Mappers
                 NotaCreditoNumeroNotaCredito = orden.NotaCreditoNumeroNotaCredito,
                 NotaCreditoMotivo = orden.NotaCreditoMotivo,
                 NotaCreditoFecha = orden.NotaCreditoFecha,
+                ClaveNumeroAutorizacion = orden.ClaveNumeroAutorizacion,
+                Establecimiento = orden.Establecimiento,
+                PuntoEmision = orden.PuntoEmision,
+                NumeroFactura = orden.NumeroFactura,
                 FacDetalleOrdens = [.. orden.FacDetalleOrdens.Select(d => new FacDetalleOrdenDTO
                 {
                     Cantidad = d.Cantidad,

@@ -47,13 +47,19 @@ export class OrdenesService {
   }
 
   async getOrdenDetalle(ordenid: any): Promise<any> {
-    const post$ = this.http.post<any>(`${this.apiUrl}/detallebyordenid`, ordenid );
+    const post$ = this.http.post<any>(`${this.apiUrl}/detallebyordenid`, ordenid);
     const result = await firstValueFrom(post$);
     return result;
   }
 
   async deleteOrden(ordenid: any): Promise<any> {
-    const post$ = this.http.post<any>(`${this.apiUrl}/eliminar`, ordenid );
+    const post$ = this.http.post<any>(`${this.apiUrl}/eliminar`, ordenid);
+    const result = await firstValueFrom(post$);
+    return result;
+  }
+
+  async getFacOrdenDto(ordenid: any): Promise<any> {
+    const post$ = this.http.post<any>(`${this.apiUrl}/getfacordendto`, ordenid);
     const result = await firstValueFrom(post$);
     return result;
   }

@@ -5,6 +5,7 @@ import { BaseComponent } from 'src/app/util/base.component';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoggerService } from 'src/app/services/logger.service';
+import { PdfPrintService } from 'src/app/services/pdf-print.service';
 
 @Component({
   selector: 'app-rpt-ordenes',
@@ -13,8 +14,13 @@ import { LoggerService } from 'src/app/services/logger.service';
   providers: [MessageService, ConfirmationService]
 })
 export class RptOrdenesComponent extends BaseComponent {
-  constructor(private ordenesService: OrdenesService, private messageService: MessageService, private confirmationService: ConfirmationService,
-    public override authService: AuthService, public override logger: LoggerService
+  constructor(
+    private ordenesService: OrdenesService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
+    public override authService: AuthService,
+    public override logger: LoggerService,
+    private pdfPrintService: PdfPrintService
   ) {
     super(authService, logger);
   }
@@ -83,8 +89,9 @@ export class RptOrdenesComponent extends BaseComponent {
   }
 
   imprimirOrden() {
-    const printContents = document.getElementById('ordenDetalle')?.innerHTML;
-
+    this.ordenesService.getFacOrdenDto(this.selectedOrden.id).then(resp => {
+      this.pdfPrintService.imprimirTicket(resp);
+    });
   }
 
 }

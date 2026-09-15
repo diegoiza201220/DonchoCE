@@ -5,7 +5,7 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
 {
     public class InfoTributariaHelper
     {
-        public static void SetInformacion(FacOrdenDTO ordenDTO, FacOrden orden, CelInfoTributaria celInfoTributaria, CelSecuenciaSri celSecuenciaSri, bool esProduccion, int coddoc)
+        public static void CalcularInfoTributaria(FacOrdenDTO ordenDTO, FacOrden orden, CelInfoTributaria celInfoTributaria, CelSecuenciaSri celSecuenciaSri, bool esProduccion, int coddoc)
         {
             // Para este ejemplo, asumimos que el ambiente es 1 (producción) o 2 (pruebas)
             // y el tipo de emisión es 1 (normal) para ambos casos.            
@@ -31,14 +31,6 @@ namespace WebApiDonCho.Helpers.ComprobantesElectronicos
                 default:
                     break;
             }
-            ordenDTO.RazonSocial = celInfoTributaria.RazonSocial;
-            ordenDTO.NombreComercial = celInfoTributaria.NombreComercial;
-            ordenDTO.RucDonCho = celInfoTributaria.Ruc;
-            ordenDTO.Direccionmatriz = celInfoTributaria.DireccionMatriz;
-            ordenDTO.ContribuyenteRimpe = celInfoTributaria.ContribuyenteRimpe;
-            ordenDTO.ContribuyenteEspecial = celInfoTributaria.ContribuyenteEspecial;
-            ordenDTO.DireccionEstablecimiento = celInfoTributaria.DireccionMatriz;
-            ordenDTO.ObligadoContabilidad = celInfoTributaria.ObligadoContabilidad ? "SI" : "NO";
         }
 
         private static string GetClaveAcceso(DateTime fecha, string ruc, string secuencial, string tipoEmision, string tipocomprobante, string tipoAmbiente, string establecimiento_ptoemi)
