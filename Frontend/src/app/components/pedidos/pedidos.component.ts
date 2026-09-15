@@ -214,7 +214,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.calcularDetalles(this.lproductosporciones.filter(x => x.badge > 0));
     this.calcularDetalles(this.lproductosbebidas.filter(x => x.badge > 0));
     this.calcularDetalles(this.lproductosotros.filter(x => x.badge > 0));
-    this.pedido.TotalSinImpuestos = this.pedido.FacDetalleOrdens.reduce((sum: any, current: { PrecioTotal: any; }) => sum + current.PrecioTotal, 0);
+    this.pedido.TotalSinImpuestos = this.pedido.FacDetalleOrdens.reduce((sum: any, current: { PrecioTotal: any, Cantidad: any; PrecioUnitario: any }) => sum + this.redondear(current.Cantidad * current.PrecioUnitario, 2), 0);
     this.pedido.ImpuestoValor = this.redondear(this.pedido.TotalSinImpuestos * this.impuestoPorcentaje / 100, 2);
     this.pedido.TotalOrden = this.redondear(this.pedido.TotalSinImpuestos + this.pedido.ImpuestoValor, 2);
   }

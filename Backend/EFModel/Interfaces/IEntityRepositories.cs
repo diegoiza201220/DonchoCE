@@ -14,7 +14,6 @@ public interface IFacProductoRepository : IRepository<FacProducto>
 {
     Task<IEnumerable<FacProducto>> GetActivosAsync();
     Task<IEnumerable<FacProducto>> GetByGrupoAsync(string grupo);
-    Task<IEnumerable<FacProductoDTO>> GetAllDtoAsync();
     new Task<IEnumerable<FacProducto>> GetAllAsync();
     IEnumerable<FacProducto> GetAll();
     IEnumerable<FacProductoDTO> GetAllDto();

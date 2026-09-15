@@ -27,15 +27,6 @@ public class FacProductoRepository(DonchoContext context) : Repository<FacProduc
     public async Task<IEnumerable<FacProducto>> GetByGrupoAsync(string grupo)
         => await _dbSet.AsNoTracking().Where(p => p.Grupo == grupo && p.Activo).ToListAsync();
 
-    public async Task<IEnumerable<FacProductoDTO>> GetAllDtoAsync()
-    {
-        var resultado = (from p in _context.FacProducto
-                         join d in _context.GenCatalogoDetalle
-                         on p.CodigoIva equals d.Id
-                         select new FacProductoDTO() { Activo = p.Activo, CodigoIva = p.CodigoIva, Grupo = p.Grupo, Id = p.Id, IvaTarifa = d.Codigo, IvaValor = p.Valor * Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100, Nombre = p.Nombre, OrdenAparicion = p.OrdenAparicion, PedidoACocina = p.PedidoACocina, Valor = p.Valor, ValorDoncho = p.ValorDoncho, ValorTotal = p.Valor + p.Valor * Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100 }
-                         ).ToList().OrderByDescending(o => o.Nombre);
-        return resultado;
-    }
 
     public async new Task<IEnumerable<FacProducto>> GetAllAsync() => await _dbSet.ToListAsync();
 
@@ -48,7 +39,18 @@ public class FacProductoRepository(DonchoContext context) : Repository<FacProduc
         var resultado = (from p in _context.FacProducto
                          join d in _context.GenCatalogoDetalle
                          on p.CodigoIva equals d.Id
-                         select new FacProductoDTO() { Activo = p.Activo, CodigoIva = p.CodigoIva, Grupo = p.Grupo, Id = p.Id, IvaTarifa = d.Codigo, IvaValor = Math.Round(p.Valor * Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100, 2), Nombre = p.Nombre, OrdenAparicion = p.OrdenAparicion, PedidoACocina = p.PedidoACocina, Valor = p.Valor, ValorDoncho = p.ValorDoncho, ValorTotal = Math.Round( p.Valor + Math.Round(p.Valor * Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100, 2),2) }
+                         select new FacProductoDTO() { Activo = p.Activo, CodigoIva = p.CodigoIva, Grupo = p.Grupo, Id = p.Id, 
+                             IvaTarifa = d.Codigo, 
+                             IvaValor = Math.Round(p.Valor *  Math.Round(Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100, 2), 2 ), 
+                             Nombre = p.Nombre, OrdenAparicion = p.OrdenAparicion, PedidoACocina = p.PedidoACocina, 
+                             Valor = p.Valor, 
+                             ValorDoncho = p.ValorDoncho,
+                             ValorTotal = Math.Round(
+                                            p.Valor + 
+                                                Math.Round(p.Valor * 
+                                                    Math.Round(Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100, 2)
+                                                    , 2)
+                                                , 2) }
                              ).ToList().OrderBy(o => o.Grupo).ThenBy(o => o.OrdenAparicion);
         return resultado;
     }
