@@ -26,7 +26,6 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   lproductosbebidas: any[] = [];
   lproductosotros: any[] = [];
 
-  lsecuencia: Secuencia = { secuencia: 0, id: '', fecha: 0 };
   pedido: any = {};
   pedidoImpresion: any = {};
   lordencocina: any[] = [];
@@ -73,17 +72,14 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.configurarPedido();
     this.getProductosPromise();
-    // this.getDatosPedido().then(() => {
-    //   this.getProductosPromise();
-    // } );
-    this.getSecuenciaPromise();
-    //this.getDatosPedido();
   }
 
   configurarPedido() {
     this.pedido = {};
     this.pedido.esFactura = false;
     this.cliente = {};
+    let d = new Date();
+    this.fechainteger = this.fechaToInteger(d);
   }
 
   // getDatosPedido() {
@@ -113,18 +109,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     })
   }
 
-  getSecuenciaPromise(): void {
-    this.secuenciaService.getSecuenciaPromise(this.authService.getLocalStorageDataByKey('sucursalId')!).then(data => {
-      this.lsecuencia = data.facsecuenciadia;
-      let d = new Date();
-      this.fechainteger = this.fechaToInteger(d);
-      if (this.lsecuencia.fecha !== this.fechainteger) {
-        this.lsecuencia.fecha = this.fechainteger;
-        this.lsecuencia.secuencia = 1;
-      }
-    })
-  }
-
+ 
   fillGrupoProducto() {
     if (!this.mostrarCargar) {
       return;
@@ -293,7 +278,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
 
     this.pedido.Clienteid = this.cliente.id === null ? 1 : this.cliente.id;
     this.pedido.UsuarioRegistro = this.authService.userEmail;
-    this.pedido.Secuencial = this.lsecuencia.secuencia;
+    this.pedido.Secuencial = 0;
     this.pedido.TipoPago = this.selectedFP;
     this.pedido.Fecha = d;
     this.pedido.FechaInteger = this.fechainteger;
@@ -309,8 +294,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.logger.log(this.pedido);
     this.loading = true;
     this.ordenesService.addOrden(this.pedido).then((data) => {
-      //this.cleanPedidos();
-      //this.backToSeleccion();
+      this.pedido.secuencial = data.secuencial;
       this.pedidoImpresion = data;
       this.loading = false;
       this.mostrarImprimir = true;
@@ -320,7 +304,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
       this.messageService.add({
         severity: 'success',
         summary: '¡Éxito!',
-        detail: 'Pedido ' + data.secuencial + ' creadook',
+        detail: 'Pedido ' + data.secuencial + ' creado OK!',
         life: 3000 // Duración en milisegundos (3 segundos)
       });
     }, (error) => {
@@ -341,8 +325,6 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   cleanPedidos() {
     this.configurarPedido();
     this.getProductosPromise();
-    this.getSecuenciaPromise();
-    //this.getDatosPedido();
     this.lproductoschoclo.forEach(element => {
       element.badge = '0';
     });
@@ -400,52 +382,52 @@ export class PedidosComponent extends BaseComponent implements OnInit {
   }
 
 
-saveCliente() {
-  this.mostrarInfoCliente = true;
-  if (this.clienteEncontrado) {
-    this.clienteDialog = false;
-    return;
-  }
+  saveCliente() {
+    this.mostrarInfoCliente = true;
+    if (this.clienteEncontrado) {
+      this.clienteDialog = false;
+      return;
+    }
 
-  const mensajeValidaCliente = this.validarCliente();
-  if (mensajeValidaCliente !== '') {
-    this.messageService.add({ severity: 'warn', summary: 'Ops!!', detail: mensajeValidaCliente });
-    this.mostrarInfoCliente = false;
-    return;
-  }
+    const mensajeValidaCliente = this.validarCliente();
+    if (mensajeValidaCliente !== '') {
+      this.messageService.add({ severity: 'warn', summary: 'Ops!!', detail: mensajeValidaCliente });
+      this.mostrarInfoCliente = false;
+      return;
+    }
 
-  this.cliente.email = this.cliente.email.trim() == '' ? 'doncho@gmail.com' : this.cliente.email.trim();
-  this.cliente.usuarioRegistro = this.authService.userEmail;
-  //this.cliente.direccion = this.authService.getLocalStorageDataByKey('sucursalNombre');
-  this.clientesService.addItem(this.cliente).then(data => {
-    this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Cliente creado' });
-    this.clienteDialog = false;
-    this.cliente.id = data.id;
-    this.pedido.Clienteid = this.cliente.id;
-  }).catch((error) => {
-    this.messageService.add({ severity: 'error', summary: 'Ops!! ', detail: 'Error al crear el cliente' });
-  });
-}
-
-searchCliente() {
-  this.searchingCliente = true;
-  this.clientesService.getClientePromiseByCedulaRuc(this.cliente.cedulaRuc).then(data => {
-    this.cliente.nombre = data.nombre;
-    this.cliente.apellido = data.apellido;
-    this.cliente.direccion = data.direccion;
-    this.cliente.telefono_celular = data.telefonoCelular;
-    this.cliente.email = data.email;
-    this.cliente.fecha_cumpleanios = data.fechaCumpleanios;
-    this.cliente.id = data.id;
-    this.searchingCliente = false;
-    this.clienteEncontrado = true;
+    this.cliente.email = this.cliente.email.trim() == '' ? 'doncho@gmail.com' : this.cliente.email.trim();
     this.cliente.usuarioRegistro = this.authService.userEmail;
-    this.messageService.add({ severity: 'success', summary: '¡Muy bien!', detail: '¡El cliente fue encontrado!' });
-    this.saveCliente();
-  }).catch(error => {
-    error.status === 404 ? this.messageService.add({ severity: 'warn', summary: 'Ops!!', detail: '¡El cliente no fue encontrado!' }) : this.messageService.add({ severity: 'error', summary: 'Ops!!', detail: 'Error al buscar el cliente!' });
-    this.searchingCliente = false;
-  });
-}
+    //this.cliente.direccion = this.authService.getLocalStorageDataByKey('sucursalNombre');
+    this.clientesService.addItem(this.cliente).then(data => {
+      this.messageService.add({ severity: 'success', summary: '¡Muy bien! ', detail: 'Cliente creado' });
+      this.clienteDialog = false;
+      this.cliente.id = data.id;
+      this.pedido.Clienteid = this.cliente.id;
+    }).catch((error) => {
+      this.messageService.add({ severity: 'error', summary: 'Ops!! ', detail: 'Error al crear el cliente' });
+    });
+  }
+
+  searchCliente() {
+    this.searchingCliente = true;
+    this.clientesService.getClientePromiseByCedulaRuc(this.cliente.cedulaRuc).then(data => {
+      this.cliente.nombre = data.nombre;
+      this.cliente.apellido = data.apellido;
+      this.cliente.direccion = data.direccion;
+      this.cliente.telefono_celular = data.telefonoCelular;
+      this.cliente.email = data.email;
+      this.cliente.fecha_cumpleanios = data.fechaCumpleanios;
+      this.cliente.id = data.id;
+      this.searchingCliente = false;
+      this.clienteEncontrado = true;
+      this.cliente.usuarioRegistro = this.authService.userEmail;
+      this.messageService.add({ severity: 'success', summary: '¡Muy bien!', detail: '¡El cliente fue encontrado!' });
+      this.saveCliente();
+    }).catch(error => {
+      error.status === 404 ? this.messageService.add({ severity: 'warn', summary: 'Ops!!', detail: '¡El cliente no fue encontrado!' }) : this.messageService.add({ severity: 'error', summary: 'Ops!!', detail: 'Error al buscar el cliente!' });
+      this.searchingCliente = false;
+    });
+  }
 }
 

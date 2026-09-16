@@ -10,7 +10,7 @@ namespace ComprobantesElectronicos.Utils
             factura factura = new()
             {
                 id = "comprobante",
-                version = "1.0.0",
+                version = "1.1.0",
                 infoTributaria = new facturaInfoTributaria()
                 {
                     ambiente = 1,

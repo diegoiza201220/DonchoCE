@@ -20,7 +20,7 @@ namespace WebApiDonCho.Services
             var secuencia = await uow.FacSecuenciaDiaR.GetBySucursalIdAsync(facOrden.Sucursalid) ?? throw new InvalidOperationException("No existe registro de secuencia del día.");
 
             ActualizarSecuenciaOrdenesDiaria(secuencia, facOrdenDTO.FechaInteger);
-
+            facOrden.Secuencial = secuencia.Secuencia;
             uow.FacSecuenciaDiaR.Update(secuencia);
             await uow.FacOrdenR.AddAsync(facOrden);
             await uow.SaveChangesAsync();
@@ -137,7 +137,7 @@ namespace WebApiDonCho.Services
             else
             {
                 secuencia.Fecha = fecha;
-                secuencia.Secuencia = 2;
+                secuencia.Secuencia = 1;
             }
         }
 

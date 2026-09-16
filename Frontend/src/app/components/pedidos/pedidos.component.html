@@ -6,7 +6,7 @@
                 <span>
                     <!-- <p-button (onClick)="fillGrupoProducto();" *ngIf="this.mostrarCargar">Cargar productos!
                     </p-button> -->
-                    <H5>ORDEN NUMERO: {{ lsecuencia.secuencia }}</H5>
+                    <H5>ORDEN NUMERO: <span *ngIf="mostrarNuevaOrden"> {{ pedido.secuencial }} </span></H5>
                 </span>
             </div>
             <div class="row" style="background-color: white;">
@@ -97,7 +97,7 @@
             <div>
                 <tr>
                     <td>
-                        <h5>ORDEN NUMERO: {{ lsecuencia.secuencia }}</h5>
+                        <H5>ORDEN NUMERO: <span *ngIf="mostrarNuevaOrden"> {{ pedido.secuencial }} </span></H5>
                     </td>
                     <td style="padding-left: 6rem;">Es factura?</td>
                     <td style="padding-left: 1rem;">

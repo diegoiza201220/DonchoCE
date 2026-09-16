@@ -25,10 +25,11 @@
         <tr>
             <th pSortableColumn="fecha">Fecha<p-sortIcon field="fecha"></p-sortIcon></th>
             <th pSortableColumn="secuencial">Orden No.<p-sortIcon field="secuencial"></p-sortIcon></th>
+            <th pSortableColumn="secuencial">Tipo<p-sortIcon field="secuencial"></p-sortIcon></th>
             <th pSortableColumn="cliente">Cliente<p-sortIcon field="secuencial"></p-sortIcon></th>
             <th>Valor</th>
-            <th>Tipo de pago</th>
-            <th>Doc de pago</th>
+            <th>Pago</th>
+            <th>Doc pago</th>
             <th>Usuario</th>
         </tr>
     </ng-template>
@@ -36,6 +37,7 @@
         <tr [pSelectableRow]="registro">
             <td>{{ registro.fecha | date:'dd.MM.yyyy HH:mm:ss'}}</td>
             <td>{{ registro.secuencial }}</td>
+            <td>{{ registro.esFactura ? 'FA':'NV'}}</td>
             <td>{{ registro.nombre + ' ' + registro.apellido }}</td>
             <td>{{ registro.totalOrden | currency:'USD' }}</td>
             <td>{{ registro.tipoPago }}</td>
