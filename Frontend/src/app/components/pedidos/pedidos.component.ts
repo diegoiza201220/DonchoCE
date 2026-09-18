@@ -246,6 +246,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.clienteEncontrado = false;
     this.cambio = 0;
     this.pago = 0;
+    this.selectedFP = 'EF';
   }
 
   grabarOrden() {

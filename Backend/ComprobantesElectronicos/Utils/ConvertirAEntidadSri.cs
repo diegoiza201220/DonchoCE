@@ -35,10 +35,10 @@ namespace ComprobantesElectronicos.Utils
                     razonSocialComprador = $"{orden.Cliente.Apellido} {orden.Cliente.Nombre}",
                     identificacionComprador = orden.Cliente.CedulaRuc,
                     direccionComprador = orden.Cliente.Direccion ?? "SIN DIRECCION",
-                    totalSinImpuestos = orden.TotalSinImpuestos,
+                    totalSinImpuestos = Math.Round(orden.TotalSinImpuestos,2),
                     totalDescuento = 0,
                     propina = 0,
-                    importeTotal = orden.TotalOrden,
+                    importeTotal = Math.Round(orden.TotalOrden,2),
                     moneda = "DOLAR",
                 }
             };
@@ -50,8 +50,8 @@ namespace ComprobantesElectronicos.Utils
                     codigo             = orden.ImpuestoCodigo,
                     codigoPorcentaje   = orden.ImpuestoCodigoPorcentaje,
                     descuentoAdicional = 0,
-                    baseImponible      = orden.ImpuestoBaseImponible,
-                    valor              = orden.ImpuestoValor,
+                    baseImponible      = Math.Round(orden.ImpuestoBaseImponible,2),
+                    valor              = Math.Round(orden.ImpuestoValor, 2),
                 }
             };
 
