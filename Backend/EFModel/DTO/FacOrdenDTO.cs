@@ -56,6 +56,7 @@ namespace EFModel.DTO
         public string ObligadoContabilidad { get; set; } = string.Empty;
         public string CodDoc { get; set; } = string.Empty;
         public string Xml { get; set; } = string.Empty;
+        public string SriAmbiente { get; set; } = string.Empty;
         #endregion
 
         #region NotaCredito

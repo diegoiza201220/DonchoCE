@@ -38,7 +38,12 @@ namespace WebApiDonCho.Services
             facOrdenDTO.CodDoc = "01";
             CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("01", facOrden.Sucursalid) ?? throw new InvalidOperationException($"Secuencia SRI no encontrada para la sucursal con id: {facOrden.Sucursalid}");
             _ = cache.TryGet(Constantes.CELINFOTRIBUTARIA, out CelInfoTributaria celInfoTributaria);
-            InfoTributariaHelper.CalcularInfoTributaria(facOrdenDTO, facOrden, celInfoTributaria, celSecuenciaSri, esProduccion: false, (int)ComprobantesElectronicos.Enums.CodigoDocumento.Factura);
+            _ = cache.TryGet(Constantes.SRI_AMBIENTE, out GenParametro sriAmbiente);
+            facOrdenDTO.SriAmbiente = sriAmbiente.Valor;
+            InfoTributariaHelper.CalcularInfoTributaria(
+                facOrdenDTO, facOrden, celInfoTributaria,
+                celSecuenciaSri, sriAmbiente.Valor,
+                (int)ComprobantesElectronicos.Enums.CodigoDocumento.Factura);
             CelLogDocumento celLogDocumento = CelLogDocumentoHelper.CrearLogInicial(facOrdenDTO);
             await uow.CelLogDocumentoR.AddAsync(celLogDocumento);
             celSecuenciaSri.SecuenciaActual++;
@@ -119,9 +124,10 @@ namespace WebApiDonCho.Services
             //}
 
             //orden.CodDoc = "01";
+            _ = cache.TryGet(Constantes.SRI_AMBIENTE, out GenParametro sriAmbiente);
             CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("03",orden.Sucursalid) ?? throw new InvalidOperationException($"Secuencia SRI no encontrada para la sucursal con id: {facOrden.Sucursalid}");
             CelInfoTributaria celInfoTributaria = cache.GetOrCreatePermanent("CELINFOTRIBUTARIA", () => uow.CelInfoTributariaR.GetById(1));
-            InfoTributariaHelper.CalcularInfoTributaria(orden, facOrden, celInfoTributaria, celSecuenciaSri, esProduccion: false, (int)ComprobantesElectronicos.Enums.CodigoDocumento.NotaCredito);
+            InfoTributariaHelper.CalcularInfoTributaria(orden, facOrden, celInfoTributaria, celSecuenciaSri, sriAmbiente.Valor, (int)ComprobantesElectronicos.Enums.CodigoDocumento.NotaCredito);
             CelLogDocumento celLogDocumento = CelLogDocumentoHelper.CrearLogInicial(orden);
             await uow.CelLogDocumentoR.AddAsync(celLogDocumento);
             celSecuenciaSri.SecuenciaActual++;

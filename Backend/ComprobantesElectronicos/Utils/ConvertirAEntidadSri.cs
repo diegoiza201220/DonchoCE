@@ -13,7 +13,7 @@ namespace ComprobantesElectronicos.Utils
                 version = "1.1.0",
                 infoTributaria = new facturaInfoTributaria()
                 {
-                    ambiente = 1,
+                    ambiente = Convert.ToByte(orden.SriAmbiente),
                     tipoEmision = 1,
                     razonSocial = orden.RazonSocial,
                     nombreComercial = orden.NombreComercial,

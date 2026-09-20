@@ -14,5 +14,6 @@
         public const string CELINFOTRIBUTARIA = "CELINFOTRIBUTARIA";
         public const string PATH_CERTIFICADO = "PATH_CERTIFICADO";
         public const string PWD_CERTIFICADO = "PWD_CERTIFICADO";
+        public const string SRI_AMBIENTE = "SRI_AMBIENTE";
     }
 }

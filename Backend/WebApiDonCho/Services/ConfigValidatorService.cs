@@ -42,6 +42,7 @@ namespace WebApiDonCho.Services
                 cache.GetOrCreatePermanent(Constantes.CELINFOTRIBUTARIA, () => unitOfWork.CelInfoTributariaR.GetById(1));
                 cache.GetOrCreatePermanent(Constantes.PATH_CERTIFICADO, () => unitOfWork.GenParametroR.GetById(Constantes.PATH_CERTIFICADO));
                 cache.GetOrCreatePermanent(Constantes.PWD_CERTIFICADO, () => unitOfWork.GenParametroR.GetById(Constantes.PWD_CERTIFICADO));
+                cache.GetOrCreatePermanent(Constantes.SRI_AMBIENTE, () => unitOfWork.GenParametroR.GetById(Constantes.SRI_AMBIENTE));
                 await unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)

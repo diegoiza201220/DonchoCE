@@ -1,7 +1,10 @@
 ﻿using ComprobantesElectronicos.DTO.Sri;
+using EFModel.Interfaces;
+using EFModel.Models;
 using Microsoft.Extensions.Configuration;
 using System.Text;
 using System.Xml.Linq;
+using Utils;
 
 namespace ComprobantesElectronicos.Services;
 
@@ -16,9 +19,10 @@ public class SriService
     private const string UrlRecepcionProduccion = "https://cel.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline";
     private const string UrlAutorizacionProduccion = "https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline";
 
-    public SriService(IConfiguration config, HttpClient httpClient)
+    public SriService(IConfiguration config, HttpClient httpClient, ICacheService cache)
     {
-        _esProd = bool.Parse(config["Sri:Produccion"] ?? "false");
+        _ = cache.TryGet(Constantes.SRI_AMBIENTE, out GenParametro sriAmbiente);
+        _esProd = sriAmbiente.Valor == "2";
         _httpClient = httpClient;
     }
 
