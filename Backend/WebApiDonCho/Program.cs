@@ -11,16 +11,15 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebApiDonCho;
 using WebApiDonCho.Services;
-
-using ILoggerFactory factory = LoggerFactory.Create(builder =>
-{
-    builder.AddConsole();
-    builder.SetMinimumLevel(LogLevel.Debug);
-});
-
-ILogger logger = factory.CreateLogger("Program");
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
+
+if (!builder.Environment.IsDevelopment())
+{
+    // Esperar 60 segundos antes de iniciar la aplicación para asegurarse de que la base de datos esté lista, se usa solo para Producción
+    Thread.Sleep(60000);
+}
 
 // 1. Obtener la cadena de conexión desde appsettings.json
 var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
@@ -97,6 +96,13 @@ builder.Services.AddHttpClient<SriService>(client =>
 });
 
 var app = builder.Build();
+
+Serilog.Debugging.SelfLog.Enable(msg => Console.WriteLine($"[ERROR INTERNO SERILOG] {msg}"));
+var rutaLogs = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs", "app-{Date}.txt");
+
+
+var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
+loggerFactory.AddFile(rutaLogs);
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {

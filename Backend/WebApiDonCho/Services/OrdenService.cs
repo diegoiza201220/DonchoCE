@@ -10,17 +10,19 @@ using WebApiDonCho.Helpers.ComprobantesElectronicos;
 
 namespace WebApiDonCho.Services
 {
-    public class OrdenService(IUnitOfWork uow, ComprobanteService comprobanteService, ICacheService cache)
+    public class OrdenService(IUnitOfWork uow, ComprobanteService comprobanteService, ICacheService cache, ILogger<OrdenService> logger)
     {
+        private readonly ILogger<OrdenService> _logger = logger;
         public async Task<FacOrdenDTO> GenerarFacturaAsync(FacOrdenDTO facOrdenDTO)
         {
-
+            
 
             var facOrden = facOrdenDTO.FromDTO();
             var secuencia = await uow.FacSecuenciaDiaR.GetBySucursalIdAsync(facOrden.Sucursalid) ?? throw new InvalidOperationException("No existe registro de secuencia del día.");
 
             ActualizarSecuenciaOrdenesDiaria(secuencia, facOrdenDTO.FechaInteger);
             facOrden.Secuencial = secuencia.Secuencia;
+            _logger.LogInformation($"Iniciando proceso de generación de factura para orden con Fecha:{facOrden.FechaInteger} - Secuencial:{facOrden.Secuencial} - Sucursal:{facOrden.Sucursalid} - EsFactura:{facOrden.EsFactura.ToString()}");
             uow.FacSecuenciaDiaR.Update(secuencia);
             await uow.FacOrdenR.AddAsync(facOrden);
             await uow.SaveChangesAsync();

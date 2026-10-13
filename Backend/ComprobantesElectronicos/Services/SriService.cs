@@ -2,6 +2,8 @@
 using EFModel.Interfaces;
 using EFModel.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Serilog.Core;
 using System.Text;
 using System.Xml.Linq;
 using Utils;
@@ -18,12 +20,13 @@ public class SriService
     private const string UrlAutorizacionPruebas = "https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline";
     private const string UrlRecepcionProduccion = "https://cel.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline";
     private const string UrlAutorizacionProduccion = "https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline";
-
-    public SriService(IConfiguration config, HttpClient httpClient, ICacheService cache)
+    private readonly ILogger<SriService> _logger;
+    public SriService(IConfiguration config, HttpClient httpClient, ICacheService cache, ILogger<SriService> logger)
     {
         _ = cache.TryGet(Constantes.SRI_AMBIENTE, out GenParametro sriAmbiente);
         _esProd = sriAmbiente.Valor == "2";
         _httpClient = httpClient;
+        _logger = logger;
     }
 
     // ── Paso 1: Enviar el XML firmado al SRI ─────────────────────────────────
@@ -80,7 +83,7 @@ public class SriService
         }
         catch (TaskCanceledException ex)
         {
-            Console.WriteLine($"Timeout SRI: {ex.Message}");
+            _logger.LogError($"Timeout al enviar solicitud SOAP al SRI para acción {accion}: {ex.Message}");
             return new XDocument();
         }
     }

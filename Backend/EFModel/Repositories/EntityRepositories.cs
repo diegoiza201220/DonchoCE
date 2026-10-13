@@ -129,7 +129,7 @@ public class FacDetalleOrdenRepository(DonchoContext context) : Repository<FacDe
     {
         var detalles = _dbSet.AsNoTracking()
             .Include(p => p.Producto)
-            .Where(o => o.Orden.FechaInteger >= fechaini && o.Orden.FechaInteger <= fechafin && o.SucursalId == sucursalid && o.Orden.Sucursalid == sucursalid)
+            .Where(o => o.Orden.FechaInteger >= fechaini && o.Orden.FechaInteger <= fechafin && o.Orden.Sucursalid == sucursalid)
             .Select(g => new { g.Producto.Nombre, g.Cantidad });
 
         return detalles.GroupBy(c => c.Nombre)

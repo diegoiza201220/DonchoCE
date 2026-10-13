@@ -11,6 +11,7 @@ namespace WebApiDonCho.Services
 
         public async Task ConfigurarIVA()
         {
+            _logger.LogInformation("Iniciando configuración diaria de IVA y productos...");
             try
             {
                 bool esFeriado = unitOfWork.GenFeriadoR.GetByFecha(DateTime.Now.ToIntFecha());
