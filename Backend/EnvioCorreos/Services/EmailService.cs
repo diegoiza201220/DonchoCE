@@ -44,7 +44,7 @@ namespace EnvioCorreos.Services
 
 
             using Report report = new();
-            report.Load("reportes/rptFactura.frx");
+            report.Load("Reportes/rptFactura.frx");
             var json = JsonConvert.SerializeObject(orden, Formatting.None);
             string jsonModificado = $"Json='{json}'{genParametroJsonSchemaFactura.Valor}";
             foreach (var connection in report.Dictionary.Connections)

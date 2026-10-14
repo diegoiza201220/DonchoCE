@@ -15,21 +15,21 @@ namespace WebApiDonCho.Services
         private readonly ILogger<OrdenService> _logger = logger;
         public async Task<FacOrdenDTO> GenerarFacturaAsync(FacOrdenDTO facOrdenDTO)
         {
-            
+
 
             var facOrden = facOrdenDTO.FromDTO();
             var secuencia = await uow.FacSecuenciaDiaR.GetBySucursalIdAsync(facOrden.Sucursalid) ?? throw new InvalidOperationException("No existe registro de secuencia del día.");
 
             ActualizarSecuenciaOrdenesDiaria(secuencia, facOrdenDTO.FechaInteger);
             facOrden.Secuencial = secuencia.Secuencia;
-            _logger.LogInformation($"Iniciando proceso de generación de factura para orden con Fecha:{facOrden.FechaInteger} - Secuencial:{facOrden.Secuencial} - Sucursal:{facOrden.Sucursalid} - EsFactura:{facOrden.EsFactura.ToString()}");
+            _logger.LogInformation($"Iniciando procesamiento para pedido con Fecha:{facOrden.FechaInteger} - Secuencial:{facOrden.Secuencial} - Sucursal:{facOrden.Sucursalid} - EsFactura:{facOrden.EsFactura.ToString()}");
             uow.FacSecuenciaDiaR.Update(secuencia);
             await uow.FacOrdenR.AddAsync(facOrden);
             await uow.SaveChangesAsync();
 
             facOrdenDTO = facOrden.ToDTO();
             CompletarInformacionDetalleOrden(facOrdenDTO);
-            CompletarInformaciónCliente(facOrdenDTO);
+            CompletarInformacionCliente(facOrdenDTO);
             CompletarInformacionTributaria(facOrdenDTO);
 
             if (!facOrdenDTO.EsFactura) //retornamos desde aquí si no es factura, para evitar el proceso de emisión electrónica y envío de correo
@@ -72,7 +72,7 @@ namespace WebApiDonCho.Services
             }
         }
 
-        private void CompletarInformaciónCliente(FacOrdenDTO facOrdenDTO)
+        private void CompletarInformacionCliente(FacOrdenDTO facOrdenDTO)
         {
             var cliente = uow.FacClienteR.GetByIdAsync(facOrdenDTO.Clienteid).Result;
             if (cliente != null)
@@ -80,7 +80,7 @@ namespace WebApiDonCho.Services
                 facOrdenDTO.Cliente = cliente.ToDTO();
                 facOrdenDTO.clienteNombre = $"{cliente.Nombre} {cliente.Apellido}";
                 facOrdenDTO.clienteRuc = cliente.CedulaRuc;
-                facOrdenDTO.clienteDireccion = cliente.Direccion??"";
+                facOrdenDTO.clienteDireccion = cliente.Direccion ?? "";
             }
         }
 
@@ -127,7 +127,7 @@ namespace WebApiDonCho.Services
 
             //orden.CodDoc = "01";
             _ = cache.TryGet(Constantes.SRI_AMBIENTE, out GenParametro sriAmbiente);
-            CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("03",orden.Sucursalid) ?? throw new InvalidOperationException($"Secuencia SRI no encontrada para la sucursal con id: {facOrden.Sucursalid}");
+            CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("03", orden.Sucursalid) ?? throw new InvalidOperationException($"Secuencia SRI no encontrada para la sucursal con id: {facOrden.Sucursalid}");
             CelInfoTributaria celInfoTributaria = cache.GetOrCreatePermanent("CELINFOTRIBUTARIA", () => uow.CelInfoTributariaR.GetById(1));
             InfoTributariaHelper.CalcularInfoTributaria(orden, facOrden, celInfoTributaria, celSecuenciaSri, sriAmbiente.Valor, (int)ComprobantesElectronicos.Enums.CodigoDocumento.NotaCredito);
             CelLogDocumento celLogDocumento = CelLogDocumentoHelper.CrearLogInicial(orden);
@@ -164,7 +164,7 @@ namespace WebApiDonCho.Services
                 TotalOrden = o.TotalOrden,
                 UsuarioRegistro = o.UsuarioRegistro,
                 EsFactura = o.EsFactura,
-                NumeroFactura = o.NumeroFactura,
+                NumeroFactura = o.NumeroFactura ?? "",
                 DocumentoPago = o.DocumentoPago ?? "",
                 Id = o.Id
             });
@@ -212,16 +212,18 @@ namespace WebApiDonCho.Services
             return true;
         }
 
-        public async Task<FacOrdenDTO> GetFacOrdenDtoByIdAsync(int ordenid)
+        public async Task<FacOrdenDTO> GetFacOrdenDtoByIdAsync(int ordenId)
         {
-            var facOrden = uow.FacOrdenR.GetByIdAsync(ordenid).Result;
-            var detalle = uow.FacDetalleOrdenR.GetByOrdenAsync(ordenid).Result;
-            if (facOrden == null || detalle == null) return null;
-            facOrden.FacDetalleOrdens = detalle.ToList();
+            var facOrden = await uow.FacOrdenR.GetWithDetallesAsync(ordenId) ?? throw new Exception($"No existe la orden {ordenId}.");
+            //var detalle = await uow.FacDetalleOrdenR.GetByOrdenAsync(ordenId);
+            //if (facOrden == null || detalle == null) return null;
+            //facOrden.FacDetalleOrdens = [.. detalle];
+
+
             FacOrdenDTO facOrdenDto = facOrden.ToDTO();
 
-            CompletarInformacionDetalleOrden(facOrdenDto);
-            CompletarInformaciónCliente(facOrdenDto);
+            //CompletarInformacionDetalleOrden(facOrdenDto);
+            //CompletarInformacionCliente(facOrdenDto);
             CompletarInformacionTributaria(facOrdenDto);
             return facOrdenDto;
         }

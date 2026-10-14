@@ -62,7 +62,7 @@ public class FacOrdenRepository(DonchoContext context) : Repository<FacOrden>(co
     public async Task<FacOrden?> GetWithDetallesAsync(int id)
         => await _dbSet.AsNoTracking()
             .Include(o => o.Cliente)
-            .Include(o => o.FacDetalleOrdens)
+            .Include(o => o.FacDetalleOrdens).ThenInclude(d => d.Producto)
             .FirstOrDefaultAsync(o => o.Id == id);
 
     public async Task<IEnumerable<FacOrden>> GetByClienteAsync(int clienteId)

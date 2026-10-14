@@ -22,7 +22,7 @@ if (!builder.Environment.IsDevelopment())
 }
 
 // 1. Obtener la cadena de conexión desde appsettings.json
-var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+var connectionString = builder.Environment.IsDevelopment()? builder.Configuration.GetConnectionString("PostgresConnectionTest"): builder.Configuration.GetConnectionString("PostgresConnectionProd");
 
 // 2. Registrar el DbContext con el proveedor de PostgreSQL
 builder.Services.AddDbContext<DonchoContext>(options =>

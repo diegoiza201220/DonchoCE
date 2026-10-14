@@ -52,6 +52,9 @@ namespace EFModel.Mappers
             return new FacOrdenDTO
             {
                 Id = orden.Id,
+                clienteDireccion = orden.Cliente?.Direccion ?? "",
+                clienteNombre = string.Join(' ',orden.Cliente?.Nombre, orden.Cliente?.Apellido) ?? "",
+                clienteRuc = orden.Cliente?.CedulaRuc ?? "",
                 Clienteid = orden.Clienteid,
                 Sucursalid = orden.Sucursalid,
                 FechaInteger = orden.FechaInteger,

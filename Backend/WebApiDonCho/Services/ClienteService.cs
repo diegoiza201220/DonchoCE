@@ -56,7 +56,7 @@ namespace WebApiDonCho.Services
                 TotalOrden = o.TotalOrden,
                 UsuarioRegistro = o.UsuarioRegistro,
                 EsFactura = o.EsFactura,
-                NumeroFactura = o.NumeroFactura,
+                NumeroFactura = o.NumeroFactura ?? "",
                 DocumentoPago = o.DocumentoPago ?? ""
             });
         }

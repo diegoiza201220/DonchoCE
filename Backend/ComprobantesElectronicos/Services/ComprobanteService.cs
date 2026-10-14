@@ -4,18 +4,15 @@ using EFModel.DTO;
 using EFModel.Interfaces;
 using EFModel.Models;
 using EnvioCorreos.Services;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Text;
 
 namespace ComprobantesElectronicos.Services;
 
-public class ComprobanteService(SriService sriService, InfowareFirmaService infowareFirmaService, IUnitOfWork uow, EmailService emailService, IConfiguration config, ILogger<ComprobanteService> logger)
+public class ComprobanteService(SriService sriService, InfowareFirmaService infowareFirmaService, IUnitOfWork uow, EmailService emailService, ILogger<ComprobanteService> logger)
 {
     public async Task<ResultadoEmisionDTO> EmitirFacturaAsync(FacOrdenDTO ordenDTO, CelLogDocumento celLogDocumento)
     {
-        //Task.Run(async () =>
-        //{
         try
         {
             // 1. Generar el XML del comprobante
@@ -49,7 +46,7 @@ public class ComprobanteService(SriService sriService, InfowareFirmaService info
             logger.LogInformation($"Proceso OK de respuesta-recepción para orden con Fecha:{ordenDTO.FechaInteger} - Secuencial:{ordenDTO.Secuencial} - Sucursal:{ordenDTO.Sucursalid} - Id: {ordenDTO.Id}");
 
             // 5. Esperar y consultar autorización (el SRI puede tardar unos segundos)
-            await Task.Delay(2000);
+            await Task.Delay(4000);
             var claveAcceso = ordenDTO.ClaveNumeroAutorizacion;
             var respuestaAutorizacion = await sriService.ConsultarAutorizacionAsync(claveAcceso);
 
