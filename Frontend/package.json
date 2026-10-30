@@ -21,6 +21,7 @@
     "@angular/router": "^16.2.0",
     "chart.js": "^4.4.0",
     "file-saver": "^2.0.5",
+    "nanoid": "^6.0.2",
     "pdfmake": "^0.3.11",
     "primeng": "^16.4.1",
     "rxjs": "~7.8.0",

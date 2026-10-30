@@ -15,22 +15,22 @@ public class ComprobanteService(SriService sriService, InfowareFirmaService info
     {
         try
         {
+            logger.LogInformation($"IdFromFe:{ordenDTO.IdFromFe} - EmitirFactura");
             // 1. Generar el XML del comprobante
             var entidadSri = ConvertirAEntidadSri.ObtenerFactura(ordenDTO);
-            logger.LogInformation($"Proceso OK de obtención de factura para orden con Fecha:{ordenDTO.FechaInteger} - Secuencial:{ordenDTO.Secuencial} - Sucursal:{ordenDTO.Sucursalid} - Id: {ordenDTO.Id}");
+            logger.LogInformation($"IdFromFe:{ordenDTO.IdFromFe} - formato factura SRI - OK");
 
             // 2. Firmar el XML con XAdES-BES
             var xmlFirmado = infowareFirmaService.FirmarDocumento(entidadSri);
-            logger.LogInformation($"Proceso OK de firma de documento para orden con Fecha:{ordenDTO.FechaInteger} - Secuencial:{ordenDTO.Secuencial} - Sucursal:{ordenDTO.Sucursalid} - Id: {ordenDTO.Id}");
+            logger.LogInformation($"IdFromFe:{ordenDTO.IdFromFe} - firma de documento - OK");
 
             // 3. Convertir a Base64 para enviar al SRI
             var xmlBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(xmlFirmado));
-            logger.LogInformation($"Proceso OK de conversión a Base64 para orden con Fecha:{ordenDTO.FechaInteger} - Secuencial:{ordenDTO.Secuencial} - Sucursal:{ordenDTO.Sucursalid} - Id: {ordenDTO.Id}");
-
+            logger.LogInformation($"IdFromFe:{ordenDTO.IdFromFe} - conversión a Base64 - OK");
 
             // 4. Enviar al SRI
             var respuestaRecepcion = await sriService.EnviarComprobanteAsync(xmlBase64);
-            logger.LogInformation($"Proceso OK de envío de comprobante para orden con Fecha:{ordenDTO.FechaInteger} - Secuencial:{ordenDTO.Secuencial} - Sucursal:{ordenDTO.Sucursalid} - Id: {ordenDTO.Id}");
+            logger.LogInformation($"IdFromFe:{ordenDTO.IdFromFe} - enviarcomprobante - OK");
 
             if (!respuestaRecepcion.FueRecibida)
             {
@@ -43,10 +43,10 @@ public class ComprobanteService(SriService sriService, InfowareFirmaService info
                     Mensajes = [.. respuestaRecepcion.Mensajes.Select(m => m.Mensaje)]
                 };
             }
-            logger.LogInformation($"Proceso OK de respuesta-recepción para orden con Fecha:{ordenDTO.FechaInteger} - Secuencial:{ordenDTO.Secuencial} - Sucursal:{ordenDTO.Sucursalid} - Id: {ordenDTO.Id}");
+            logger.LogInformation($"IdFromFe:{ordenDTO.IdFromFe} - respuestarecepción - OK");
 
             // 5. Esperar y consultar autorización (el SRI puede tardar unos segundos)
-            await Task.Delay(4000);
+            await Task.Delay(2000);
             var claveAcceso = ordenDTO.ClaveNumeroAutorizacion;
             var respuestaAutorizacion = await sriService.ConsultarAutorizacionAsync(claveAcceso);
 
@@ -61,7 +61,7 @@ public class ComprobanteService(SriService sriService, InfowareFirmaService info
                     Mensajes = [.. respuestaAutorizacion.Mensajes.Select(m => m.Mensaje)]
                 };
             }
-            logger.LogInformation($"Proceso OK de respuesta-autorización para orden con Fecha:{ordenDTO.FechaInteger} - Secuencial:{ordenDTO.Secuencial} - Sucursal:{ordenDTO.Sucursalid} - Id: {ordenDTO.Id}");
+            logger.LogInformation($"IdFromFe:{ordenDTO.IdFromFe} - respuestaautorización - OK");
 
             celLogDocumento.XmlFirmado = ordenDTO.Xml = respuestaAutorizacion.XmlAutorizado;
             SetInformacionCelLogDocumento(celLogDocumento, estado: 200, mensaje: "Comprobante autorizado exitosamente");
@@ -82,7 +82,7 @@ public class ComprobanteService(SriService sriService, InfowareFirmaService info
         {
             SetInformacionCelLogDocumento(celLogDocumento, estado: 3, mensaje: $"Error al emitir comprobante: {ex.Message}");// estado 3 error en autorización)
             await uow.SaveChangesAsync();
-            logger.LogError($"Error en proceso de generación de factura para orden con Fecha:{ordenDTO.FechaInteger} - Secuencial:{ordenDTO.Secuencial} - Sucursal:{ordenDTO.Sucursalid} - Id: {ordenDTO.Id} - Ex: {ex.Message}");
+            logger.LogError($"IdFromFe:{ordenDTO.IdFromFe} - mensaje: {ex.Message}");
             return new ResultadoEmisionDTO
             {
                 Exitoso = false,

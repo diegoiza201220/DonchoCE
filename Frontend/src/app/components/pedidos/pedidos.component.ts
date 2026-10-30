@@ -5,12 +5,12 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 import { SecuenciaService } from 'src/app/services/secuencia.service';
 import { OrdenesService } from 'src/app/services/ordenes.service';
 import { ClientesService } from 'src/app/services/clientes.service';
-import Secuencia from 'src/app/interfaces/secuencia.interface';
 import { BaseComponent } from 'src/app/util/base.component';
 import { DatePipe } from '@angular/common';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoggerService } from 'src/app/services/logger.service';
 import { PdfPrintService } from 'src/app/services/pdf-print.service';
+import { nanoid } from 'nanoid';
 
 @Component({
   selector: 'app-pedidos',
@@ -54,6 +54,8 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     { label: 'Si', value: true },
     { label: 'No', value: false }
   ];
+
+  idFromFe: string = nanoid(14); 
 
   @ViewChild('efectivorecibido') input: ElementRef | undefined;
 
@@ -247,6 +249,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
     this.cambio = 0;
     this.pago = 0;
     this.selectedFP = 'EF';
+    this.idFromFe = nanoid(14);
   }
 
   grabarOrden() {
@@ -277,6 +280,7 @@ export class PedidosComponent extends BaseComponent implements OnInit {
 
     let d = new Date();
 
+    this.pedido.IdFromFe = this.idFromFe;
     this.pedido.Clienteid = this.cliente.id === null ? 1 : this.cliente.id;
     this.pedido.UsuarioRegistro = this.authService.userEmail;
     this.pedido.Secuencial = 0;

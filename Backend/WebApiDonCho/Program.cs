@@ -11,7 +11,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebApiDonCho;
 using WebApiDonCho.Services;
-using Serilog.Events;
+using Microsoft.Extensions.Http.Resilience;
+using Polly;
+using Polly.Retry;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,9 +29,13 @@ var connectionString = builder.Environment.IsDevelopment()? builder.Configuratio
 
 // 2. Registrar el DbContext con el proveedor de PostgreSQL
 builder.Services.AddDbContext<DonchoContext>(options =>
-    options.UseNpgsql(connectionString)
-    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-);
+    options.UseNpgsql(connectionString, 
+        npgsqlOptions => npgsqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 3, 
+            maxRetryDelay: TimeSpan.FromSeconds(2), 
+            errorCodesToAdd: null)
+        )
+    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
 // 3. Registrar Unit of Work (incluye todos los repositorios)
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -81,19 +88,59 @@ builder.Services.AddCors(options =>
     });
 });
 
+//builder.Services.AddHttpClient<SriService>(client =>
+//{
+//    client.Timeout = TimeSpan.FromMinutes(5);
+//    client.DefaultRequestHeaders.Add("Accept", "text/xml");
+//})
+//.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+//{
+//    ServerCertificateCustomValidationCallback =
+//        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
+//    AutomaticDecompression =
+//        System.Net.DecompressionMethods.GZip |
+//        System.Net.DecompressionMethods.Deflate
+//});
+
 builder.Services.AddHttpClient<SriService>(client =>
 {
-    client.Timeout = TimeSpan.FromMinutes(5);
+    // El control de tiempos lo hace el pipeline de resiliencia
+    client.Timeout = Timeout.InfiniteTimeSpan;
     client.DefaultRequestHeaders.Add("Accept", "text/xml");
 })
-.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+.ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
 {
-    ServerCertificateCustomValidationCallback =
-        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
-    AutomaticDecompression =
-        System.Net.DecompressionMethods.GZip |
-        System.Net.DecompressionMethods.Deflate
+    // Con 1 envío por minuto, la conexión no debe sobrevivir entre llamadas
+    PooledConnectionIdleTimeout = TimeSpan.FromSeconds(5),
+    PooledConnectionLifetime = TimeSpan.FromSeconds(30),
+    ConnectTimeout = TimeSpan.FromSeconds(15),
+    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+    SslOptions = new System.Net.Security.SslClientAuthenticationOptions
+    {
+        // Deuda técnica: acepta cualquier certificado
+        RemoteCertificateValidationCallback = (_, _, _, _) => true
+    }
+})
+.AddResilienceHandler("sri-pipeline", pipeline =>
+{
+    // 1. Timeout total (incluye todos los reintentos y esperas)
+    pipeline.AddTimeout(TimeSpan.FromMinutes(3));
+
+    // 2. Reintentos con espera exponencial y jitter
+    pipeline.AddRetry(new HttpRetryStrategyOptions
+    {
+        MaxRetryAttempts = 4,
+        Delay = TimeSpan.FromSeconds(2),
+        BackoffType = DelayBackoffType.Exponential,
+        UseJitter = true
+        // ShouldHandle por defecto: HttpRequestException (incluye Connection reset),
+        // timeouts por intento, 5xx, 408 y 429
+    });
+
+    // 3. Timeout por intento
+    pipeline.AddTimeout(TimeSpan.FromSeconds(30));
 });
+
 
 var app = builder.Build();
 

@@ -196,6 +196,17 @@ public class FacSecuenciaDiaRepository(DonchoContext context) : Repository<FacSe
 
     public async Task<FacSecuenciaDia?> GetSecuenciaAsync()
     => await _dbSet.AsNoTracking().FirstOrDefaultAsync();
+
+    public async Task UpdateSecuenciaAsync(int sucursalid, int fecha)
+    {
+        await _dbSet.Where(s => s.Sucursalid == sucursalid)
+            .ExecuteUpdateAsync(setters => setters
+                // Si la fecha en la BDD es diferente a la actual, reinicia a 1. Si es igual, incrementa en 1.
+                .SetProperty(s => s.Secuencia, s => s.Fecha != fecha ? 1 : s.Secuencia + 1)
+                // Actualiza la fecha con el día actual
+                .SetProperty(s => s.Fecha, fecha)
+            );
+    }
 }
 
 // ── Usuario──────────────────────────────────────────────────────────────────

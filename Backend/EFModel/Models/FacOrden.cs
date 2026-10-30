@@ -36,6 +36,7 @@ public partial class FacOrden
     public string NotaCreditoClaveNumeroAutorizacion { get; set; } = string.Empty;
     public string NotaCreditoNumeroNotaCredito { get; set; } = string.Empty;
     public string NotaCreditoMotivo { get; set; } = string.Empty;
+    public string IdFromFe { get; set; } = string.Empty;
     public DateTime NotaCreditoFecha { get; set; }
     public virtual FacCliente Cliente { get; set; } = null!;
 

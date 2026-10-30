@@ -247,6 +247,8 @@ public partial class DonchoContext : DbContext
                 .HasColumnName("nota_credito_motivo");
             entity.Property(e => e.NotaCreditoFecha)
                 .HasColumnName("nota_credito_fecha");
+            entity.Property(e => e.IdFromFe)
+                .HasColumnName("id_from_fe");
             entity.HasOne(d => d.Cliente)
                 .WithMany(p => p.FacOrdens)
                 .HasForeignKey(d => d.Clienteid)

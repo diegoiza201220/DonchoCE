@@ -30,6 +30,7 @@ namespace EFModel.Mappers
                 NotaCreditoNumeroNotaCredito = orden.NotaCreditoNumeroNotaCredito,
                 NotaCreditoMotivo = orden.NotaCreditoMotivo,
                 NotaCreditoFecha = orden.NotaCreditoFecha,
+                IdFromFe = orden.IdFromFe,
                 FacDetalleOrdens = [.. orden.FacDetalleOrdens.Select(d => new FacDetalleOrden
                 {
                     Cantidad = d.Cantidad,
@@ -80,6 +81,7 @@ namespace EFModel.Mappers
                 Establecimiento = orden.Establecimiento,
                 PuntoEmision = orden.PuntoEmision,
                 NumeroFactura = orden.NumeroFactura,
+                IdFromFe = orden.IdFromFe,
                 FacDetalleOrdens = [.. orden.FacDetalleOrdens.Select(d => new FacDetalleOrdenDTO
                 {
                     Cantidad = d.Cantidad,

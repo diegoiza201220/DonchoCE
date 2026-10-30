@@ -44,6 +44,7 @@ namespace EFModel.DTO
         public string ClaveNumeroAutorizacion { get; set; } = string.Empty;
         public string Establecimiento { get; set; } = string.Empty;
         public string PuntoEmision { get; set; } = string.Empty;
+        public string IdFromFe { get; set; } = string.Empty;
 
         #region Informacion tributaria para factura
         public string RazonSocial { get; set; } = string.Empty;

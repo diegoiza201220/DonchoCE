@@ -15,18 +15,17 @@ namespace WebApiDonCho.Services
         private readonly ILogger<OrdenService> _logger = logger;
         public async Task<FacOrdenDTO> GenerarFacturaAsync(FacOrdenDTO facOrdenDTO)
         {
-
-
+            _logger.LogInformation($"IdFromFe:{facOrdenDTO.IdFromFe} - Pedido capturado - Sucursal: {facOrdenDTO.Sucursalid} - FechaReal:{facOrdenDTO.Fecha} - EsFactura:{facOrdenDTO.EsFactura}");
             var facOrden = facOrdenDTO.FromDTO();
+            await uow.FacSecuenciaDiaR.UpdateSecuenciaAsync(facOrden.Sucursalid, facOrden.FechaInteger);
             var secuencia = await uow.FacSecuenciaDiaR.GetBySucursalIdAsync(facOrden.Sucursalid) ?? throw new InvalidOperationException("No existe registro de secuencia del día.");
-
-            ActualizarSecuenciaOrdenesDiaria(secuencia, facOrdenDTO.FechaInteger);
+            //ActualizarSecuenciaOrdenesDiaria(secuencia, facOrdenDTO.FechaInteger);
             facOrden.Secuencial = secuencia.Secuencia;
-            _logger.LogInformation($"Iniciando procesamiento para pedido con Fecha:{facOrden.FechaInteger} - Secuencial:{facOrden.Secuencial} - Sucursal:{facOrden.Sucursalid} - EsFactura:{facOrden.EsFactura.ToString()}");
+            _logger.LogInformation($"IdFromFe:{facOrden.IdFromFe} - Secuencia: {facOrden.Secuencial}");
             uow.FacSecuenciaDiaR.Update(secuencia);
             await uow.FacOrdenR.AddAsync(facOrden);
             await uow.SaveChangesAsync();
-
+            _logger.LogInformation($"IdFromFe:{facOrden.IdFromFe} - Pedido almacenado");
             facOrdenDTO = facOrden.ToDTO();
             CompletarInformacionDetalleOrden(facOrdenDTO);
             CompletarInformacionCliente(facOrdenDTO);

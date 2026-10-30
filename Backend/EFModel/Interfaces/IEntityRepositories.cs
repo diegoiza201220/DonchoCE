@@ -64,6 +64,7 @@ public interface IFacSecuenciaDiaRepository : IRepository<FacSecuenciaDia>
     Task<FacSecuenciaDia?> GetByCodigoAsync(int codigo);
     FacSecuenciaDia? GetSecuencia();
     Task<FacSecuenciaDia?> GetSecuenciaAsync();
+    Task UpdateSecuenciaAsync(int sucursalid, int fecha);
 }
 
 public interface IGenUsuarioRepository : IRepository<GenUsuario>
