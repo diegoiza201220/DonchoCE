@@ -31,8 +31,8 @@ var connectionString = builder.Environment.IsDevelopment()? builder.Configuratio
 builder.Services.AddDbContext<DonchoContext>(options =>
     options.UseNpgsql(connectionString, 
         npgsqlOptions => npgsqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 3, 
-            maxRetryDelay: TimeSpan.FromSeconds(2), 
+            maxRetryCount: 5, 
+            maxRetryDelay: TimeSpan.FromSeconds(10), 
             errorCodesToAdd: null)
         )
     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
