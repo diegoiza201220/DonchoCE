@@ -31,28 +31,30 @@ namespace WebApiDonCho.Services
             CompletarInformacionDetalleOrden(facOrdenDTO);
             CompletarInformacionCliente(facOrdenDTO);
             CompletarInformacionTributaria(facOrdenDTO);
-
-            if (!facOrdenDTO.EsFactura) //retornamos desde aquí si no es factura, para evitar el proceso de emisión electrónica y envío de correo
+            CelLogDocumento celLogDocumento = new();
+            if (facOrdenDTO.EsFactura) //retornamos desde aquí si no es factura, para evitar el proceso de emisión electrónica y envío de correo
             {
-                return facOrdenDTO;
+                //return facOrdenDTO;
+
+
+                facOrdenDTO.CodDoc = "01";
+                CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("01", facOrden.Sucursalid) ?? throw new InvalidOperationException($"Secuencia SRI no encontrada para la sucursal con id: {facOrden.Sucursalid}");
+                _ = cache.TryGet(Constantes.CELINFOTRIBUTARIA, out CelInfoTributaria celInfoTributaria);
+                _ = cache.TryGet(Constantes.SRI_AMBIENTE, out GenParametro sriAmbiente);
+                facOrdenDTO.SriAmbiente = sriAmbiente.Valor;
+                InfoTributariaHelper.CalcularInfoTributaria(
+                    facOrdenDTO, facOrden, celInfoTributaria,
+                    celSecuenciaSri, sriAmbiente.Valor,
+                    (int)ComprobantesElectronicos.Enums.CodigoDocumento.Factura);
+                celLogDocumento = CelLogDocumentoHelper.CrearLogInicial(facOrdenDTO);
+                await uow.CelLogDocumentoR.AddAsync(celLogDocumento);
+                celSecuenciaSri.SecuenciaActual++;
+                uow.CelSecuenciasSriR.Update(celSecuenciaSri);
+                await uow.SaveChangesAsync();
+                _ = await comprobanteService.EmitirFacturaAsync(facOrdenDTO, celLogDocumento);
             }
 
-            facOrdenDTO.CodDoc = "01";
-            CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("01", facOrden.Sucursalid) ?? throw new InvalidOperationException($"Secuencia SRI no encontrada para la sucursal con id: {facOrden.Sucursalid}");
-            _ = cache.TryGet(Constantes.CELINFOTRIBUTARIA, out CelInfoTributaria celInfoTributaria);
-            _ = cache.TryGet(Constantes.SRI_AMBIENTE, out GenParametro sriAmbiente);
-            facOrdenDTO.SriAmbiente = sriAmbiente.Valor;
-            InfoTributariaHelper.CalcularInfoTributaria(
-                facOrdenDTO, facOrden, celInfoTributaria,
-                celSecuenciaSri, sriAmbiente.Valor,
-                (int)ComprobantesElectronicos.Enums.CodigoDocumento.Factura);
-            CelLogDocumento celLogDocumento = CelLogDocumentoHelper.CrearLogInicial(facOrdenDTO);
-            await uow.CelLogDocumentoR.AddAsync(celLogDocumento);
-            celSecuenciaSri.SecuenciaActual++;
-            uow.CelSecuenciasSriR.Update(celSecuenciaSri);
-            await uow.SaveChangesAsync();
-
-            _ = await comprobanteService.EmitirFacturaAsync(facOrdenDTO, celLogDocumento);
+            
             //CompletarInformacionDetalleOrden(facOrdenDTO);
             //CompletarInformaciónCliente(facOrdenDTO);
             //CompletarInformacionTributaria(facOrdenDTO);
