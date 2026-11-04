@@ -5,6 +5,7 @@ using EFModel.DTO.Request;
 using EFModel.Interfaces;
 using EFModel.Mappers;
 using EFModel.Models;
+using Serilog;
 using Utils;
 using WebApiDonCho.Helpers.ComprobantesElectronicos;
 
@@ -188,24 +189,29 @@ namespace WebApiDonCho.Services
         {
             try
             {
+                _logger.LogInformation($"Eliminar Orden Id:{ordenid}");
                 var logDocumentos = await uow.CelLogDocumentoR.GetByOrdenid(ordenid);
                 foreach (var log in logDocumentos)
                 {
                     uow.CelLogDocumentoR.Delete(log);
+                    _logger.LogInformation($"Eliminar CelLogDocumento Id:{log.Id} Sucursal:{log.SucursalId}");
                 }
 
                 var detalles = await uow.FacDetalleOrdenR.GetByOrdenAsync(ordenid);
                 foreach (var detalle in detalles)
                 {
                     uow.FacDetalleOrdenR.Delete(detalle);
+                    _logger.LogInformation($"Eliminar FacDetalleOrden ProductoId:{detalle.Productoid}");
                 }
                 var orden = await uow.FacOrdenR.GetByIdAsync(ordenid);
                 uow.FacOrdenR.Delete(orden);
+                _logger.LogInformation($"Eliminar FacOrden Id:{orden.Id} IdFromFe:{orden.IdFromFe}");
                 _ = await uow.SaveChangesAsync();
             }
             catch (Exception ex)
             {
                 // Manejar la excepción según sea necesario
+                _logger.LogInformation($"Error al eliminar Orden Id:{ordenid} Message:{ex.Message}");
                 return false;
             }
             return true;
