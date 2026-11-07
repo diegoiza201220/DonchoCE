@@ -39,18 +39,26 @@ public class FacProductoRepository(DonchoContext context) : Repository<FacProduc
         var resultado = (from p in _context.FacProducto
                          join d in _context.GenCatalogoDetalle
                          on p.CodigoIva equals d.Id
-                         select new FacProductoDTO() { Activo = p.Activo, CodigoIva = p.CodigoIva, Grupo = p.Grupo, Id = p.Id, 
-                             IvaTarifa = d.Codigo, 
-                             IvaValor = Math.Round(p.Valor *  Math.Round(Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100, 2), 2 ), 
-                             Nombre = p.Nombre, OrdenAparicion = p.OrdenAparicion, PedidoACocina = p.PedidoACocina, 
-                             Valor = p.Valor, 
+                         select new FacProductoDTO()
+                         {
+                             Activo = p.Activo,
+                             CodigoIva = p.CodigoIva,
+                             Grupo = p.Grupo,
+                             Id = p.Id,
+                             IvaTarifa = d.Codigo,
+                             IvaValor = Math.Round(p.Valor * Math.Round(Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100, 2), 2),
+                             Nombre = p.Nombre,
+                             OrdenAparicion = p.OrdenAparicion,
+                             PedidoACocina = p.PedidoACocina,
+                             Valor = p.Valor,
                              ValorDoncho = p.ValorDoncho,
                              ValorTotal = Math.Round(
-                                            p.Valor + 
-                                                Math.Round(p.Valor * 
+                                            p.Valor +
+                                                Math.Round(p.Valor *
                                                     Math.Round(Convert.ToDecimal(d.Codigo.Replace("%", "")) / 100, 2)
                                                     , 2)
-                                                , 2) }
+                                                , 2)
+                         }
                              ).ToList().OrderBy(o => o.Grupo).ThenBy(o => o.OrdenAparicion);
         return resultado;
     }
@@ -112,7 +120,7 @@ public class FacOrdenRepository(DonchoContext context) : Repository<FacOrden>(co
             {
                 Documento = g.Key ? "Factura" : "Orden",
                 Cantidad = g.Count(),
-                Valor = g.Sum(x=> x.TotalOrden)
+                Valor = g.Sum(x => x.TotalOrden)
             });
 }
 
@@ -163,6 +171,23 @@ public class CelSecuenciaSriRepository(DonchoContext context) : Repository<CelSe
 {
     public CelSecuenciaSri? GetByTipoDocumento(string id, int sucursalId)
         => _dbSet.AsNoTracking().FirstOrDefault(s => s.TipoDocumento == id && s.Sucursalid == sucursalId);
+
+    public async Task<CelSecuenciaSri> UpdateAndGetCelSecuenciaSriAsync(string id, int sucursalId)
+    {
+        //await _dbSet.Where(s => s.TipoDocumento == id && s.Sucursalid == sucursalId)
+        //    .ExecuteUpdateAsync(setters => setters
+        //        .SetProperty(s => s.SecuenciaActual, s => s.SecuenciaActual + 1)
+        //    );
+        var lista = await _dbSet
+            .FromSql($@"
+            UPDATE cel_secuencia_sri
+            SET secuencia_actual = secuencia_actual + 1
+            WHERE tipo_documento = {id} AND sucursalid = {sucursalId}
+            RETURNING *")
+            .AsNoTracking()
+            .ToListAsync();
+        return lista.Single();
+    }
 }
 
 // ── Genparametro (PK es string, repositorio propio) ───────────────────────────
@@ -197,15 +222,24 @@ public class FacSecuenciaDiaRepository(DonchoContext context) : Repository<FacSe
     public async Task<FacSecuenciaDia?> GetSecuenciaAsync()
     => await _dbSet.AsNoTracking().FirstOrDefaultAsync();
 
-    public async Task UpdateSecuenciaAsync(int sucursalid, int fecha)
+    public async Task<int> UpdateAndGetFacSecuenciaDiaAsync(int sucursalid, int fecha)
     {
-        await _dbSet.Where(s => s.Sucursalid == sucursalid)
-            .ExecuteUpdateAsync(setters => setters
-                // Si la fecha en la BDD es diferente a la actual, reinicia a 1. Si es igual, incrementa en 1.
-                .SetProperty(s => s.Secuencia, s => s.Fecha != fecha ? 1 : s.Secuencia + 1)
-                // Actualiza la fecha con el día actual
-                .SetProperty(s => s.Fecha, fecha)
-            );
+        //await _dbSet.Where(s => s.Sucursalid == sucursalid)
+        //    .ExecuteUpdateAsync(setters => setters
+        //        // Si la fecha en la BDD es diferente a la actual, reinicia a 1. Si es igual, incrementa en 1.
+        //        .SetProperty(s => s.Secuencia, s => s.Fecha != fecha ? 1 : s.Secuencia + 1)
+        //        // Actualiza la fecha con el día actual
+        //        .SetProperty(s => s.Fecha, fecha)
+        //    );
+        var lista = await _context.Database
+            .SqlQuery<int>($@"
+                UPDATE fac_secuencia_dia
+                SET secuencia = CASE WHEN fecha <> {fecha} THEN 1 ELSE secuencia + 1 END,
+                    fecha = {fecha}
+                WHERE sucursalid = {sucursalid}
+                RETURNING secuencia AS ""Value""")
+            .ToListAsync();
+        return lista.Single();
     }
 }
 
@@ -278,17 +312,17 @@ public class GenUsuarioSucursalRepository(DonchoContext context) : Repository<Ge
 {
     public IEnumerable<GenUsuarioSucursal> GetByUsuarioId(int id)
     {
-            //public async Task<IEnumerable<FacDetalleOrden>> GetByOrdenAsync(int ordenId)
-       // => await
-       //
-       var l = _dbSet.AsNoTracking()
-            .Include(d => d.Sucursal)
-            .Where(d => d.Usuarioid == id)
-            .ToList();
+        //public async Task<IEnumerable<FacDetalleOrden>> GetByOrdenAsync(int ordenId)
+        // => await
+        //
+        var l = _dbSet.AsNoTracking()
+             .Include(d => d.Sucursal)
+             .Where(d => d.Usuarioid == id)
+             .ToList();
         return l;
-//        return [.. _dbSet.AsNoTracking().Where(x => x.Usuarioid == id)];
+        //        return [.. _dbSet.AsNoTracking().Where(x => x.Usuarioid == id)];
     }
 
     public async Task<IEnumerable<GenUsuarioSucursal>> GetBySucursalId(int id)
-    => await _dbSet.AsNoTracking().Where(x=> x.Sucursalid == id).ToListAsync();
+    => await _dbSet.AsNoTracking().Where(x => x.Sucursalid == id).ToListAsync();
 }

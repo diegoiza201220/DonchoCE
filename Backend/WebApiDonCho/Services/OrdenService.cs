@@ -18,12 +18,12 @@ namespace WebApiDonCho.Services
         {
             _logger.LogInformation($"IdFromFe:{facOrdenDTO.IdFromFe} - Pedido capturado - Sucursal: {facOrdenDTO.Sucursalid} - FechaReal:{facOrdenDTO.Fecha} - EsFactura:{facOrdenDTO.EsFactura}");
             var facOrden = facOrdenDTO.FromDTO();
-            await uow.FacSecuenciaDiaR.UpdateSecuenciaAsync(facOrden.Sucursalid, facOrden.FechaInteger);
-            var secuencia = await uow.FacSecuenciaDiaR.GetBySucursalIdAsync(facOrden.Sucursalid) ?? throw new InvalidOperationException("No existe registro de secuencia del día.");
+            var secuencia = await uow.FacSecuenciaDiaR.UpdateAndGetFacSecuenciaDiaAsync(facOrden.Sucursalid, facOrden.FechaInteger);
+            //var secuencia = await uow.FacSecuenciaDiaR.GetBySucursalIdAsync(facOrden.Sucursalid) ?? throw new InvalidOperationException("No existe registro de secuencia del día.");
             //ActualizarSecuenciaOrdenesDiaria(secuencia, facOrdenDTO.FechaInteger);
-            facOrden.Secuencial = secuencia.Secuencia;
+            facOrden.Secuencial = secuencia;
             _logger.LogInformation($"IdFromFe:{facOrden.IdFromFe} - Secuencia: {facOrden.Secuencial}");
-            uow.FacSecuenciaDiaR.Update(secuencia);
+            //uow.FacSecuenciaDiaR.Update(secuencia);
             await uow.FacOrdenR.AddAsync(facOrden);
             await uow.SaveChangesAsync();
             _logger.LogInformation($"IdFromFe:{facOrden.IdFromFe} - Pedido almacenado");
@@ -38,7 +38,7 @@ namespace WebApiDonCho.Services
 
 
                 facOrdenDTO.CodDoc = "01";
-                CelSecuenciaSri celSecuenciaSri = uow.CelSecuenciasSriR.GetByTipoDocumento("01", facOrden.Sucursalid) ?? throw new InvalidOperationException($"Secuencia SRI no encontrada para la sucursal con id: {facOrden.Sucursalid}");
+                CelSecuenciaSri celSecuenciaSri = await uow.CelSecuenciasSriR.UpdateAndGetCelSecuenciaSriAsync("01", facOrden.Sucursalid);
                 _ = cache.TryGet(Constantes.CELINFOTRIBUTARIA, out CelInfoTributaria celInfoTributaria);
                 _ = cache.TryGet(Constantes.SRI_AMBIENTE, out GenParametro sriAmbiente);
                 facOrdenDTO.SriAmbiente = sriAmbiente.Valor;
@@ -48,8 +48,8 @@ namespace WebApiDonCho.Services
                     (int)ComprobantesElectronicos.Enums.CodigoDocumento.Factura);
                 celLogDocumento = CelLogDocumentoHelper.CrearLogInicial(facOrdenDTO);
                 await uow.CelLogDocumentoR.AddAsync(celLogDocumento);
-                celSecuenciaSri.SecuenciaActual++;
-                uow.CelSecuenciasSriR.Update(celSecuenciaSri);
+                //celSecuenciaSri.SecuenciaActual++;
+                //uow.CelSecuenciasSriR.Update(celSecuenciaSri);
                 await uow.SaveChangesAsync();
                 _ = await comprobanteService.EmitirFacturaAsync(facOrdenDTO, celLogDocumento);
             }

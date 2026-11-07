@@ -46,6 +46,7 @@ public interface ICelLogDocumentoRepository : IRepository<CelLogDocumento>
 public interface ICelSecuenciaSriRepository : IRepository<CelSecuenciaSri>
 {
     CelSecuenciaSri? GetByTipoDocumento(string id, int sucursalId);
+    Task<CelSecuenciaSri> UpdateAndGetCelSecuenciaSriAsync(string id, int sucursalId);
 }
 
 public interface IGenParametroRepository
@@ -64,7 +65,7 @@ public interface IFacSecuenciaDiaRepository : IRepository<FacSecuenciaDia>
     Task<FacSecuenciaDia?> GetByCodigoAsync(int codigo);
     FacSecuenciaDia? GetSecuencia();
     Task<FacSecuenciaDia?> GetSecuenciaAsync();
-    Task UpdateSecuenciaAsync(int sucursalid, int fecha);
+    Task<int> UpdateAndGetFacSecuenciaDiaAsync(int sucursalid, int fecha);
 }
 
 public interface IGenUsuarioRepository : IRepository<GenUsuario>

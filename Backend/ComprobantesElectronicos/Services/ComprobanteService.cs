@@ -43,39 +43,46 @@ public class ComprobanteService(SriService sriService, InfowareFirmaService info
                     Mensajes = [.. respuestaRecepcion.Mensajes.Select(m => m.Mensaje)]
                 };
             }
+            else
+            {
+                celLogDocumento.XmlFirmado = xmlFirmado;
+                SetInformacionCelLogDocumento(celLogDocumento, estado: 201, mensaje: "Comprobante recibido/pendiente validar autorización");
+                await uow.SaveChangesAsync();
+            }
             logger.LogInformation($"IdFromFe:{ordenDTO.IdFromFe} - respuestarecepción - OK");
 
             // 5. Esperar y consultar autorización (el SRI puede tardar unos segundos)
-            await Task.Delay(2000);
-            var claveAcceso = ordenDTO.ClaveNumeroAutorizacion;
-            var respuestaAutorizacion = await sriService.ConsultarAutorizacionAsync(claveAcceso);
+            
+            //await Task.Delay(2000);
+            //var claveAcceso = ordenDTO.ClaveNumeroAutorizacion;
+            //var respuestaAutorizacion = await sriService.ConsultarAutorizacionAsync(claveAcceso);
 
-            if (!respuestaAutorizacion.FueAutorizado)
-            {
-                celLogDocumento.XmlFirmado = xmlFirmado;
-                SetInformacionCelLogDocumento(celLogDocumento, estado: 2, string.Join("; ", respuestaRecepcion.Mensajes.Select(m => m.Informacion)));// estado 2 error en autorización
-                await uow.SaveChangesAsync();
-                return new ResultadoEmisionDTO
-                {
-                    Exitoso = false,
-                    Mensajes = [.. respuestaAutorizacion.Mensajes.Select(m => m.Mensaje)]
-                };
-            }
-            logger.LogInformation($"IdFromFe:{ordenDTO.IdFromFe} - respuestaautorización - OK");
+            //if (!respuestaAutorizacion.FueAutorizado)
+            //{
+            //    celLogDocumento.XmlFirmado = xmlFirmado;
+            //    SetInformacionCelLogDocumento(celLogDocumento, estado: 2, string.Join("; ", respuestaRecepcion.Mensajes.Select(m => m.Informacion)));// estado 2 error en autorización
+            //    await uow.SaveChangesAsync();
+            //    return new ResultadoEmisionDTO
+            //    {
+            //        Exitoso = false,
+            //        Mensajes = [.. respuestaAutorizacion.Mensajes.Select(m => m.Mensaje)]
+            //    };
+            //}
+            //logger.LogInformation($"IdFromFe:{ordenDTO.IdFromFe} - respuestaautorización - OK");
 
-            celLogDocumento.XmlFirmado = ordenDTO.Xml = respuestaAutorizacion.XmlAutorizado;
-            SetInformacionCelLogDocumento(celLogDocumento, estado: 200, mensaje: "Comprobante autorizado exitosamente");
+            //celLogDocumento.XmlFirmado = ordenDTO.Xml = respuestaAutorizacion.XmlAutorizado;
+            //SetInformacionCelLogDocumento(celLogDocumento, estado: 200, mensaje: "Comprobante autorizado exitosamente");
 
             await uow.SaveChangesAsync();
 
-            _ = emailService.EnviarAsync(ordenDTO);
+            //_ = emailService.EnviarAsync(ordenDTO);
 
             return new ResultadoEmisionDTO
             {
                 Exitoso = true,
-                NumeroAutorizacion = respuestaAutorizacion.NumeroAutorizacion,
-                FechaAutorizacion = respuestaAutorizacion.FechaAutorizacion,
-                XmlAutorizado = respuestaAutorizacion.XmlAutorizado
+                NumeroAutorizacion = ordenDTO.ClaveNumeroAutorizacion,// respuestaAutorizacion.NumeroAutorizacion,
+                FechaAutorizacion = ordenDTO.Fecha,// respuestaAutorizacion.FechaAutorizacion,
+                XmlAutorizado = string.Empty// respuestaAutorizacion.XmlAutorizado
             };
         }
         catch (Exception ex)
